@@ -2,7 +2,7 @@ import sqlite3
 from pathlib import Path
 
 from agent import generate_daily_articles
-from build_dist import freezer, write_cloudflare_headers
+from build_dist import freezer, write_cloudflare_headers, write_deploy_version
 
 
 DB_PATH = Path(__file__).with_name("yiyu.db")
@@ -36,6 +36,7 @@ def main() -> int:
     print("开始重新冻结 dist 静态站点...")
     freezer.freeze()
     write_cloudflare_headers()
+    write_deploy_version()
     print("dist 静态站点已更新。")
 
     final_count = get_article_count()
