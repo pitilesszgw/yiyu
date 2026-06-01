@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">出海广告合规巡检怎么做？这套 SOP 让账户安全有保障</span>
+                    <span x-show="lang === 'en'" x-cloak>Overseas Ad Compliance Checklist: A Step-by-Step Inspection SOP</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-05-28</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="133" data-base-views="51">51</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu1349/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>为什么你的账户总是“踩雷”</h2>
+<p>出海投放的运营同学可能都经历过：广告跑得好好的，突然收到平台通知“账户受限”或“广告被拒”。很多团队事后复盘发现，问题其实早有苗头——素材文案没检查、落地页悄悄改了内容、投放地区政策悄悄更新了……</p>
+<p>合规巡检不是出了问题再救火，而应该成为日常运营的习惯。这套 SOP 将巡检拆解为「每日 10 分钟」「每周 30 分钟」「每月 1 小时」三个层次，让不同角色的运营同事都能快速上手。</p>
+<h2>一、巡检前准备</h2>
+<p>在开始巡检之前，确保你已完成以下准备工作：</p>
+<ol>
+<li><strong>整理所有投放平台的账户清单</strong>，包括账户 ID、投放地区、主营业务</li>
+<li><strong>建立违规记录台账</strong>，记录历史违规原因和整改情况</li>
+<li><strong>订阅平台官方政策更新通知</strong>，确保能第一时间收到政策变更提醒</li>
+<li><strong>确认公司法务/合规部门对接人</strong>，遇到模糊情况时有咨询渠道</li>
+</ol>
+<blockquote>
+<p>准备工作的核心原则：信息集中、记录可查、渠道畅通、责任到人。</p>
+</blockquote>
+<h2>二、日常巡检（每日 10 分钟）</h2>
+<h3>第一步：检查账户状态</h3>
+<p>打开各广告平台后台，按以下顺序快速浏览：</p>
+<ul>
+<li><strong>账户健康状态</strong>：是否有红色警告或受限提示</li>
+<li><strong>广告审批状态</strong>：是否有广告处于“被拒”状态</li>
+<li><strong>消耗异常</strong>：今日消耗是否出现与历史均值偏差超过 50% 的情况</li>
+</ul>
+<h3>第二步：查看通知中心</h3>
+<p>这是最容易忽略但最关键的步骤。打开通知中心，检查：</p>
+<ul>
+<li>平台发送的政策更新邮件/站内信</li>
+<li>广告被拒的具体原因（通常会附带违规条款说明）</li>
+<li>其他账户管理者的操作记录</li>
+</ul>
+<h3>第三步：快速响应被拒广告</h3>
+<p>对于已标记为“被拒”的广告：</p>
+<ol>
+<li>记录被拒原因</li>
+<li>根据平台说明修改素材或文案</li>
+<li>修改后重新提交</li>
+<li>若对判定有异议，在规定时间内提交申诉</li>
+</ol>
+<h3>日常巡检清单</h3>
+<table>
+<thead>
+<tr>
+<th>检查项</th>
+<th>状态</th>
+<th>异常记录</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>账户状态正常</td>
+<td>✅/❌</td>
+<td></td>
+</tr>
+<tr>
+<td>无被拒广告</td>
+<td>✅/❌</td>
+<td></td>
+</tr>
+<tr>
+<td>消耗无异常</td>
+<td>✅/❌</td>
+<td></td>
+</tr>
+<tr>
+<td>无政策更新通知</td>
+<td>✅/❌</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>三、周度巡检（每周 30 分钟）</h2>
+<h3>第四步：深度检查投放素材</h3>
+<p>除了平台已拒的广告，还需要人工抽检正在投放的素材：</p>
+<ul>
+<li><strong>文案合规性</strong>：是否包含绝对化用语（如“最佳”“第一”）、虚假促销信息</li>
+<li><strong>落地页一致性</strong>：广告承诺的内容是否与落地页完全对应</li>
+<li><strong>年龄限制标注</strong>：酒精、金融、医疗类产品是否设置了正确的年龄受众</li>
+<li><strong>版权素材</strong>：图片、音乐、视频素材是否有版权证明</li>
+</ul>
+<h3>第五步：检查投放地区政策</h3>
+<p>不同国家的广告政策差异很大。每周确认：</p>
+<ul>
+<li>本周新增投放地区当地法规是否有变化</li>
+<li>是否有新的限制行业或受限关键词</li>
+<li>欧盟地区 GDPR 合规声明是否到位</li>
+</ul>
+<h3>第六步：审查账户权限</h3>
+<p>检查账户的访问权限配置：</p>
+<ul>
+<li>离职人员账号是否已移除</li>
+<li>新增人员权限是否合理（避免过度授权）</li>
+<li>是否有异常登录记录</li>
+</ul>
+<h2>四、月度巡检（每月 1 小时）</h2>
+<h3>第七步：历史违规复盘</h3>
+<p>整理本月所有违规记录，分析：</p>
+<ul>
+<li>哪些类型的违规出现频率最高</li>
+<li>是否存在共性问题（如某类素材风格反复被拒）</li>
+<li>违规主要集中在哪些平台或账户</li>
+</ul>
+<h3>第八步：竞品合规调研</h3>
+<p>观察同行业竞争对手的广告投放：</p>
+<ul>
+<li>他们使用的创意方向和文案风格</li>
+<li>平台对同品类广告的审核标准是否有规律</li>
+<li>是否有新的合规标杆案例可以参考</li>
+</ul>
+<h3>第九步：团队培训与流程优化</h3>
+<p>根据月度巡检结果：</p>
+<ul>
+<li>更新内部素材审核清单</li>
+<li>组织一次简短的合规培训（15-30 分钟）</li>
+<li>优化 SOP 中不实用的环节</li>
+</ul>
+<h2>五、常见违规快速处理</h2>
+<p>遇到以下情况，可按以下步骤处理：</p>
+<h3>广告被拒但找不到原因</h3>
+<ol>
+<li>在平台帮助中心搜索错误代码</li>
+<li>联系平台客服获取具体条款说明</li>
+<li>截图保存沟通记录，存入违规台账</li>
+</ol>
+<h3>账户突然受限</h3>
+<ol>
+<li>不要反复尝试创建新广告（可能加重处罚）</li>
+<li>在规定入口提交申诉，说明情况</li>
+<li>同步检查其他平台账户是否有类似问题</li>
+</ol>
+<h3>涉及当地法规投诉</h3>
+<ol>
+<li>第一时间下架相关广告</li>
+<li>联系公司法务评估风险</li>
+<li>如有消费者投诉，积极响应处理</li>
+</ol>
+<h2>写在最后</h2>
+<p>合规巡检的本质不是“堵漏洞”，而是建立一套可持续的风险感知能力。每个团队的执行节奏可以不同，但关键是<strong>坚持做、定期复盘、不断迭代</strong>。</p>
+<p>如果你在执行过程中遇到具体的合规问题，欢迎联系我们获取针对性的诊断建议。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Why Do Accounts Always "Step on Mines"</h2>
+<p>Overseas advertising teams often experience this: ads are running well, then suddenly receive a platform notice about "account restrictions" or "ad disapprovals." After retrospectives, many discover the problems had early warning signs —素材文案未检查、落地页悄悄改了内容、投放地区政策悄悄更新……</p>
+<p>Compliance inspection isn't about firefighting after problems occur; it should become a daily operational habit. This SOP breaks inspection into three levels: "10 minutes daily," "30 minutes weekly," and "1 hour monthly," enabling different team members to get started quickly.</p>
+<h2>1. Pre-Inspection Preparation</h2>
+<p>Before starting inspections, ensure you've completed:  </p>
+<ol>
+<li><strong>Compile account lists for all platforms</strong>, including account IDs, targeting regions, and business types</li>
+<li><strong>Establish a violation records log</strong>, documenting reasons and remediation actions</li>
+<li><strong>Subscribe to official platform policy update notifications</strong> to receive policy changes promptly</li>
+<li><strong>Confirm contacts with legal/compliance departments</strong> for consultation when facing ambiguous situations</li>
+</ol>
+<blockquote>
+<p>Core principle: Centralize information, maintain accessible records, keep communication channels open, and assign clear responsibilities.</p>
+</blockquote>
+<h2>2. Daily Inspection (10 Minutes)</h2>
+<h3>Step 1: Check Account Status</h3>
+<p>Open each platform's ad dashboard and browse in order:</p>
+<ul>
+<li><strong>Account health status</strong>: Any red warnings or restriction alerts</li>
+<li><strong>Ad approval status</strong>: Any ads in "disapproved" status</li>
+<li><strong>Spend anomalies</strong>: Today's spend deviation exceeding 50% from historical average</li>
+</ul>
+<h3>Step 2: Review Notification Center</h3>
+<p>This is the most overlooked but critical step. Open notifications to check:</p>
+<ul>
+<li>Platform policy update emails/inbox messages</li>
+<li>Specific rejection reasons (usually with policy clause explanations)</li>
+<li>Other account administrators' action records</li>
+</ul>
+<h3>Step 3: Respond Quickly to Rejected Ads</h3>
+<p>For ads marked "disapproved":</p>
+<ol>
+<li>Record rejection reasons</li>
+<li>Modify creative or copy based on platform guidance</li>
+<li>Resubmit after modifications</li>
+<li>If disagreeing with the decision, submit appeal within the timeframe</li>
+</ol>
+<h3>Daily Inspection Checklist</h3>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Account status normal</td>
+<td>✅/❌</td>
+<td></td>
+</tr>
+<tr>
+<td>No rejected ads</td>
+<td>✅/❌</td>
+<td></td>
+</tr>
+<tr>
+<td>Spend normal</td>
+<td>✅/❌</td>
+<td></td>
+</tr>
+<tr>
+<td>No policy update notifications</td>
+<td>✅/❌</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>3. Weekly Inspection (30 Minutes)</h2>
+<h3>Step 4: Deep Creative Review</h3>
+<p>Beyond platform-rejected ads, manually sample-check running creatives:</p>
+<ul>
+<li><strong>Copy compliance</strong>: No absolute claims ("best," "#1"), false promotional info</li>
+<li><strong>Landing page consistency</strong>: Ad promises match landing page exactly</li>
+<li><strong>Age restriction labeling</strong>: Alcohol, finance, healthcare products have correct age targeting</li>
+<li><strong>Copyrighted materials</strong>: Images, music, video with proper licensing</li>
+</ul>
+<h3>Step 5: Check Regional Policies</h3>
+<p>Ad policies vary significantly across countries. Weekly confirm:</p>
+<ul>
+<li>Any changes in local regulations for newly added regions</li>
+<li>New restricted industries or keywords</li>
+<li>GDPR compliance statements in place for EU regions</li>
+</ul>
+<h3>Step 6: Review Account Permissions</h3>
+<p>Check account access configuration:</p>
+<ul>
+<li>Departed employees' accounts removed</li>
+<li>New personnel permissions are appropriate (avoid over-authorization)</li>
+<li>Any abnormal login records</li>
+</ul>
+<h2>4. Monthly Inspection (1 Hour)</h2>
+<h3>Step 7: Historical Violation Review</h3>
+<p>Compile all monthly violations and analyze:</p>
+<ul>
+<li>Which violation types appear most frequently</li>
+<li>Common problem patterns (e.g., certain creative styles repeatedly rejected)</li>
+<li>Whether violations cluster around specific platforms or accounts</li>
+</ul>
+<h3>Step 8: Competitor Compliance Research</h3>
+<p>Observe competitors' advertising:</p>
+<ul>
+<li>Their creative directions and copy styles</li>
+<li>Platform审核 standards for similar categories</li>
+<li>New compliance benchmarks for reference</li>
+</ul>
+<h3>Step 9: Team Training and Process Optimization</h3>
+<p>Based on monthly inspection results:</p>
+<ul>
+<li>Update internal creative review checklists</li>
+<li>Conduct brief compliance training (15-30 minutes)</li>
+<li>Optimize impractical SOP steps</li>
+</ul>
+<h2>5. Quick Handling of Common Violations</h2>
+<h3>Ad Rejected Without Clear Reason</h3>
+<ol>
+<li>Search error codes in platform help center</li>
+<li>Contact platform support for specific policy explanations</li>
+<li>Screenshot and save communication records in violation log</li>
+</ol>
+<h3>Account Suddenly Restricted</h3>
+<ol>
+<li>Don't repeatedly try creating new ads (may worsen penalties)</li>
+<li>Submit appeal through official channels with explanation</li>
+<li>Check other platform accounts for similar issues</li>
+</ol>
+<h3>Local Regulation Complaints</h3>
+<ol>
+<li>Immediately pause related ads</li>
+<li>Consult legal team for risk assessment</li>
+<li>Respond actively to consumer complaints</li>
+</ol>
+<h2>Final Thoughts</h2>
+<p>The essence of compliance inspection isn't "plugging holes" but building sustainable risk awareness. Execution rhythms vary by team, but consistency is key: <strong>inspect regularly, review periodically, and iterate continuously</strong>.</p>
+<p>If you encounter specific compliance issues during execution, feel free to contact us for targeted diagnostic advice.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>

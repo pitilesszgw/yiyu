@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">海外广告充值、消耗与发票统一对账清单（附实操步骤）</span>
+                    <span x-show="lang === 'en'" x-cloak>Overseas Ad Spend Reconciliation Checklist:充值、消耗、发票三位一体对账指南</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-05-27</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="104" data-base-views="28">28</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu1171/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>背景：为什么对账总对不上？</h2>
+<p>出海团队做海外广告对账时，最常遇到三类问题：</p>
+<ul>
+<li><strong>充值层面</strong>：多平台多账户分散充值，到账时间差导致账面余额与平台余额不一致</li>
+<li><strong>消耗层面</strong>：平台报告的消耗数据与财务记录存在误差，可能是时区、汇率或归因窗口差异</li>
+<li><strong>发票层面</strong>：广告平台发票开具周期长，发票金额与实际消耗往往存在滞后</li>
+</ul>
+<p>以下清单从这三个维度拆解统一对账的具体步骤，帮助你和财务团队把账做清楚。</p>
+<hr />
+<h2>一、充值核查清单</h2>
+<blockquote>
+<p><strong>目标</strong>：确认每一笔充值都已正确入账，且与平台余额匹配。</p>
+</blockquote>
+<h3>步骤 1：整理充值记录</h3>
+<ul>
+<li>[ ] 从支付渠道导出本月所有充值流水（含时间、金额、账户）</li>
+<li>[ ] 与内部财务系统（银行/支付宝/信用卡账单）交叉核对</li>
+<li>[ ] 标注每笔充值的平台、账户ID及充值凭证号</li>
+</ul>
+<h3>步骤 2：核查平台到账情况</h3>
+<ul>
+<li>[ ] 登录各广告平台后台，确认充值到账金额与记录一致</li>
+<li>[ ] 注意时区差异：部分平台以UTC时间记录充值</li>
+<li>[ ] 检查是否存在充值未到账或部分到账的情况</li>
+</ul>
+<h3>步骤 3：处理充值差异</h3>
+<ul>
+<li>[ ] 如发现未到账，核查充值凭证并联系平台客服</li>
+<li>[ ] 汇率波动导致的金额差异需记录并调整</li>
+<li>[ ] 长期未到账的充值建议开启工单追踪</li>
+</ul>
+<hr />
+<h2>二、消耗核对清单</h2>
+<blockquote>
+<p><strong>目标</strong>：确保广告平台报告的消耗数据与财务记录一致。</p>
+</blockquote>
+<h3>步骤 4：拉取平台消耗报告</h3>
+<ul>
+<li>[ ] 从 Meta Ads Manager、Google Ads 等后台导出指定周期消耗报告</li>
+<li>[ ] 确认报告时间范围与账单周期一致（如自然月或投放周）</li>
+<li>[ ] 记录 Campaign 维度的消耗数据，便于后续归因</li>
+</ul>
+<h3>步骤 5：与财务消耗记录比对</h3>
+<ul>
+<li>[ ] 核对总消耗金额是否匹配（允许 ±2% 误差范围）</li>
+<li>[ ] 如差异超出预期，检查是否因归因窗口设置（点击 vs 转化）导致</li>
+<li>[ ] 核查是否有退款、退款金额是否已冲减消耗</li>
+</ul>
+<h3>步骤 6：汇率与货币转换核对</h3>
+<ul>
+<li>[ ] 确认平台消耗货币（如 USD）与记账货币的换算汇率</li>
+<li>[ ] 检查是否使用充值日汇率或消耗日汇率</li>
+<li>[ ] 差异金额需单独记账或调整</li>
+</ul>
+<hr />
+<h2>三、发票匹配检查项</h2>
+<blockquote>
+<p><strong>目标</strong>：让发票金额与实际消耗对应，避免报销和税务核查时出问题。</p>
+</blockquote>
+<h3>步骤 7：获取发票前的准备</h3>
+<ul>
+<li>[ ] 确认各平台发票开具周期（Meta 通常月末出票，Google 可能有延迟）</li>
+<li>[ ] 核对公司抬头、税务信息是否正确</li>
+<li>[ ] 记录每个账户对应的合同主体，避免发票抬头混淆</li>
+</ul>
+<h3>步骤 8：发票与消耗匹配验证</h3>
+<ul>
+<li>[ ] 发票金额应与账单周期内的净消耗（消耗 - 退款）匹配</li>
+<li>[ ] 如发票金额与消耗存在差异，核查是否含税、是否有优惠券抵扣</li>
+<li>[ ] 保留发票扫描件与消耗报告的关联存档</li>
+</ul>
+<h3>步骤 9：发票归档与追溯</h3>
+<ul>
+<li>[ ] 按平台+月份命名发票文件，便于快速检索</li>
+<li>[ ] 在财务系统中标注发票状态（已获取/已入账/待验证）</li>
+<li>[ ] 设置发票获取提醒，避免漏票</li>
+</ul>
+<hr />
+<h2>四、常见差异处理对照</h2>
+<table>
+<thead>
+<tr>
+<th>差异场景</th>
+<th>可能原因</th>
+<th>建议处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>充值已扣款但平台未到账</td>
+<td>支付渠道延迟或平台处理慢</td>
+<td>保留凭证，24小时后复查</td>
+</tr>
+<tr>
+<td>发票金额 &gt; 消耗金额</td>
+<td>含税、预付余额未清零</td>
+<td>核对账单明细确认</td>
+</tr>
+<tr>
+<td>发票金额 &lt; 消耗金额</td>
+<td>发票未出完、部分退款未体现</td>
+<td>等待发票更新或联系平台</td>
+</tr>
+<tr>
+<td>消耗数据与后台报告不一致</td>
+<td>归因窗口、时区、币种差异</td>
+<td>统一以平台后台报告为准</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>五、对账频率建议</h2>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>建议频率</th>
+<th>适用情况</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>日对账</td>
+<td>每日检查充值到账</td>
+<td>大预算账户（单日消耗 &gt;$5000）</td>
+</tr>
+<tr>
+<td>周对账</td>
+<td>每周核查消耗波动</td>
+<td>中型团队，跑多个 Campaign</td>
+</tr>
+<tr>
+<td>月对账</td>
+<td>月底统一复核发票与消耗</td>
+<td>所有出海团队必做</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>写在最后</h2>
+<p>海外广告对账的核心是<strong>以平台数据为基准</strong>，结合财务系统做双向验证。建议团队在月初完成上月对账闭环，留出充足时间处理差异。如果你需要系统化的对账工具支持，或希望以渔协助处理多账户的统一对账服务，可以联系我们的运营顾问。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Why Reconciliation Keeps Failing</h2>
+<p>When managing overseas ad spend, finance and ops teams typically face three pain points:</p>
+<ul>
+<li><strong>充值 (Top-up)</strong>: Multiple platforms and accounts with different arrival times, causing balance discrepancies</li>
+<li><strong>消耗 (Spend)</strong>: Platform-reported spend often doesn't match internal financial records due to timezone or attribution differences</li>
+<li><strong>发票 (Invoices)</strong>: Long invoice issuance cycles create gaps between actual spend and documented amounts</li>
+</ul>
+<p>This checklist breaks down reconciliation into actionable steps across all three areas.</p>
+<hr />
+<h2>充值 (Top-up) Verification Checklist</h2>
+<blockquote>
+<p><strong>Goal</strong>: Confirm every top-up is correctly recorded and matches platform balances.</p>
+</blockquote>
+<h3>Step 1: Compile Top-up Records</h3>
+<ul>
+<li>[ ] Export all top-up transactions from payment channels (date, amount, account)</li>
+<li>[ ] Cross-check against internal financial records (bank/credit card statements)</li>
+<li>[ ] Tag each top-up with platform, account ID, and transaction reference</li>
+</ul>
+<h3>Step 2: Verify Platform Arrival</h3>
+<ul>
+<li>[ ] Log in to each ad platform and confirm received amounts</li>
+<li>[ ] Watch for timezone issues—some platforms record in UTC</li>
+<li>[ ] Flag any missing or partial arrivals</li>
+</ul>
+<h3>Step 3: Handle Discrepancies</h3>
+<ul>
+<li>[ ] For missing top-ups: preserve proof and contact platform support</li>
+<li>[ ] Log currency fluctuation differences separately</li>
+<li>[ ] Open support tickets for long-pending top-ups</li>
+</ul>
+<hr />
+<h2>消耗 (Spend) Reconciliation Checklist</h2>
+<blockquote>
+<p><strong>Goal</strong>: Ensure platform-reported spend matches financial records.</p>
+</blockquote>
+<h3>Step 4: Pull Platform Spend Reports</h3>
+<ul>
+<li>[ ] Export spend reports from Meta Ads Manager, Google Ads, etc.</li>
+<li>[ ] Align report date range with your billing cycle (calendar month or campaign week)</li>
+<li>[ ] Record campaign-level spend for granular attribution</li>
+</ul>
+<h3>Step 5: Compare Against Financial Records</h3>
+<ul>
+<li>[ ] Total spend should match within ±2% tolerance</li>
+<li>[ ] Larger gaps? Check attribution window settings (click vs. conversion)</li>
+<li>[ ] Verify refunds are properly deducted from spend</li>
+</ul>
+<h3>Step 6: Currency &amp; Exchange Rate Verification</h3>
+<ul>
+<li>[ ] Confirm the exchange rate used (top-up date vs. spend date)</li>
+<li>[ ] Ensure consistent currency conversion across all records</li>
+<li>[ ] Log conversion differences as adjustment entries</li>
+</ul>
+<hr />
+<h2>发票 (Invoice) Matching Checklist</h2>
+<blockquote>
+<p><strong>Goal</strong>: Align invoice amounts with actual spend for clean audits.</p>
+</blockquote>
+<h3>Step 7: Pre-Invoice Preparation</h3>
+<ul>
+<li>[ ] Know each platform's invoice cycle (Meta issues monthly; Google may delay)</li>
+<li>[ ] Verify company name and tax details are correct</li>
+<li>[ ] Confirm which entity/contract each account belongs to</li>
+</ul>
+<h3>Step 8: Invoice-to-Spend Matching</h3>
+<ul>
+<li>[ ] Invoice amount should match net spend (消耗 minus refunds) for the billing period</li>
+<li>[ ] Check if differences are due to taxes or coupon deductions</li>
+<li>[ ] Archive invoices with corresponding spend reports</li>
+</ul>
+<h3>Step 9: Filing &amp; Audit Trail</h3>
+<ul>
+<li>[ ] Name invoice files by platform + month for easy retrieval</li>
+<li>[ ] Tag invoice status in your financial system (received/posted/pending)</li>
+<li>[ ] Set reminders to avoid missing invoices</li>
+</ul>
+<hr />
+<h2>Common Discrepancy Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Likely Cause</th>
+<th>Recommended Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Top-up deducted but not arrived</td>
+<td>Payment channel delay</td>
+<td>Wait 24h, then escalate</td>
+</tr>
+<tr>
+<td>Invoice &gt; Spend</td>
+<td>Tax included, pre-paid balance</td>
+<td>Review billing breakdown</td>
+</tr>
+<tr>
+<td>Invoice &lt; Spend</td>
+<td>Partial invoice, pending refund</td>
+<td>Wait for update or contact platform</td>
+</tr>
+<tr>
+<td>Spend vs. backend report mismatch</td>
+<td>Attribution window, timezone, currency</td>
+<td>Default to platform backend data</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Recommended Reconciliation Frequency</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Frequency</th>
+<th>When to Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Daily</td>
+<td>Every day</td>
+<td>High-spend accounts (&gt;$5000/day)</td>
+</tr>
+<tr>
+<td>Weekly</td>
+<td>Once a week</td>
+<td>Mid-size teams running multiple campaigns</td>
+</tr>
+<tr>
+<td>Monthly</td>
+<td>End of month</td>
+<td>All overseas teams (required)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Final Note</h2>
+<p>The key to ad spend reconciliation is using <strong>platform data as the source of truth</strong> while cross-validating against your financial system. Complete monthly close reconciliation at the start of each month to leave buffer time for resolving discrepancies. If you need systematic reconciliation support or multi-account management, contact 以渔's operations team.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>

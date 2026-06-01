@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">AI广告文案同质化怎么破？5步SOP教你写出差异化创意</span>
+                    <span x-show="lang === 'en'" x-cloak>How to Differentiate Your AI-Generated Ad Copy: A 5-Step SOP</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-05-29</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="134" data-base-views="73">73</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu8168/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>背景：AI文案同质化正在侵蚀你的投放效果</h2>
+<p>很多运营团队发现，用 AI 工具生成广告文案后，素材上线几天 CTR 明显下滑，对话咨询量也在下降。排查后发现问题不在渠道或定向，而是 AI 生成的文案“太像了”——打开十个竞品的广告，标题和描述几乎可以互换。</p>
+<p>AI 生成文案依赖的是公开语料和主流模板。当你的产品与竞品在功能、定价、用户画像上存在重叠时，AI 会倾向于“平均化”输出，用最安全、最通用的表达方式。这不是工具的缺陷，而是使用方法的缺失。</p>
+<p>以下 SOP 适用于 Meta、TikTok、Google Ads 等主流渠道的文案优化场景，运营人员可直接照着执行。</p>
+<hr />
+<h2>SOP 第1步：建立品牌声音档案，让 AI 有“性格”可循</h2>
+<p><strong>操作方法：</strong></p>
+<ol>
+<li>打开一份共享文档，命名为“品牌声音指南”。</li>
+<li>填写以下三个维度：</li>
+</ol>
+<blockquote>
+<p><strong>语速感：</strong> 你的文案语速是快（如“限时！立即抢”）还是慢（如“给自己一个更好的选择”）？</p>
+<p><strong>人设感：</strong> 你的品牌是“专业顾问”“闺蜜好友”还是“硬核玩家”？</p>
+<p><strong>禁忌词库：</strong> 列出 5-10 个行业高频词，生成时主动排除。例如电商类常排除“优质”“低价”；工具类常排除“完美”“全能”。</p>
+</blockquote>
+<ol>
+<li>将文档链接分享给所有素材同事，AI 工具 Prompt 开头统一加入一句：“以[品牌名]的语气风格生成，要求：[上述三条要求]”。</li>
+</ol>
+<p><strong>效果预期：</strong> 这一步让 AI 的输出有了锚点，后续生成的所有文案天然携带品牌差异化基因。</p>
+<hr />
+<h2>SOP 第2步：从用户真实评论中挖掘“非主流”表达</h2>
+<p><strong>操作方法：</strong></p>
+<ol>
+<li>收集用户评论。来源包括 App Store 评论区、亚马逊/独立站评价、社媒UGC 帖子、客服聊天记录。</li>
+<li>用 Excel 整理，标注三类词汇：</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>特征</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>功能描述词</td>
+<td>用户自己的说法</td>
+<td>“能自动记账”</td>
+</tr>
+<tr>
+<td>情感词汇</td>
+<td>用户表达感受的词</td>
+<td>“终于不焦虑了”</td>
+</tr>
+<tr>
+<td>场景词</td>
+<td>用户描述的使用情境</td>
+<td>“我出差时用”</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>将高频真实词汇加入 AI Prompt 的“必须包含”清单。</li>
+</ol>
+<p><strong>示例：</strong><br />
+某工具类 App 运营团队发现用户在评论中反复提到“账单乱七八糟”，而不是产品用的“智能分类”。于是将“账单乱”加入 Prompt 后，生成文案点击率提升了 22%。</p>
+<hr />
+<h2>SOP 第3步：提炼差异化卖点，避免“自嗨式功能描述”</h2>
+<p><strong>操作方法：</strong></p>
+<ol>
+<li>列出产品/服务的 3 个核心功能。</li>
+<li>
+<p>对每个功能，回答以下三个问题：</p>
+</li>
+<li>
+<p>竞品也能做到这件事吗？（如果是，标记为“通用卖点”）</p>
+</li>
+<li>用户多久遇到一次这个场景？（频率越高，差异化潜力越大）</li>
+<li>
+<p>用户解决这个问题时，有哪些“痛苦细节”？（越具体越有差异化）</p>
+</li>
+<li>
+<p>筛选出“竞品做不到 + 频率高 + 细节丰富”的卖点，作为文案主攻方向。</p>
+</li>
+</ol>
+<p><strong>检查清单：</strong></p>
+<ul>
+<li>[ ] 这个卖点描述，竞品广告里出现过吗？</li>
+<li>[ ] 这个表达方式，用户自己在社媒上说过吗？</li>
+<li>[ ] 同一批用户，收到这条文案和竞品文案，能区分开吗？</li>
+</ul>
+<hr />
+<h2>SOP 第4步：重组文案结构，打破“开头-功能-CTA”三件套</h2>
+<p><strong>操作方法：</strong></p>
+<p>AI 默认生成的文案结构通常是“痛点开头 → 功能罗列 → 促销收尾”。试着以下面三种替代结构生成：</p>
+<p><strong>结构 A：反转式</strong></p>
+<blockquote>
+<p>先呈现一个反常识的事实或用户认知，再揭示真相。<br />
+示例：“你以为省钱就是少花？某跨境电商团队用它一个月多赚 3 万。”</p>
+</blockquote>
+<p><strong>结构 B：场景式</strong></p>
+<blockquote>
+<p>直接进入一个具体使用场景，让用户“对号入座”。<br />
+示例：“当你第8次忘记报税的时候，这个工具还在等你。”</p>
+</blockquote>
+<p><strong>结构 C：对话式</strong></p>
+<blockquote>
+<p>以第二人称对话语气写，读起来像朋友在推荐。<br />
+示例：“别划走。我知道你试过很多方法，这个真的不一样。”</p>
+</blockquote>
+<p><strong>实操建议：</strong> 在 Prompt 中明确指定结构类型，例如：“生成3条文案，采用对话式结构，每条不超过15个字。”</p>
+<hr />
+<h2>SOP 第5步：小预算 A/B 测试验证，量化差异化效果</h2>
+<p><strong>操作方法：</strong></p>
+<ol>
+<li>选定测试素材：选择 2-3 条差异化文案 + 1 条普通文案（对照组）。</li>
+<li>设置预算：每个变体日预算不低于 $30，确保 24 小时内积累足够展示量。</li>
+<li>观察周期：48-72 小时，重点关注 CTR 和 CPC 两个指标。</li>
+</ol>
+<p><strong>判断标准：</strong></p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>差异化文案 vs 对照组</th>
+<th>结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CTR 提升 15% 以上</td>
+<td>显著更好</td>
+<td>批量替换原素材</td>
+</tr>
+<tr>
+<td>CTR 基本持平</td>
+<td>效果类似</td>
+<td>保留其一，持续观察</td>
+</tr>
+<tr>
+<td>CTR 下降</td>
+<td>可能过于追求差异化</td>
+<td>检查是否偏离产品核心卖点</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意事项：</strong> A/B 测试期间不要修改其他变量（定向、创意尺寸、投放时间），确保结果由文案差异驱动。</p>
+<hr />
+<h2>执行清单：5步完成一次差异化文案迭代</h2>
+<ul>
+<li>[ ] 制定品牌声音指南，更新 AI Prompt 模板</li>
+<li>[ ] 收集并整理 20 条以上用户真实评论</li>
+<li>[ ] 提炼 3 个差异化卖点，填写检查清单</li>
+<li>[ ] 用三种替代结构各生成 3 条文案</li>
+<li>[ ] 上传 A/B 测试，48 小时后复盘数据</li>
+<li>[ ] 将胜出文案纳入素材库，更新 SOP 文档</li>
+</ul>
+<hr />
+<h2>常见问题</h2>
+<p><strong>Q：AI 生成的内容总是被平台判定为“低质量”或“机器生成”？</strong></p>
+<p>A：平台检测的是“机器感”而非 AI 本身。规避方法是：生成后手动调整语序、替换同义词、增加口语化表达。让文案读起来像人写的，而非机器拼接的。</p>
+<p><strong>Q：差异化太大会不会让用户觉得品牌“不专业”？</strong></p>
+<p>A：差异化的前提是不偏离品牌核心定位。结构可以创新，语气可以活泼，但产品承诺和价值主张必须保持一致。用户记住的是风格差异，不是卖点混乱。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Background: AI Copy Homogenization Is Eroding Your Campaign Performance</h2>
+<p>Many marketing teams have noticed a sharp drop in CTR and inquiries after adopting AI-generated ad copy. After investigation, the issue isn't targeting or channel selection—it's that AI-generated copy sounds exactly like competitors'. Open ten ads in the same category, and the headlines and descriptions are nearly interchangeable.</p>
+<p>AI generates copy based on publicly available data and mainstream templates. When your product overlaps with competitors in features, pricing, or audience, AI tends to produce "averaged" output—the safest and most generic expressions. This isn't a flaw in the tool, but a gap in how we use it.</p>
+<p>This SOP applies to copy optimization across major platforms including Meta, TikTok, and Google Ads. Operations teams can follow these steps directly.</p>
+<hr />
+<h2>Step 1: Build a Brand Voice Profile to Give AI a "Personality"</h2>
+<p><strong>How to Execute:</strong></p>
+<ol>
+<li>Create a shared document titled "Brand Voice Guide."</li>
+<li>Define three dimensions:</li>
+</ol>
+<blockquote>
+<p><strong>Pace:</strong> Is your copy fast-paced (e.g., "Limited time! Claim now!") or slower (e.g., "Give yourself a better choice")?</p>
+<p><strong>Persona:</strong> Is your brand a "professional consultant," "close friend," or "hardcore enthusiast"?</p>
+<p><strong>Exclusion List:</strong> Note 5-10 overused industry terms to actively avoid. E-commerce often excludes "quality" and "low price"; tools often exclude "perfect" and "all-in-one."</p>
+</blockquote>
+<ol>
+<li>Share the document with all creative team members and add this instruction to every AI Prompt: "Generate content in the voice of [Brand Name], following these guidelines: [the three rules above]."</li>
+</ol>
+<p><strong>Expected Outcome:</strong> This step anchors AI output with brand identity, giving all generated copy differentiated DNA by default.</p>
+<hr />
+<h2>Step 2: Mine Real User Expressions from Reviews</h2>
+<p><strong>How to Execute:</strong></p>
+<ol>
+<li>Collect user reviews from App Store comments, Amazon/site reviews, social UGC posts, and customer service logs.</li>
+<li>Organize in a spreadsheet and categorize words into three types:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Characteristics</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Functional Terms</td>
+<td>How users describe features</td>
+<td>"Automatically tracks expenses"</td>
+</tr>
+<tr>
+<td>Emotional Words</td>
+<td>User feelings</td>
+<td>"Finally stress-free"</td>
+</tr>
+<tr>
+<td>Context Words</td>
+<td>Usage scenarios</td>
+<td>"When I'm traveling"</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>Add high-frequency authentic terms to your AI Prompt's "must include" list.</li>
+</ol>
+<p><strong>Example:</strong><br />
+A utility app team noticed users repeatedly mentioned "messy finances" rather than the product's term "smart categorization." After adding "messy" to the Prompt, click-through rate increased by 22%.</p>
+<hr />
+<h2>Step 3: Extract Differentiated USPs to Avoid "Feature Dump"</h2>
+<p><strong>How to Execute:</strong></p>
+<ol>
+<li>List 3 core features of your product/service.</li>
+<li>
+<p>For each feature, answer these three questions:</p>
+</li>
+<li>
+<p>Can competitors do the same thing? (If yes, mark as "generic USP")</p>
+</li>
+<li>How often do users encounter this scenario? (Higher frequency = greater differentiation potential)</li>
+<li>
+<p>What are the "pain details" users face when solving this problem? (The more specific, the more differentiated)</p>
+</li>
+<li>
+<p>Prioritize USPs that are "competitor-unique + high frequency + rich in detail" as your copy's main focus.</p>
+</li>
+</ol>
+<p><strong>Checklist:</strong></p>
+<ul>
+<li>[ ] Have competitors used this USP in their ads?</li>
+<li>[ ] Would users naturally say this on social media?</li>
+<li>[ ] Could the same user distinguish your ad from a competitor's?</li>
+</ul>
+<hr />
+<h2>Step 4: Restructure Copy to Break the "Hook-Feature-CTA" Template</h2>
+<p><strong>How to Execute:</strong></p>
+<p>AI typically generates "problem statement → feature list → promotional close." Try these three alternative structures instead:</p>
+<p><strong>Structure A: Reversal</strong></p>
+<blockquote>
+<p>Present a counter-intuitive fact or user belief, then reveal the truth.<br />
+Example: "Thought saving money means spending less? This cross-border e-commerce team made an extra $30K in one month."</p>
+</blockquote>
+<p><strong>Structure B: Scenario-Based</strong></p>
+<blockquote>
+<p>Jump directly into a specific usage scenario, letting users self-identify.<br />
+Example: "When you forget to file taxes for the 8th time, this tool is still waiting for you."</p>
+</blockquote>
+<p><strong>Structure C: Conversational</strong></p>
+<blockquote>
+<p>Write in second-person dialogue, as if a friend is recommending.<br />
+Example: "Don't scroll past. I know you've tried many things—this one is really different."</p>
+</blockquote>
+<p><strong>Practical Tip:</strong> Specify structure type in your Prompt: "Generate 3 ad lines using conversational structure, each under 15 words."</p>
+<hr />
+<h2>Step 5: Run Small-Budget A/B Tests to Quantify Differentiation</h2>
+<p><strong>How to Execute:</strong></p>
+<ol>
+<li>Select test variants: 2-3 differentiated copy options + 1 control (generic copy).</li>
+<li>Set budget: Minimum $30 daily per variant to ensure sufficient impressions within 24 hours.</li>
+<li>Observation period: 48-72 hours. Focus on CTR and CPC metrics.</li>
+</ol>
+<p><strong>Interpretation Guide:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Differentiated vs Control</th>
+<th>Conclusion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CTR up 15%+</td>
+<td>Significantly better</td>
+<td>Batch replace original creatives</td>
+</tr>
+<tr>
+<td>CTR flat</td>
+<td>Similar effect</td>
+<td>Keep one, continue monitoring</td>
+</tr>
+<tr>
+<td>CTR down</td>
+<td>Over-differentiation risk</td>
+<td>Check for deviation from core USP</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> Do not modify other variables (targeting, creative sizes, scheduling) during A/B tests to ensure results are driven by copy differences.</p>
+<hr />
+<h2>Execution Checklist: Complete One Differentiated Copy Iteration</h2>
+<ul>
+<li>[ ] Draft Brand Voice Guide and update AI Prompt template</li>
+<li>[ ] Collect and organize 20+ authentic user reviews</li>
+<li>[ ] Extract 3 differentiated USPs and complete the checklist</li>
+<li>[ ] Generate 3 copy options each using three alternative structures</li>
+<li>[ ] Upload A/B test and review data after 48 hours</li>
+<li>[ ] Add winning copy to asset library and update SOP documentation</li>
+</ul>
+<hr />
+<h2>FAQ</h2>
+<p><strong>Q: AI-generated content keeps getting flagged as "low quality" or "machine-generated"?</strong></p>
+<p>A: Platforms detect "machine feel" rather than AI usage itself. To avoid flags: manually adjust sentence structure, replace synonyms, and add conversational tone. Make copy sound human-written, not stitched together by algorithms.</p>
+<p><strong>Q: Won't aggressive differentiation make the brand seem "unprofessional"?</strong></p>
+<p>A: Differentiation前提是不偏离品牌核心定位。Structure can be innovative and tone can be lively, but product promises and value propositions must remain consistent. Users remember style differences, not inconsistent messaging.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
