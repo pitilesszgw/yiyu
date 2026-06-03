@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">Meta 广告素材复盘 SOP：3 步分清“能跑”和“能卖”</span>
+                    <span x-show="lang === 'en'" x-cloak>Meta Ad Creative Review SOP: 3 Steps to Tell Runnable from Convertible</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-06-03</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="153" data-base-views="18">18</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu5224/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>背景问题</h2>
+<p>很多运营团队会遇到这种困惑：素材 A 播放完成率 80%，CTR 2.3%，数据漂亮；素材 B 播放完成率只有 35%，CTR 0.8%，看起来很普通。但跑两周之后，素材 A 一单没转化，素材 B 却贡献了 60% 的订单。</p>
+<p>这就是“能跑”和“能卖”的区别。</p>
+<p>本文梳理了一套复盘 SOP，帮助你在素材生命周期内及时发现问题、调整预算分配。</p>
+<hr />
+<h2>SOP 步骤一：数据采集——列出这 6 个核心指标</h2>
+<p>复盘前先确认数据口径。建议在广告后台导出时统一时间周期（建议选投放后 3-7 天数据，避免冷启动波动）。</p>
+<p>需要采集的指标清单：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>视频播放完成率</td>
+<td>判断素材是否“抓人”</td>
+</tr>
+<tr>
+<td>CTR（点击率）</td>
+<td>判断素材是否“诱人”</td>
+</tr>
+<tr>
+<td>CPM</td>
+<td>判断平台对素材的初始评级</td>
+</tr>
+<tr>
+<td>单次点击成本（CPC）</td>
+<td>判断流量质量</td>
+</tr>
+<tr>
+<td>转化事件数（加购/下单）</td>
+<td>判断素材是否“能卖”</td>
+</tr>
+<tr>
+<td>ROAS / CPA</td>
+<td>判断素材最终投产</td>
+</tr>
+</tbody>
+</table>
+<p><strong>操作要点</strong>：至少采集 3 个相似素材做横向对比，单独一个素材的数据没有参考意义。</p>
+<hr />
+<h2>SOP 步骤二：区分特征——能跑 ≠ 能卖</h2>
+<h3>“能跑”素材的典型特征</h3>
+<ul>
+<li>视频前 3 秒有强视觉冲击或悬念</li>
+<li>字幕大、配乐节奏快</li>
+<li>CTA 文字醒目（点击、下载、抢购等）</li>
+<li>播放完成率高，CPM 低</li>
+<li>但转化事件稀疏，CPA 忽高忽低</li>
+</ul>
+<p>这类素材擅长“骗点击”——用户被钩子吸引点进来，但发现和产品诉求不匹配，直接跳出。</p>
+<h3>“能卖”素材的典型特征</h3>
+<ul>
+<li>开头不一定惊艳，但产品卖点清晰</li>
+<li>有真实使用场景或用户证言</li>
+<li>CTA 与落地页内容一致</li>
+<li>CTR 可能偏低，但转化率（CVR）稳定</li>
+<li>7 日 ROAS 表现优于 3 日数据（说明用户决策周期正常）</li>
+</ul>
+<p><strong>关键判断逻辑</strong>：</p>
+<blockquote>
+<p>播放完成率 + CTR 高，但 CPA 高 → 能跑不能卖<br />
+播放完成率中等，CTR 中等，但 CVR 稳定 → 具备能卖潜力</p>
+</blockquote>
+<hr />
+<h2>SOP 步骤三：决策执行——四象限分配预算</h2>
+<p>拿到数据后，按以下象限做预算决策：</p>
+<h3>象限 1：高能跑 + 高能卖（双高）</h3>
+<ul>
+<li>特征：完播率 &gt;50%，CTR &gt;1.5%，CVR &gt;3%，ROAS &gt;2</li>
+<li>决策：加码放量，测试更多相似变体</li>
+</ul>
+<h3>象限 2：高能跑 + 低能卖（跑赢卖差）</h3>
+<ul>
+<li>特征：完播率高，CTR 高，但转化少</li>
+<li>决策：检查落地页匹配度；若落地页无问题，缩小预算或暂停</li>
+<li>注意：这类素材容易误导新人追加预算，需要警惕</li>
+</ul>
+<h3>象限 3：低能跑 + 高能卖（跑差卖好）</h3>
+<ul>
+<li>特征：数据平淡但订单稳定，7 日 ROAS 持续上升</li>
+<li>决策：优化开头钩子，测试不同封面图，不建议直接暂停</li>
+</ul>
+<h3>象限 4：低能跑 + 低能卖（双低）</h3>
+<ul>
+<li>特征：各项指标均低于均值</li>
+<li>决策：直接暂停，节省预算</li>
+</ul>
+<hr />
+<h2>补充说明：时间窗口很重要</h2>
+<p>素材表现会随投放时长变化：</p>
+<ul>
+<li><strong>第 1-3 天</strong>：平台在探索人群，数据波动大，不建议此时下结论</li>
+<li><strong>第 4-7 天</strong>：模型初步收敛，可以开始参考复盘</li>
+<li><strong>第 8-14 天</strong>：判断主力素材是否值得持续投入</li>
+</ul>
+<p>如果某素材前 3 天数据惨淡但第 4 天突然起量，可能说明素材在特定人群中有效，可以多观察 2-3 天再决定。</p>
+<hr />
+<h2>快速检查清单</h2>
+<p>在每次复盘结束时，用这个清单过一遍：</p>
+<ul>
+<li>[ ] 数据周期是否统一（3-7 天）？</li>
+<li>[ ] 是否至少对比 3 个素材？</li>
+<li>[ ] 能跑指标（完播率、CTR）和能卖指标（CVR、ROAS）是否都采集了？</li>
+<li>[ ] 是否排除了落地页因素干扰？</li>
+<li>[ ] 是否判断了当前素材处于哪个象限？</li>
+<li>[ ] 预算调整决策是否记录在案？</li>
+</ul>
+<p>完成以上步骤，你的素材复盘就有了清晰的行动依据，不用再凭感觉调预算。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Background Problem</h2>
+<p>Many marketing teams encounter this confusion: Creative A has 80% video completion rate and 2.3% CTR, with impressive metrics; Creative B only has 35% completion rate and 0.8% CTR, looking ordinary. But after two weeks, Creative A generated zero conversions while Creative B contributed 60% of orders.</p>
+<p>This is the difference between "runnable" and "convertible."</p>
+<p>This article outlines a review SOP to help you identify issues and adjust budget allocation promptly during the creative lifecycle.</p>
+<hr />
+<h2>SOP Step 1: Data Collection — List These 6 Core Metrics</h2>
+<p>Before reviewing, confirm your data scope. Export from the ads manager using a unified time period (3-7 days post-launch recommended to avoid cold start fluctuations).</p>
+<p>Metrics to collect:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Video completion rate</td>
+<td>Judge if creative is "captivating"</td>
+</tr>
+<tr>
+<td>CTR (Click-through rate)</td>
+<td>Judge if creative is "compelling"</td>
+</tr>
+<tr>
+<td>CPM</td>
+<td>Judge platform's initial rating of creative</td>
+</tr>
+<tr>
+<td>CPC (Cost per click)</td>
+<td>Judge traffic quality</td>
+</tr>
+<tr>
+<td>Conversion events (Add to cart/Checkout)</td>
+<td>Judge if creative "converts"</td>
+</tr>
+<tr>
+<td>ROAS / CPA</td>
+<td>Judge final ROI</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tip</strong>: Compare at least 3 similar creatives horizontally. Single creative data has no reference value.</p>
+<hr />
+<h2>SOP Step 2: Distinguishing Features — Runnable ≠ Convertible</h2>
+<h3>Typical Features of "Runnable" Creatives</h3>
+<ul>
+<li>Strong visual impact or suspense in first 3 seconds</li>
+<li>Large subtitles, fast-paced music</li>
+<li>Prominent CTA text (Click, Download, Shop Now, etc.)</li>
+<li>High completion rate, low CPM</li>
+<li>But sparse conversion events, erratic CPA</li>
+</ul>
+<p>These creatives excel at "click-baiting" — users are hooked in but find the product mismatch, then bounce immediately.</p>
+<h3>Typical Features of "Convertible" Creatives</h3>
+<ul>
+<li>Opening may not be eye-catching, but product benefits are clear</li>
+<li>Real usage scenarios or user testimonials</li>
+<li>CTA matches landing page content</li>
+<li>CTR may be lower, but conversion rate (CVR) is stable</li>
+<li>7-day ROAS outperforms 3-day data (indicating normal decision cycle)</li>
+</ul>
+<p><strong>Key Logic</strong>: </p>
+<blockquote>
+<p>High completion + high CTR, but high CPA → Runnable but not convertible<br />
+Medium completion, medium CTR, but stable CVR → Has convertible potential</p>
+</blockquote>
+<hr />
+<h2>SOP Step 3: Decision Execution — Four-Quadrant Budget Allocation</h2>
+<p>After gathering data, make budget decisions using this quadrant framework:</p>
+<h3>Quadrant 1: High Runnable + High Convertible (Double High)</h3>
+<ul>
+<li>Features: Completion &gt;50%, CTR &gt;1.5%, CVR &gt;3%, ROAS &gt;2</li>
+<li>Decision: Scale up, test more similar variations</li>
+</ul>
+<h3>Quadrant 2: High Runnable + Low Convertible (Run Win, Sales Lose)</h3>
+<ul>
+<li>Features: High completion, high CTR, but few conversions</li>
+<li>Decision: Check landing page alignment; if landing page is fine, reduce budget or pause</li>
+<li>Note: These creatives easily mislead newcomers into adding budget — stay alert</li>
+</ul>
+<h3>Quadrant 3: Low Runnable + High Convertible (Run Lose, Sales Win)</h3>
+<ul>
+<li>Features: Flat data but stable orders, 7-day ROAS continuously rising</li>
+<li>Decision: Optimize opening hook, test different thumbnails, don't pause directly</li>
+</ul>
+<h3>Quadrant 4: Low Runnable + Low Convertible (Double Low)</h3>
+<ul>
+<li>Features: All metrics below average</li>
+<li>Decision: Pause directly, conserve budget</li>
+</ul>
+<hr />
+<h2>Additional Note: Timing Window Matters</h2>
+<p>Creative performance changes over time:</p>
+<ul>
+<li><strong>Days 1-3</strong>: Platform exploring audience, data volatile, avoid drawing conclusions</li>
+<li><strong>Days 4-7</strong>: Model initially converged, review can begin</li>
+<li><strong>Days 8-14</strong>: Judge if main creatives warrant continued investment</li>
+</ul>
+<p>If a creative starts poorly but suddenly picks up on Day 4, it may be effective in specific audiences — observe 2-3 more days before deciding.</p>
+<hr />
+<h2>Quick Checklist</h2>
+<p>At the end of each review, go through this checklist:</p>
+<ul>
+<li>[ ] Is the data period unified (3-7 days)?</li>
+<li>[ ] Are at least 3 creatives compared?</li>
+<li>[ ] Are both runnable metrics (completion, CTR) and convertible metrics (CVR, ROAS) collected?</li>
+<li>[ ] Has landing page factor interference been ruled out?</li>
+<li>[ ] Has the current creative's quadrant been determined?</li>
+<li>[ ] Is the budget adjustment decision documented?</li>
+</ul>
+<p>Completing these steps gives your creative review clear action guidance — no more budget adjustments based on gut feeling.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
