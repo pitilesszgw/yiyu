@@ -19,7 +19,7 @@ This project is a Flask application that can be exported as static assets for Cl
    npx wrangler deploy
    ```
 
-The `wrangler.toml` file configures `dist` as the Workers static assets directory.
+The `wrangler.jsonc` file configures `dist` as the Workers static assets directory.
 
 ### Option 2: Heroku / Render (PaaS)
 1. **Login** to your platform.
