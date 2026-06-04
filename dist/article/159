@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">AI广告文案如何避免同质化？这6个问题帮你找到答案</span>
+                    <span x-show="lang === 'en'" x-cloak>How to Avoid AI Ad Copy Homogenization? 6 Real Business Questions Answered</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-06-05</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="159" data-base-views="73">73</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu9719/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>为什么你的AI广告文案越来越像别人家的？</h2>
+<p>某工具类App的投放运营最近很苦恼：团队用AI批量生成广告素材，效率确实提上来了，但CTR（点击率）连续三周下滑。仔细一看文案——“解锁高效新方式”“让生活更便捷”——几乎和竞品一模一样。</p>
+<p>这不是个例。随着Claude、ChatGPT、Kimi等AI写作工具在出海营销圈普及，AI生成广告文案的同质化问题正在侵蚀团队的增长效率。</p>
+<hr />
+<h2>Q1：AI文案同质化真的会影响广告效果吗？</h2>
+<p><strong>会，而且比你想象的更直接。</strong></p>
+<p>Meta、TikTok、Google等平台的广告系统会记录用户的广告互动数据。当用户反复看到结构相似、卖点相近的文案，即使没有主动点击，系统也会判定为“低兴趣信号”，逐渐降低该素材的展示频次。</p>
+<p>实际运营中，同质化文案最直接的后果是：</p>
+<ul>
+<li>CPM（千次展示成本）上升，因为系统需要更多展示才能找到转化用户</li>
+<li>相同预算下的获客量下降</li>
+<li>素材生命周期缩短，原本能跑两周的素材可能一周就废掉</li>
+</ul>
+<p><strong>判断</strong>：如果你发现某个品类的AI文案点击率普遍低于人工文案2%-5%，同质化很可能是主因。</p>
+<hr />
+<h2>Q2：为什么AI总爱生成“万能套话”？</h2>
+<p>AI文案同质化的根源在于<strong>训练数据的平均化</strong>。</p>
+<p>大多数AI工具在广告场景下的训练数据来源是公开互联网——大量中庸、通用、经过“人工优化”的文案。这类内容“安全”但缺乏记忆点。AI学到的不是“什么是好广告”，而是“大多数广告长什么样”。</p>
+<p>另一个原因在于用户的指令习惯。很多人习惯用模糊指令，比如“帮我写一个卖鞋子的广告文案”，AI自然输出最常见的产品卖点组合。</p>
+<p><strong>判断</strong>：AI产出越“顺滑”、越不需要修改，说明它越可能在输出“最大公约数”式文案。</p>
+<hr />
+<h2>Q3：如何写AI指令才能避免套话？</h2>
+<p>核心原则是<strong>给AI划边界，而不是给模板</strong>。</p>
+<p>❌ 弱指令示例：</p>
+<blockquote>
+<p>"帮我写一个电商独立站的Facebook广告文案，突出产品质量"</p>
+</blockquote>
+<p>✅ 强指令示例：</p>
+<blockquote>
+<p>"为一款客单价89美元的户外折叠椅写5条Facebook广告文案。要求：<br />
+1. 切入角度必须是"帐篷露营场景下的收纳痛点"，不要写"舒适""品质"等泛词<br />
+2. 每条文案开头必须不同——分别用数字、问题、场景描述、反常识断言<br />
+3. 禁用词汇：便捷、高效、优质、轻松<br />
+4. 目标用户是美国25-35岁背包旅行者，语境偏口语化"</p>
+</blockquote>
+<p><strong>判断</strong>：指令越具体，AI的输出越难“偷懒”走通用路径。给限制词比给方向词更有效。</p>
+<hr />
+<h2>Q4：品牌差异化如何在AI文案中体现？</h2>
+<p>大多数AI工具不了解你的品牌“人设”。</p>
+<p>建议在团队内部维护一份<strong>品牌语言手册</strong>，内容压缩到一页，包含：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>品牌调性</td>
+<td>实用主义、轻幽默、不煽情</td>
+</tr>
+<tr>
+<td>禁用词汇</td>
+<td>极致、革命性、首创</td>
+</tr>
+<tr>
+<td>固定句式</td>
+<td>核心卖点前置，用数字量化</td>
+</tr>
+<tr>
+<td>目标用户画像</td>
+<td>30岁出头、美国二线城市、有运动习惯</td>
+</tr>
+</tbody>
+</table>
+<p>将这份手册作为AI指令的前置背景输入。某跨境家居团队实测，加上品牌手册后，AI文案与人工文案的相似度从78%下降到41%。</p>
+<p><strong>判断</strong>：AI文案差异化的本质是把品牌差异化规则显性化、数字化，再喂给AI。</p>
+<hr />
+<h2>Q5：多账户、多地区投放时如何防止AI生成重复内容？</h2>
+<p>出海团队常见的场景是：一个产品同时在Meta、Google、TikTok三平台投放，每个平台3-5个广告账户，每个账户跑2-3套素材。</p>
+<p>AI批量生成时，稍不注意就会产出大量“近义词替换”型重复文案——比如“Get Started Today”和“Start Your Journey Today”，系统能识别，平台风控也可能判定为低质量素材堆砌。</p>
+<p><strong>实操建议</strong>：</p>
+<ol>
+<li><strong>建立素材指纹库</strong>：用文案哈希值或简单的人工抽检，记录已提交过的核心句式</li>
+<li><strong>差异化触发机制</strong>：为不同平台预设不同的切入角度——比如Facebook侧重社交证明、TikTok侧重情绪共鸣、Google搜索广告侧重产品参数</li>
+<li><strong>批次管理</strong>：不要让AI一次性生成全部素材，按批次、间隔生成，让每次指令的“上下文”有所区别</li>
+</ol>
+<p><strong>判断</strong>：多账户防重的本质是流程管理，而非依赖AI的“自觉”创新。</p>
+<hr />
+<h2>Q6：AI文案同质化严重，应该换工具还是改策略？</h2>
+<p><strong>换工具是次优选择。</strong></p>
+<p>主流AI工具（Claude、ChatGPT、Kimi、文心一言等）在文案生成能力上差异有限，核心差距在于指令遵循度和上下文窗口大小。同质化问题不会因为切换工具而自动消失。</p>
+<p><strong>更有效的做法是改变“人机协作”的分工</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>环节</th>
+<th>AI角色</th>
+<th>人工角色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>卖点挖掘</td>
+<td>生成卖点候选清单</td>
+<td>筛选有差异化的2-3个</td>
+</tr>
+<tr>
+<td>初稿生成</td>
+<td>批量输出多版本</td>
+<td>人工标记独特角度</td>
+</tr>
+<tr>
+<td>改稿优化</td>
+<td>提供改写选项</td>
+<td>最终判断并定稿</td>
+</tr>
+<tr>
+<td>素材风控</td>
+<td>相似度检测</td>
+<td>决策是否提交</td>
+</tr>
+</tbody>
+</table>
+<p>某游戏出海团队将这个流程落地后，单个素材的AI依赖度从85%降到40%，但产出效率仅下降15%，而素材平均生命周期延长了一倍。</p>
+<p><strong>判断</strong>：AI是文案生产的加速器，不是创意决策的替代者。把AI用在“产出量”，把判断留在“产出质量”。</p>
+<hr />
+<h2>小结</h2>
+<p>AI广告文案同质化的本质是<strong>AI在执行“平均化”任务</strong>，而广告生效的核心是<strong>差异化记忆</strong>。解决路径不是找更聪明的AI，而是：</p>
+<ol>
+<li>用具体限制替代模糊方向</li>
+<li>把品牌差异化规则显性化</li>
+<li>用流程管理防止重复</li>
+<li>在人机协作中保留人工判断节点</li>
+</ol>
+<p>如果你正在被AI文案同质化困扰，<strong>先改指令，后考虑换工具</strong>。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Why Does Your AI Ad Copy Look Like Everyone Else's?</h2>
+<p>The performance marketing team behind a utility app has a recurring headache: AI-generated ad creatives have boosted output efficiency, but CTR has been declining for three consecutive weeks. Upon closer inspection, the copy reads almost identically to competitors—"Unlock efficient new ways," "Make life more convenient."</p>
+<p>This isn't an isolated case. As AI writing tools like Claude, ChatGPT, and Kimi have proliferated in overseas marketing, the homogenization of AI-generated ad copy is eroding team growth efficiency.</p>
+<hr />
+<h2>Q1: Does AI Copy Homogenization Actually Impact Ad Performance?</h2>
+<p><strong>Yes, and more directly than you might think.</strong></p>
+<p>Ad systems on Meta, TikTok, and Google track user interaction data. When users repeatedly see structurally similar copy with comparable selling points—even without clicking—the system interprets this as a "low-interest signal" and gradually reduces impression frequency for that creative.</p>
+<p>In practical operations, the most direct consequences of homogenized copy include:</p>
+<ul>
+<li>Rising CPM (Cost Per Mille) as the system needs more impressions to find converting users</li>
+<li>Declining acquisitions under the same budget</li>
+<li>Shortened creative lifespan—what could run for two weeks might die within one</li>
+</ul>
+<p><strong>Verdict</strong>: If AI-generated copy in a specific category consistently underperforms human-written copy by 2%-5% in CTR, homogenization is likely the culprit.</p>
+<hr />
+<h2>Q2: Why Does AI Always Produce "Universal Clichés"?</h2>
+<p>The root cause lies in the <strong>averaging of training data</strong>.</p>
+<p>Most AI tools source training data for advertising scenarios from the public internet—vast amounts of mediocre, generic, "human-optimized" copy. This content is "safe" but forgettable. AI hasn't learned "what makes good advertising" but rather "what most ads look like."</p>
+<p>Another factor is user prompting habits. Many people use vague instructions like "Write an ad for shoes," prompting AI to output the most common combination of selling points.</p>
+<p><strong>Verdict</strong>: The smoother the AI output requires no revisions, the more likely it's producing "greatest common divisor" copy.</p>
+<hr />
+<h2>Q3: How to Write Prompts That Avoid Clichés?</h2>
+<p>The core principle is <strong>setting boundaries for AI, not providing templates</strong>.</p>
+<p>❌ Weak prompt example:</p>
+<blockquote>
+<p>"Help me write a Facebook ad copy for an e-commerce store, highlighting product quality."</p>
+</blockquote>
+<p>✅ Strong prompt example:</p>
+<blockquote>
+<p>"Write 5 Facebook ad copies for a $89 outdoor folding chair. Requirements:<br />
+1. Angle must focus on "storage pain points in tent camping scenarios"—avoid generic words like "comfort" or "quality"<br />
+2. Each copy's opening must differ: numbers, questions, scene descriptions, counter-intuitive assertions<br />
+3. Forbidden words: convenient, efficient, premium, effortless<br />
+4. Target: 25-35 year-old American backpack travelers, conversational tone"</p>
+</blockquote>
+<p><strong>Verdict</strong>: The more specific the prompt, the harder it is for AI to "take shortcuts" via generic pathways. Restrictive keywords work better than directional keywords.</p>
+<hr />
+<h2>Q4: How to Incorporate Brand Differentiation into AI Copy?</h2>
+<p>Most AI tools don't know your brand's "persona."</p>
+<p>Maintain an internal <strong>Brand Language Guide</strong> (compressed to one page), including:</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Brand Tone</td>
+<td>Practical, lightly humorous, non-sentimental</td>
+</tr>
+<tr>
+<td>Forbidden Words</td>
+<td>Ultimate, revolutionary, pioneering</td>
+</tr>
+<tr>
+<td>Fixed Structures</td>
+<td>Core selling point first, quantified with numbers</td>
+</tr>
+<tr>
+<td>Target User Profile</td>
+<td>Early 30s, secondary U.S. cities, fitness-oriented</td>
+</tr>
+</tbody>
+</table>
+<p>Input this guide as background context in AI prompts. One cross-border home goods team measured AI copy similarity dropping from 78% to 41% after implementing the brand guide.</p>
+<p><strong>Verdict</strong>: The essence of AI copy differentiation is externalizing and digitizing brand differentiation rules, then feeding them to AI.</p>
+<hr />
+<h2>Q5: How to Prevent AI from Generating Duplicate Content Across Multiple Accounts?</h2>
+<p>A common scenario for overseas teams: one product running simultaneously on Meta, Google, and TikTok, 3-5 ad accounts per platform, 2-3 ad sets per account.</p>
+<p>When AI generates in bulk, it's easy to produce "synonym-substituted" duplicates—"Get Started Today" vs. "Start Your Journey Today"—that systems recognize and platforms may flag as low-quality creative stacking.</p>
+<p><strong>Practical recommendations</strong>:</p>
+<ol>
+<li><strong>Build creative fingerprinting</strong>: Use hash values or manual spot-checks to track submitted core phrases</li>
+<li><strong>Differentiation triggers</strong>: Pre-set different angles per platform—Facebook for social proof, TikTok for emotional resonance, Google Search for product specifications</li>
+<li><strong>Batch management</strong>: Don't let AI generate all creatives at once; generate by batches with intervals, creating varied "context" for each prompt</li>
+</ol>
+<p><strong>Verdict</strong>: Multi-account deduplication is fundamentally about process management, not relying on AI's "voluntary" innovation.</p>
+<hr />
+<h2>Q6: With Severe AI Copy Homogenization, Should I Switch Tools or Change Strategy?</h2>
+<p><strong>Switching tools is the suboptimal choice.</strong></p>
+<p>Mainstream AI tools (Claude, ChatGPT, Kimi, ERNIE Bot, etc.) have limited differences in copywriting capability—the core gaps lie in instruction-following accuracy and context window size. Homogenization won't automatically disappear by switching tools.</p>
+<p><strong>A more effective approach is restructuring the "human-AI collaboration" division</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>AI Role</th>
+<th>Human Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Insight Mining</td>
+<td>Generate candidate selling points</td>
+<td>Filter 2-3 differentiated ones</td>
+</tr>
+<tr>
+<td>Draft Generation</td>
+<td>Batch output multiple versions</td>
+<td>Manually tag unique angles</td>
+</tr>
+<tr>
+<td>Revision</td>
+<td>Provide rewriting options</td>
+<td>Final decision and approval</td>
+</tr>
+<tr>
+<td>Creative QA</td>
+<td>Similarity detection</td>
+<td>Approve or reject</td>
+</tr>
+</tbody>
+</table>
+<p>One gaming overseas team implemented this workflow, reducing AI dependency per creative from 85% to 40%, while output efficiency dropped only 15% and average creative lifespan doubled.</p>
+<p><strong>Verdict</strong>: AI accelerates文案 production; it doesn't replace creative judgment. Let AI handle "output volume," keep humans responsible for "output quality."</p>
+<hr />
+<h2>Summary</h2>
+<p>AI ad copy homogenization stems from AI executing "averaging" tasks, while advertising effectiveness hinges on "differentiated recall." The solution isn't finding smarter AI, but:</p>
+<ol>
+<li>Replace vague directions with specific restrictions</li>
+<li>Externalize brand differentiation rules</li>
+<li>Use process management to prevent duplication</li>
+<li>Preserve human judgment nodes in human-AI collaboration</li>
+</ol>
+<p>If you're struggling with AI copy homogenization, <strong>fix the prompt first, consider switching tools second</strong>.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>

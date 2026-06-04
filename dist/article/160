@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">SOP手册：企业级海外广告资金管理运营指标全流程</span>
+                    <span x-show="lang === 'en'" x-cloak>Enterprise Overseas Ad Fund Management SOP: Operations Metrics &amp; Execution</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-06-05</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="160" data-base-views="42">42</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu7776/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>前置准备：明确资金管理指标体系</h2>
+<p>在执行资金管理SOP之前，团队需统一以下核心指标的定义与计算口径：</p>
+<table>
+<thead>
+<tr>
+<th>指标名称</th>
+<th>计算公式</th>
+<th>健康阈值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>日均消耗率</td>
+<td>当日消耗 ÷ 账户余额</td>
+<td>视预算规模而定</td>
+</tr>
+<tr>
+<td>充值及时率</td>
+<td>实际充值时间 ÷ 计划充值时间</td>
+<td>≥95%</td>
+</tr>
+<tr>
+<td>账户余额预警率</td>
+<td>触发预警次数 ÷ 总运营天数</td>
+<td>≤15%</td>
+</tr>
+<tr>
+<td>对账差异率</td>
+<td>对账差异金额 ÷ 总消耗金额</td>
+<td>≤0.5%</td>
+</tr>
+</tbody>
+</table>
+<p>建议将上述指标导入内部看板，每日晨会同步关键数据。</p>
+<hr />
+<h2>Step 1 账户配置与预算分配</h2>
+<p><strong>1.1 按平台建立独立账户结构</strong></p>
+<ul>
+<li>Meta Ads Manager、TikTok Ads、Google Ads 等主流平台建议独立开户</li>
+<li>每个账户设置明确的日预算上限，建议为预期日消耗的 1.2-1.5 倍</li>
+</ul>
+<p><strong>1.2 配置充值渠道与付款方式</strong></p>
+<ul>
+<li>企业账户优先使用对公转账或企业信用卡</li>
+<li>第三方托管账户（如以渔平台）可实现多账户余额统一查看</li>
+</ul>
+<p><strong>1.3 设置账户权限分级</strong></p>
+<ul>
+<li>管理员：拥有充值、修改预算权限</li>
+<li>运营人员：仅可查看消耗数据，无充值权限</li>
+<li>财务人员：仅可查看对账单，无广告操作权限</li>
+</ul>
+<blockquote>
+<p>权限分离是资金风控的基础，可避免单人操作失误导致的资金风险。</p>
+</blockquote>
+<hr />
+<h2>Step 2 日常资金监控</h2>
+<p><strong>2.1 每日必查清单</strong></p>
+<ul>
+<li>[ ] 各平台账户余额与当日消耗</li>
+<li>[ ] 消耗速度是否在正常区间</li>
+<li>[ ] 是否有异常大额消耗</li>
+<li>[ ] 今日是否有计划充值</li>
+</ul>
+<p><strong>2.2 消耗速度异常判断</strong></p>
+<p>当单小时消耗超过日均消耗的 1.5 倍时，需立即排查：</p>
+<ol>
+<li>是否误触高预算计划</li>
+<li>是否被恶意点击</li>
+<li>是否是 Campaign 素材爆量</li>
+</ol>
+<p><strong>2.3 余额健康度评估</strong></p>
+<p>建议每日评估各账户的「余额可支撑天数」：</p>
+<pre><code>可支撑天数 = 当前余额 ÷ 过去7日平均日消耗
+</code></pre>
+<ul>
+<li>可支撑天数 ≤ 2 天：立即安排充值</li>
+<li>可支撑天数 3-5 天：今日内安排充值</li>
+<li>可支撑天数 &gt; 5 天：正常运营</li>
+</ul>
+<hr />
+<h2>Step 3 充值管理与余额预警</h2>
+<p><strong>3.1 充值审批流程</strong></p>
+<ol>
+<li>运营人员提交充值申请（注明平台、账户、金额、原因）</li>
+<li>财务人员复核预算是否在月度消耗计划内</li>
+<li>管理员执行充值操作</li>
+<li>完成后记录充值凭证与到账时间</li>
+</ol>
+<p><strong>3.2 余额预警机制配置</strong></p>
+<table>
+<thead>
+<tr>
+<th>预警等级</th>
+<th>触发条件</th>
+<th>响应时限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>红色预警</td>
+<td>余额 &lt; 预计3天消耗量</td>
+<td>2小时内响应</td>
+</tr>
+<tr>
+<td>橙色预警</td>
+<td>余额 &lt; 预计5天消耗量</td>
+<td>当日内响应</td>
+</tr>
+<tr>
+<td>黄色预警</td>
+<td>余额 &lt; 预计7天消耗量</td>
+<td>48小时内响应</td>
+</tr>
+</tbody>
+</table>
+<p><strong>3.3 充值渠道选择</strong></p>
+<ul>
+<li>对公转账：适合大额充值，到账时间 1-3 个工作日</li>
+<li>在线支付：适合小额紧急充值，有手续费</li>
+<li>第三方托管：支持多账户余额共享，适合多账户运营团队</li>
+</ul>
+<hr />
+<h2>Step 4 财务对账流程</h2>
+<p><strong>4.1 周度对账要点</strong></p>
+<ol>
+<li><strong>平台账单下载</strong>：从各广告平台导出本周消耗报告</li>
+<li><strong>账户流水核对</strong>：对比充值记录与平台到账金额</li>
+<li><strong>消耗数据校验</strong>：检查平台报告与内部记录的消耗一致性</li>
+<li><strong>异常差异标注</strong>：发现差异需追查原因并记录</li>
+</ol>
+<p><strong>4.2 月度对账标准动作</strong></p>
+<ul>
+<li>完成月度消耗汇总，与预算对比</li>
+<li>分析各平台消耗占比变化</li>
+<li>评估充值及时率与余额预警触发频率</li>
+<li>输出月度资金使用效率报告</li>
+</ul>
+<p><strong>4.3 对账差异处理</strong></p>
+<p>若发现对账差异，按以下步骤排查：</p>
+<ol>
+<li>核查充值到账是否存在延迟</li>
+<li>检查是否有未消耗余额退回</li>
+<li>联系平台客服核实账单</li>
+<li>留存沟通记录，更新内部台账</li>
+</ol>
+<hr />
+<h2>Step 5 风控与优化</h2>
+<p><strong>5.1 资金风险识别清单</strong></p>
+<ul>
+<li>[ ] 单账户单日消耗超过预算上限 200%</li>
+<li>[ ] 出现非工作时段的大额消耗</li>
+<li>[ ] 同一 IP 短时间内多次充值</li>
+<li>[ ] 账户余额长时间未变动但突然清零</li>
+</ul>
+<p><strong>5.2 优化方向建议</strong></p>
+<ul>
+<li>推行「小额多充」策略，降低单次充值风险</li>
+<li>建立充值预算与消耗计划的月度对齐机制</li>
+<li>优先使用支持实时余额监控的托管平台</li>
+</ul>
+<hr />
+<h2>附：常见问题速查</h2>
+<p><strong>Q：充值后余额未及时更新怎么办？</strong><br />
+部分平台存在延迟，建议充值后保存凭证，30分钟内未到账可联系平台客服。</p>
+<p><strong>Q：账户余额充足但广告未跑出去？</strong><br />
+检查是否触发平台审核、账户余额是否为预授权余额、投放资质是否有效。</p>
+<p><strong>Q：如何判断是否需要增加充值预算？</strong><br />
+当可支撑天数持续低于 5 天，且拓量计划明确时，建议提升充值预算并提前与财务报备。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Pre-Setup: Define Your Fund Management Metrics</h2>
+<p>Before executing this SOP, your team must align on the following core metrics:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Formula</th>
+<th>Healthy Threshold</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Daily Spend Rate</td>
+<td>Daily Spend ÷ Account Balance</td>
+<td>Varies by budget size</td>
+</tr>
+<tr>
+<td>Top-up Timeliness</td>
+<td>Actual Top-up Time ÷ Planned Top-up Time</td>
+<td>≥95%</td>
+</tr>
+<tr>
+<td>Balance Alert Rate</td>
+<td>Alert Triggers ÷ Operating Days</td>
+<td>≤15%</td>
+</tr>
+<tr>
+<td>Reconciliation Variance</td>
+<td>Variance Amount ÷ Total Spend</td>
+<td>≤0.5%</td>
+</tr>
+</tbody>
+</table>
+<p>Import these metrics into your internal dashboard and review key data during daily stand-ups.</p>
+<hr />
+<h2>Step 1 Account Configuration &amp; Budget Allocation</h2>
+<p><strong>1.1 Establish Independent Account Structures by Platform</strong></p>
+<ul>
+<li>Set up separate accounts for Meta Ads Manager, TikTok Ads, Google Ads, etc.</li>
+<li>Define a daily budget cap for each account at 1.2-1.5x the expected daily spend</li>
+</ul>
+<p><strong>1.2 Configure Top-up Channels &amp; Payment Methods</strong></p>
+<ul>
+<li>Corporate accounts should prioritize bank transfers or corporate credit cards</li>
+<li>Third-party escrow accounts (e.g., Yiyu platform) enable unified balance visibility across multiple accounts</li>
+</ul>
+<p><strong>1.3 Implement Permission Hierarchy</strong></p>
+<ul>
+<li><strong>Admin</strong>: Full top-up and budget modification rights</li>
+<li><strong>Operations</strong>: Read-only access to spend data, no top-up rights</li>
+<li><strong>Finance</strong>: Read-only access to reconciliation reports, no ad operation rights</li>
+</ul>
+<blockquote>
+<p>Permission separation is fundamental to fund risk control and prevents errors caused by single-person operations.</p>
+</blockquote>
+<hr />
+<h2>Step 2 Daily Fund Monitoring</h2>
+<p><strong>2.1 Daily Checklist</strong></p>
+<ul>
+<li>[ ] Platform account balances and today's spend</li>
+<li>[ ] Whether spend velocity is within normal range</li>
+<li>[ ] Any abnormal large spend transactions</li>
+<li>[ ] Planned top-ups for today</li>
+</ul>
+<p><strong>2.2 Abnormal Spend Velocity Detection</strong></p>
+<p>When hourly spend exceeds 1.5x the daily average, investigate immediately:</p>
+<ol>
+<li>Any high-budget campaigns accidentally activated?</li>
+<li>Possible malicious clicking?</li>
+<li>Campaign/creative breakout?</li>
+</ol>
+<p><strong>2.3 Balance Health Assessment</strong></p>
+<p>Assess "Days of Spend Remaining" daily:</p>
+<pre><code>Days Remaining = Current Balance ÷ 7-Day Average Daily Spend
+</code></pre>
+<ul>
+<li>Days Remaining ≤ 2: Immediate top-up required</li>
+<li>Days Remaining 3-5: Top-up within today</li>
+<li>Days Remaining &gt; 5: Normal operations</li>
+</ul>
+<hr />
+<h2>Step 3 Top-up Management &amp; Balance Alerts</h2>
+<p><strong>3.1 Top-up Approval Workflow</strong></p>
+<ol>
+<li>Operations submits top-up request (platform, account, amount, reason)</li>
+<li>Finance verifies budget alignment with monthly spend plan</li>
+<li>Admin executes top-up</li>
+<li>Record top-up voucher and confirmation time</li>
+</ol>
+<p><strong>3.2 Balance Alert Configuration</strong></p>
+<table>
+<thead>
+<tr>
+<th>Alert Level</th>
+<th>Trigger Condition</th>
+<th>Response Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Red Alert</td>
+<td>Balance &lt; 3 days expected spend</td>
+<td>Within 2 hours</td>
+</tr>
+<tr>
+<td>Orange Alert</td>
+<td>Balance &lt; 5 days expected spend</td>
+<td>Within same day</td>
+</tr>
+<tr>
+<td>Yellow Alert</td>
+<td>Balance &lt; 7 days expected spend</td>
+<td>Within 48 hours</td>
+</tr>
+</tbody>
+</table>
+<p><strong>3.3 Top-up Channel Selection</strong></p>
+<ul>
+<li>Bank Transfer: Suitable for large amounts, 1-3 business days processing</li>
+<li>Online Payment: Suitable for urgent small amounts, transaction fees apply</li>
+<li>Third-party Escrow: Supports shared balance across multiple accounts, ideal for multi-account teams</li>
+</ul>
+<hr />
+<h2>Step 4 Financial Reconciliation Process</h2>
+<p><strong>4.1 Weekly Reconciliation Checklist</strong></p>
+<ol>
+<li><strong>Download platform invoices</strong>: Export weekly spend reports from each ad platform</li>
+<li><strong>Verify account transactions</strong>: Compare top-up records against platform confirmations</li>
+<li><strong>Validate spend data</strong>: Check consistency between platform reports and internal records</li>
+<li><strong>Document anomalies</strong>: Investigate and log any discrepancies found</li>
+</ol>
+<p><strong>4.2 Monthly Reconciliation Standard Actions</strong></p>
+<ul>
+<li>Complete monthly spend summary and compare against budget</li>
+<li>Analyze platform spend distribution changes</li>
+<li>Evaluate top-up timeliness and balance alert frequency</li>
+<li>Generate monthly fund utilization efficiency report</li>
+</ul>
+<p><strong>4.3 Handling Reconciliation Variance</strong></p>
+<p>If discrepancies are found, investigate in this order:</p>
+<ol>
+<li>Check for top-up processing delays</li>
+<li>Verify any unspent balance returns</li>
+<li>Contact platform support to confirm billing</li>
+<li>Preserve communication records and update internal ledgers</li>
+</ol>
+<hr />
+<h2>Step 5 Risk Control &amp; Optimization</h2>
+<p><strong>5.1 Risk Identification Checklist</strong></p>
+<ul>
+<li>[ ] Single account daily spend exceeds budget cap by 200%</li>
+<li>[ ] Large spend occurring outside business hours</li>
+<li>[ ] Multiple top-ups from the same IP in a short period</li>
+<li>[ ] Account balance suddenly drops to zero with no activity</li>
+</ul>
+<p><strong>5.2 Optimization Recommendations</strong></p>
+<ul>
+<li>Adopt "small frequent top-up" strategy to reduce single-transaction risk</li>
+<li>Establish monthly alignment between top-up budgets and spend plans</li>
+<li>Prioritize escrow platforms that offer real-time balance monitoring</li>
+</ul>
+<hr />
+<h2>Appendix: Quick FAQ</h2>
+<p><strong>Q: What if balance doesn't update after top-up?</strong><br />
+Some platforms have processing delays. Keep your voucher and contact platform support if balance hasn't updated within 30 minutes.</p>
+<p><strong>Q: Why aren't ads running despite sufficient balance?</strong><br />
+Check for platform review holds, whether the balance is pre-authorized funds, and whether your ad credentials remain valid.</p>
+<p><strong>Q: How do I know if I need to increase my top-up budget?</strong><br />
+When days of spend remaining stays below 5 and you have confirmed scaling plans, increase your top-up budget and notify finance in advance.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
