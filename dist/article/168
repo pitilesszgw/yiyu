@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">出海广告合规巡检怎么做？运营必读的5步操作手册</span>
+                    <span x-show="lang === 'en'" x-cloak>Overseas Advertising Compliance Audit SOP: A 5-Step Guide for Operations Teams</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-06-08</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="168" data-base-views="17">17</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu2446/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>为什么要做合规巡检</h2>
+<p>出海广告投放中，账户被封、素材被拒是运营团队最头疼的问题。一次大规模封号可能导致当天的投放计划全部中断，损失难以估量。很多团队在出问题后才意识到巡检的重要性，但此时往往已经错过最佳补救时机。</p>
+<p>合规巡检不是“出了问题才检查”，而应该是日常运营的固定动作。建议每个运营同事至少每周完成一次完整巡检，高风险期（如平台政策调整期）可提升至每日巡检。</p>
+<hr />
+<h2>巡检前准备</h2>
+<h3>工具与账号权限</h3>
+<ul>
+<li>确保拥有广告平台管理员或运营角色权限</li>
+<li>准备好巡检记录表（可使用飞书/Notion模板）</li>
+<li>登录账户健康度查看入口（Meta商务中心/TikTok广告后台）</li>
+</ul>
+<h3>确认巡检范围</h3>
+<p>本次巡检覆盖哪些账户？哪些广告系列？建议按以下优先级排序：</p>
+<ol>
+<li>主投账户（消耗最大的前3个）</li>
+<li>新上线的广告系列（上线7天内）</li>
+<li>高风险类目（金融、健康、游戏等敏感品类）</li>
+<li>历史有过违规记录的账户</li>
+</ol>
+<hr />
+<h2>第一步：账户状态检查</h2>
+<h3>1.1 登录账户健康度页面</h3>
+<p>进入广告平台后台，查找“账户质量”“账户状态”或“政策合规”入口。查看是否存在任何警告通知、限制提示或待处理问题。</p>
+<h3>1.2 检查投放状态</h3>
+<ul>
+<li>确认账户是否正常投放</li>
+<li>检查是否有广告系列因预算耗尽而暂停</li>
+<li>核对账户余额是否充足，避免因余额不足导致自动暂停</li>
+</ul>
+<h3>1.3 充值记录核对</h3>
+<p>查看近期充值到账情况，确认充值金额、到账时间是否符合预期。若发现充值未到账或金额异常，立即联系代理或平台客服。</p>
+<blockquote>
+<p><strong>提示</strong>：以渔数媒提供余额预警服务，可设置账户余额低于阈值时自动通知，运营同事无需时刻盯着账户余额。</p>
+</blockquote>
+<hr />
+<h2>第二步：广告素材合规审核</h2>
+<h3>2.1 视觉元素检查</h3>
+<p>对照平台素材政策，逐项检查：</p>
+<ul>
+<li>人物形象：是否有人体暴露、暗示性内容、未成年人类形象</li>
+<li>品牌标识：竞品Logo是否出镜、是否使用名人肖像（未授权）</li>
+<li>文字叠加：字数是否超限、字体是否涉及版权问题</li>
+<li>动画效果：闪烁频率过快、强烈对比色块可能触发违规</li>
+</ul>
+<h3>2.2 平台适配性检查</h3>
+<p>不同平台对素材尺寸、时长、声音要求不同：</p>
+<table>
+<thead>
+<tr>
+<th>平台</th>
+<th>常见问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Meta</td>
+<td>文字占比超过20%、含“限时优惠”类诱导文案</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>开头3秒含品牌Logo、产品实物镜头不足</td>
+</tr>
+<tr>
+<td>Google</td>
+<td>夸大对比前后效果、医疗类声称无科学依据</td>
+</tr>
+</tbody>
+</table>
+<h3>2.3 违规自查清单</h3>
+<p>复制以下清单到巡检记录表，每项逐一确认：</p>
+<ul>
+<li>[ ] 无误导性前后对比图</li>
+<li>[ ] 无绝对化用语（“最佳”“第一”“100%”）</li>
+<li>[ ] 无未核实的功效声明</li>
+<li>[ ] 无暴力、歧视性内容</li>
+<li>[ ] 无侵权音乐或视频片段</li>
+</ul>
+<hr />
+<h2>第三步：文案与落地页审查</h2>
+<h3>3.1 广告文案关键词过滤</h3>
+<p>以下词汇在多数平台属于高风险：</p>
+<ul>
+<li>效果承诺类：“保证瘦X斤”“X天见效”</li>
+<li>价格诱导类：“最低价”“全网最低”</li>
+<li>紧迫感类：“仅剩X个”“错过再无”</li>
+</ul>
+<p>若文案必须使用上述词汇，建议提前咨询平台政策或降低表述强度。</p>
+<h3>3.2 落地页一致性核验</h3>
+<ul>
+<li>落地页内容是否与广告承诺一致？</li>
+<li>落地页是否存在死链或加载缓慢问题？</li>
+<li>隐私政策、退款条款是否完整展示？</li>
+</ul>
+<hr />
+<h2>第四步：违规问题处理</h2>
+<h3>4.1 轻微违规</h3>
+<p>如文案存在轻微不适用语、素材有轻微擦边嫌疑：</p>
+<ol>
+<li>暂停该条广告</li>
+<li>修改后重新提交审核</li>
+<li>记录本次违规原因，避免同类问题重复出现</li>
+</ol>
+<h3>4.2 严重违规</h3>
+<p>如收到平台正式违规通知、账户功能受限：</p>
+<ol>
+<li>截图保存违规通知（重要！）</li>
+<li>在规定时间内提交申诉（如平台支持）</li>
+<li>联系以渔数媒客服获取平台申诉指导</li>
+<li>排查同期投放的其他广告是否存在类似问题</li>
+</ol>
+<h3>4.3 账户被封</h3>
+<p>若账户已被封禁：</p>
+<ol>
+<li>确认封禁原因（查看通知邮件或后台提示）</li>
+<li>准备申诉材料：营业执照、投放资质证明、授权文件等</li>
+<li>通过官方渠道提交申诉（避免找非官方中介，以防二次诈骗）</li>
+<li>在申诉期间，保持其他正常账户的稳定投放</li>
+</ol>
+<hr />
+<h2>第五步：巡检记录与复盘</h2>
+<h3>5.1 记录归档</h3>
+<p>每次巡检完成后，更新巡检记录表，包含：</p>
+<ul>
+<li>巡检时间与执行人</li>
+<li>检查账户范围</li>
+<li>发现问题数量与类型</li>
+<li>处理措施与结果</li>
+<li>下次巡检重点关注项</li>
+</ul>
+<h3>5.2 周期性复盘</h3>
+<p>建议每月进行一次合规复盘会议：</p>
+<ul>
+<li>本月违规次数环比变化</li>
+<li>高频违规类型分析</li>
+<li>素材/文案团队需同步改进的方向</li>
+<li>平台政策是否有更新调整</li>
+</ul>
+<hr />
+<h2>常见问题</h2>
+<p><strong>Q：巡检发现素材有轻微问题，但广告效果很好，要继续跑吗？</strong></p>
+<p>A：不建议。虽然暂时未被系统拦截，但平台审核存在随机性，一旦被人工复审或用户举报，可能导致账户连带受影响。建议优先修改或单独开一个测试计划验证新素材效果。</p>
+<p><strong>Q：申诉被拒了怎么办？</strong></p>
+<p>A：可再次申诉，但需补充更充分的证明材料。若连续申诉失败，建议暂停该账户投放，转而将预算分配至其他正常账户，避免进一步触发平台惩罚机制。</p>
+<p><strong>Q：平台突然发布新政策，历史跑量素材要全部下架吗？</strong></p>
+<p>A：不一定。先评估历史素材是否确实违反新政策条款，如只是“可能存在风险”但未被明确禁止，可保持投放但密切监控数据。若政策明确禁止，则应在规定截止日前完成下架。</p>
+<hr />
+<p>合规巡检是出海广告运营的基本功。把巡检变成固定流程，比临时救火高效得多。如果巡检过程中发现充值、账户管理或风控方面的问题，欢迎联系以渔数媒，我们提供账户监控、余额预警、多账户管理等一系列运营支持服务。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Why Conduct Compliance Audits</h2>
+<p>In overseas advertising, account bans and ad rejections are the most frustrating issues for operations teams. A large-scale account suspension can interrupt the entire day's campaign plan, causing incalculable losses. Many teams only realize the importance of auditing after problems occur, but by then they've often missed the best opportunity for remediation.</p>
+<p>Compliance auditing isn't "checking only when problems arise"—it should be a regular part of daily operations. We recommend each operations colleague complete at least one full audit per week, increasing to daily audits during high-risk periods such as platform policy adjustment phases.</p>
+<hr />
+<h2>Pre-Audit Preparation</h2>
+<h3>Tools and Account Permissions</h3>
+<ul>
+<li>Ensure you have admin or operations role permissions on the advertising platform</li>
+<li>Prepare the audit record form (use Feishu/Notion templates)</li>
+<li>Access the account health dashboard (Meta Business Center/TikTok Ads Manager)</li>
+</ul>
+<h3>Confirming Audit Scope</h3>
+<p>Which accounts and campaigns does this audit cover? Prioritize as follows:</p>
+<ol>
+<li>Primary accounts (top 3 by spend)</li>
+<li>Newly launched campaigns (within 7 days of launch)</li>
+<li>High-risk categories (finance, health, gaming, etc.)</li>
+<li>Accounts with historical violation records</li>
+</ol>
+<hr />
+<h2>Step 1: Account Status Check</h2>
+<h3>1.1 Access Account Health Dashboard</h3>
+<p>Enter the advertising platform backend and locate the "Account Quality," "Account Status," or "Policy Compliance" section. Check for any warning notifications, restriction alerts, or pending issues.</p>
+<h3>1.2 Verify Campaign Status</h3>
+<ul>
+<li>Confirm the account is actively running</li>
+<li>Check for any campaigns paused due to depleted budgets</li>
+<li>Verify account balance is sufficient to avoid automatic pauses</li>
+</ul>
+<h3>1.3 Reconcile Top-Up Records</h3>
+<p>Review recent top-up transactions to confirm amounts received and arrival times match expectations. If you notice discrepancies or missing top-ups, contact your agency or platform support immediately.</p>
+<blockquote>
+<p><strong>Tip</strong>: Yoyu Media offers balance alert services—set thresholds and receive automatic notifications so you don't need to constantly monitor account balances.</p>
+</blockquote>
+<hr />
+<h2>Step 2: Ad Creative Compliance Review</h2>
+<h3>2.1 Visual Element Inspection</h3>
+<p>Check against platform creative policies:</p>
+<ul>
+<li><strong>People/figures</strong>: No bodily exposure, suggestive content, or images of minors</li>
+<li><strong>Brand logos</strong>: No competitor logos visible, no unauthorized celebrity likenesses</li>
+<li><strong>Text overlays</strong>: Character count within limits, no copyright-infringing fonts</li>
+<li><strong>Animations</strong>: No rapid flashing, intense contrasting color blocks that may trigger violations</li>
+</ul>
+<h3>2.2 Platform-Specific Compliance</h3>
+<p>Different platforms have varying requirements for creative dimensions, duration, and audio:</p>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Common Issues</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Meta</td>
+<td>Text occupying &gt;20% of image, "limited time offer" type incentive copy</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>Brand logo in first 3 seconds, insufficient product footage</td>
+</tr>
+<tr>
+<td>Google</td>
+<td>Exaggerated before/after comparisons, unverified medical claims</td>
+</tr>
+</tbody>
+</table>
+<h3>2.3 Violation Self-Check Checklist</h3>
+<p>Copy the following checklist into your audit record and verify each item:</p>
+<ul>
+<li>[ ] No misleading before/after comparisons</li>
+<li>[ ] No absolute language ("best," "#1," "100%")</li>
+<li>[ ] No unverified efficacy claims</li>
+<li>[ ] No violent or discriminatory content</li>
+<li>[ ] No copyrighted music or video clips</li>
+</ul>
+<hr />
+<h2>Step 3: Copy and Landing Page Review</h2>
+<h3>3.1 Keyword Filtering</h3>
+<p>The following terms are high-risk on most platforms:</p>
+<ul>
+<li><strong>Efficacy promises</strong>: "Guaranteed to lose X kg," "effective in X days"</li>
+<li><strong>Price incentives</strong>: "Lowest price," "lowest on the internet"</li>
+<li><strong>Urgency tactics</strong>: "Only X left," "won't come back"</li>
+</ul>
+<p>If you must use these terms, consult platform policies in advance or moderate the language intensity.</p>
+<h3>3.2 Landing Page Consistency Verification</h3>
+<ul>
+<li>Does the landing page content match ad promises?</li>
+<li>Are there any dead links or slow-loading pages?</li>
+<li>Are privacy policies and refund terms fully displayed?</li>
+</ul>
+<hr />
+<h2>Step 4: Handling Violations</h2>
+<h3>4.1 Minor Violations</h3>
+<p>If copy contains slightly inappropriate language or creatives have borderline issues:</p>
+<ol>
+<li>Pause the affected ad</li>
+<li>Revise and resubmit for review</li>
+<li>Document the violation reason to prevent similar issues</li>
+</ol>
+<h3>4.2 Serious Violations</h3>
+<p>If you receive an official violation notice or account restrictions:</p>
+<ol>
+<li><strong>Screenshot and save the violation notice</strong> (critical!)</li>
+<li>Submit an appeal within the specified timeframe (if the platform supports it)</li>
+<li>Contact Yoyu Media support for platform appeal guidance</li>
+<li>Check other active campaigns for similar issues</li>
+</ol>
+<h3>4.3 Account Suspension</h3>
+<p>If your account is suspended:</p>
+<ol>
+<li>Confirm the suspension reason (check notification emails or backend alerts)</li>
+<li>Prepare appeal materials: business license, advertising qualification proof, authorization documents, etc.</li>
+<li>Submit appeal through official channels (avoid unofficial intermediaries to prevent secondary scams)</li>
+<li>During the appeal period, maintain stable operations on other normal accounts</li>
+</ol>
+<hr />
+<h2>Step 5: Audit Records and Review</h2>
+<h3>5.1 Documentation</h3>
+<p>After each audit, update the audit record with:</p>
+<ul>
+<li>Audit date and executor</li>
+<li>Accounts checked</li>
+<li>Number and types of issues found</li>
+<li>Actions taken and results</li>
+<li>Key focus areas for next audit</li>
+</ul>
+<h3>5.2 Periodic Review</h3>
+<p>Conduct a monthly compliance review meeting:</p>
+<ul>
+<li>Month-over-month changes in violation counts</li>
+<li>Analysis of high-frequency violation types</li>
+<li>Areas requiring synchronization with creative/copy teams</li>
+<li>Updates to platform policies</li>
+</ul>
+<hr />
+<h2>FAQ</h2>
+<p><strong>Q: I found a creative has minor issues during audit, but the ad performance is excellent. Should I keep running it?</strong></p>
+<p>A: Not recommended. Although not yet flagged by the system, platform reviews are somewhat random. If caught in manual review or reported by users, it may cause cascading impacts on the account. Prioritize revising or testing new creatives in a separate campaign.</p>
+<p><strong>Q: My appeal was rejected. What should I do?</strong></p>
+<p>A: You may appeal again, but provide more comprehensive supporting materials. If consecutive appeals fail, consider pausing that account and reallocating budget to other healthy accounts to avoid further triggering platform penalties.</p>
+<p><strong>Q: The platform suddenly released new policies. Should I take down all historically performing creatives?</strong></p>
+<p>A: Not necessarily. First assess whether historical creatives genuinely violate the new policy terms. If they're only "potentially risky" but not explicitly prohibited, you may continue running them with close monitoring. If the policy clearly bans them, complete the takedown before the deadline.</p>
+<hr />
+<p>Compliance auditing is fundamental to overseas advertising operations. Making auditing a routine process is far more efficient than firefighting. If you encounter issues with top-ups, account management, or risk control during audits, welcome to contact Yoyu Media. We offer a comprehensive suite of operational support services including account monitoring, balance alerts, and multi-account management.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
