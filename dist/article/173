@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">多账户投放团队必读：账户分层管理 SOP 手册</span>
+                    <span x-show="lang === 'en'" x-cloak>Account Tiering SOP for Multi-Account Advertising Teams</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-06-10</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="173" data-base-views="50">50</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu7786/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>背景：多账户管理的常见困境</h2>
+<p>出海投放团队在业务扩张阶段，常常面临这样的局面：5 个 Google 账户、8 个 Meta 账户、十几个 TikTok 账户分散在不同平台，每个账户对应不同的产品线、市场或投放阶段。运营人员有限，却要同时盯住所有账户的消耗、预算和效果。</p>
+<p>结果往往是：</p>
+<ul>
+<li>重点账户没有优先投入精力，潜力账户被忽略</li>
+<li>账户问题发现滞后，错过优化窗口期</li>
+<li>新人接手时无从下手，账户资产难以交接</li>
+</ul>
+<p>这套 SOP 的目标，是让任何运营同事拿到账户列表后，能在 30 分钟内理清管理优先级，按固定节奏执行日常操作。</p>
+<hr />
+<h2>第一步：建立账户分类维度</h2>
+<p>在分层之前，先把账户按照业务属性打标签。建议从以下三个维度进行交叉分类：</p>
+<table>
+<thead>
+<tr>
+<th>分类维度</th>
+<th>常见类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>产品线</strong></td>
+<td>主推产品、测试产品、长尾产品</td>
+<td>不同产品对应不同 ROI 目标</td>
+</tr>
+<tr>
+<td><strong>市场区域</strong></td>
+<td>成熟市场、新兴市场、测试市场</td>
+<td>市场阶段影响预算分配策略</td>
+</tr>
+<tr>
+<td><strong>账户来源</strong></td>
+<td>首发账户、增量账户、历史账户</td>
+<td>来源影响问题排查路径</td>
+</tr>
+</tbody>
+</table>
+<p><strong>操作方法</strong>：</p>
+<ol>
+<li>导出所有账户列表，包含账户 ID、名称、创建时间</li>
+<li>根据上表，为每个账户标注三个维度的标签</li>
+<li>将标签统一记录在共享文档或项目管理工具中（如飞书表格、Jira）</li>
+<li>每次新建账户时，同步完成分类标签</li>
+</ol>
+<blockquote>
+<p><strong>提示</strong>：分类标签一旦确定，尽量保持稳定。如果产品线调整，建议通过版本记录而非频繁修改标签来追踪历史。</p>
+</blockquote>
+<hr />
+<h2>第二步：划分账户优先级等级</h2>
+<p>基于分类结果，按业务重要性和消耗规模划分优先级。建议采用 A/B/C 三级：</p>
+<table>
+<thead>
+<tr>
+<th>等级</th>
+<th>判定标准</th>
+<th>日均消耗参考</th>
+<th>管理频次</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A级（核心账户）</strong></td>
+<td>主力产品 + 成熟市场，或消耗占比 Top 20%</td>
+<td>≥$1000/天</td>
+<td>每日检查</td>
+</tr>
+<tr>
+<td><strong>B级（增长账户）</strong></td>
+<td>测试期产品、增量预算市场</td>
+<td>$200-1000/天</td>
+<td>每两天检查</td>
+</tr>
+<tr>
+<td><strong>C级（探索账户）</strong></td>
+<td>长尾产品、新市场探索</td>
+<td>&lt;$200/天</td>
+<td>每周检查</td>
+</tr>
+</tbody>
+</table>
+<p><strong>动态调整规则</strong>：</p>
+<ul>
+<li>每月底复盘一次，根据近 30 天消耗数据重新划分等级</li>
+<li>如果某 C 级账户单周消耗增长 3 倍以上，可临时升级为 B 级管理</li>
+<li>长期消耗低于 $50/天且 ROI 持续低迷的账户，考虑暂停或合并</li>
+</ul>
+<hr />
+<h2>第三步：制定分级管理操作清单</h2>
+<h3>3.1 A 级账户每日 SOP（建议时间：早 9:00-9:30）</h3>
+<ul>
+<li>[ ] 查看昨日整体消耗，与预算对比，确认偏差是否超过 ±15%</li>
+<li>[ ] 检查各 campaign 的 CTR、CPC、ROAS 是否有异常波动（与近 7 天均值对比）</li>
+<li>[ ] 确认预算是否充足，余额低于 3 天消耗量时发起充值预警</li>
+<li>[ ] 记录当天关键数据至日报表</li>
+</ul>
+<h3>3.2 B 级账户每两日 SOP（建议时间：周二、周四上午）</h3>
+<ul>
+<li>[ ] 核对过去两天的累计消耗，确认无超消耗情况</li>
+<li>[ ] 抽查 2-3 个 campaign 的表现，重点关注新启用的广告组</li>
+<li>[ ] 检查广告审核状态，确认无意外被拒的情况</li>
+<li>[ ] 更新投放周志，记录优化动作</li>
+</ul>
+<h3>3.3 C 级账户每周 SOP（建议时间：周一上午）</h3>
+<ul>
+<li>[ ] 汇总上周消耗和效果数据，与月初目标对比</li>
+<li>[ ] 筛选消耗 Top 3 的 campaign，评估是否值得升级预算</li>
+<li>[ ] 清理连续 2 周无消耗的广告组</li>
+<li>[ ] 完成周报中的账户健康度评分</li>
+</ul>
+<hr />
+<h2>第四步：配置账户权限与协作规则</h2>
+<p>多账户场景下，权限混乱是常见风险点。建议遵守以下原则：</p>
+<p><strong>权限分级建议</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>可操作范围</th>
+<th>典型人员</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>管理员</strong></td>
+<td>全部账户，含充值、修改付款方式</td>
+<td>团队负责人</td>
+</tr>
+<tr>
+<td><strong>运营主账户</strong></td>
+<td>A/B 级账户的广告操作、报表查看</td>
+<td>资深运营</td>
+</tr>
+<tr>
+<td><strong>运营副账户</strong></td>
+<td>C 级账户日常操作，报表查看</td>
+<td>初级运营</td>
+</tr>
+<tr>
+<td><strong>财务查看</strong></td>
+<td>仅充值记录、账单下载</td>
+<td>财务人员</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键约束</strong>：</p>
+<ul>
+<li>充值操作必须由管理员或指定财务执行，运营人员不持有充值权限</li>
+<li>删除账户、修改时区等高风险操作需要双人确认</li>
+<li>所有账户的登录凭证统一管理在密码管理器中，避免个人账号直接登录</li>
+</ul>
+<hr />
+<h2>第五步：建立异常预警机制</h2>
+<p>账户出问题后能不能快速发现，往往决定了损失的大小。建议配置以下预警场景：</p>
+<p><strong>必设预警项</strong>：</p>
+<ol>
+<li><strong>余额预警</strong>：账户余额 &lt; 账户 3 天平均日消耗 × 1.5</li>
+<li><strong>超消耗预警</strong>：单账户单日消耗 &gt; 当日预算 × 1.2</li>
+<li><strong>支付失败预警</strong>：广告投放中断且原因包含支付问题</li>
+<li><strong>审核异常预警</strong>：有效广告数量突然下降 30% 以上</li>
+</ol>
+<p><strong>实施建议</strong>：可通过以渔账户管理平台的余额预警功能实现自动通知，也可在飞书/钉钉配置机器人推送。</p>
+<hr />
+<h2>总结：分层管理的核心逻辑</h2>
+<p>账户分层不是一次性工作，而是需要持续迭代的管理习惯。核心在于三点：</p>
+<ul>
+<li><strong>分类要统一</strong>：全团队共用一套分类标准，避免各自为政</li>
+<li><strong>分级要动态</strong>：根据数据表现定期调整，资源向高效账户倾斜</li>
+<li><strong>操作要清单化</strong>：把 SOP 打印出来贴在工位上，新人也能快速上手</li>
+</ul>
+<p>完整执行这套 SOP 后，团队管理 20+ 账户时也能保持清晰秩序，把精力留给真正的优化工作。</p>
+<hr />
+<p><strong>相关工具推荐</strong>：以渔数媒支持多账户余额统一监控、充值记录对账和余额预警通知，可有效支撑本 SOP 的执行落地。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Background: Common Challenges in Multi-Account Management</h2>
+<p>As advertising teams expand their overseas operations, they often face this scenario: 5 Google accounts, 8 Meta accounts, and a dozen TikTok accounts scattered across different platforms, each corresponding to different product lines, markets, or campaign stages. With limited operations staff, everyone needs to monitor spending, budgets, and performance across all accounts simultaneously.</p>
+<p>The results are often:</p>
+<ul>
+<li>Key accounts don't receive priority attention, and potential accounts are overlooked</li>
+<li>Account issues are discovered too late, missing optimization windows</li>
+<li>New team members struggle to get started, and account assets are difficult to hand over</li>
+</ul>
+<p>The goal of this SOP is to enable any operations colleague to clarify management priorities within 30 minutes of receiving the account list and execute daily operations on a fixed schedule.</p>
+<hr />
+<h2>Step 1: Establish Account Classification Dimensions</h2>
+<p>Before tiering, label each account by business attributes. It is recommended to classify across three dimensions:</p>
+<table>
+<thead>
+<tr>
+<th>Classification</th>
+<th>Common Types</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Product Line</strong></td>
+<td>Main product, test product, long-tail product</td>
+<td>Different products correspond to different ROI targets</td>
+</tr>
+<tr>
+<td><strong>Market Region</strong></td>
+<td>Mature market, emerging market, test market</td>
+<td>Market stage affects budget allocation strategy</td>
+</tr>
+<tr>
+<td><strong>Account Source</strong></td>
+<td>Initial account, additional account, legacy account</td>
+<td>Source affects troubleshooting approach</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Operation Method</strong>:</p>
+<ol>
+<li>Export all account lists, including Account ID, name, and creation date</li>
+<li>Label each account with tags from the three dimensions above</li>
+<li>Record tags uniformly in shared documents or project management tools (e.g., Feishu Spreadsheet, Jira)</li>
+<li>When creating new accounts, complete classification labels synchronously</li>
+</ol>
+<blockquote>
+<p><strong>Note</strong>: Once classification labels are established, keep them stable. If product lines adjust, use version tracking rather than frequent label modifications to maintain history.</p>
+</blockquote>
+<hr />
+<h2>Step 2: Define Account Priority Tiers</h2>
+<p>Based on classification results, prioritize accounts by business importance and spending scale. A three-tier system (A/B/C) is recommended:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Criteria</th>
+<th>Daily Spending Reference</th>
+<th>Management Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A (Core Accounts)</strong></td>
+<td>Main product + mature market, or Top 20% by spending</td>
+<td>≥$1000/day</td>
+<td>Daily check</td>
+</tr>
+<tr>
+<td><strong>B (Growth Accounts)</strong></td>
+<td>Products in testing phase, markets with incremental budget</td>
+<td>$200-1000/day</td>
+<td>Every two days</td>
+</tr>
+<tr>
+<td><strong>C (Exploration Accounts)</strong></td>
+<td>Long-tail products, new market exploration</td>
+<td>&lt;$200/day</td>
+<td>Weekly check</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dynamic Adjustment Rules</strong>:</p>
+<ul>
+<li>Conduct monthly review, re-tier based on past 30-day spending data</li>
+<li>If a C-tier account grows 3x in single-week spending, temporarily upgrade to B-tier management</li>
+<li>For accounts with sustained daily spending below $50 and persistently low ROI, consider pausing or consolidating</li>
+</ul>
+<hr />
+<h2>Step 3: Develop Tiered Management Operation Checklists</h2>
+<h3>3.1 A-Tier Account Daily SOP (Recommended time: 9:00-9:30 AM)</h3>
+<ul>
+<li>[ ] Review yesterday's total spending, compare with budget, confirm deviation is within ±15%</li>
+<li>[ ] Check CTR, CPC, and ROAS for anomalies across campaigns (compare with 7-day average)</li>
+<li>[ ] Confirm sufficient budget; initiate top-up alert when balance falls below 3x daily average spending</li>
+<li>[ ] Record key daily data to the report</li>
+</ul>
+<h3>3.2 B-Tier Account Bi-Weekly SOP (Recommended time: Tuesday and Thursday mornings)</h3>
+<ul>
+<li>[ ] Verify cumulative spending over the past two days, confirm no overspending</li>
+<li>[ ] Spot-check 2-3 campaigns, focus on newly enabled ad groups</li>
+<li>[ ] Check ad review status, confirm no unexpected disapprovals</li>
+<li>[ ] Update campaign logs, record optimization actions</li>
+</ul>
+<h3>3.3 C-Tier Account Weekly SOP (Recommended time: Monday morning)</h3>
+<ul>
+<li>[ ] Summarize last week's spending and performance data, compare with monthly targets</li>
+<li>[ ] Filter Top 3 spending campaigns, evaluate if budget upgrade is warranted</li>
+<li>[ ] Clear ad groups with no spending for 2 consecutive weeks</li>
+<li>[ ] Complete weekly account health score in the report</li>
+</ul>
+<hr />
+<h2>Step 4: Configure Account Permissions and Collaboration Rules</h2>
+<p>In multi-account scenarios, permission confusion is a common risk point. The following principles are recommended:</p>
+<p><strong>Permission Tiering</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Operational Scope</th>
+<th>Typical Personnel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Administrator</strong></td>
+<td>All accounts, including top-ups and payment method modifications</td>
+<td>Team lead</td>
+</tr>
+<tr>
+<td><strong>Primary Operator</strong></td>
+<td>Ad operations and reporting for A/B-tier accounts</td>
+<td>Senior operations staff</td>
+</tr>
+<tr>
+<td><strong>Secondary Operator</strong></td>
+<td>Daily operations and reporting for C-tier accounts</td>
+<td>Junior operations staff</td>
+</tr>
+<tr>
+<td><strong>Finance Viewer</strong></td>
+<td>Top-up records and invoice downloads only</td>
+<td>Finance staff</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Constraints</strong>:</p>
+<ul>
+<li>Top-up operations must be performed by administrators or designated finance staff; operations staff do not hold top-up permissions</li>
+<li>High-risk operations (deleting accounts, modifying time zones) require dual confirmation</li>
+<li>All account credentials are managed uniformly in password managers to avoid direct login with personal accounts</li>
+</ul>
+<hr />
+<h2>Step 5: Establish Exception Alert Mechanisms</h2>
+<p>Whether account problems can be detected quickly often determines the extent of losses. The following alert scenarios are recommended:</p>
+<p><strong>Required Alert Items</strong>:</p>
+<ol>
+<li><strong>Balance Alert</strong>: Account balance &lt; 1.5x of 3-day average daily spending</li>
+<li><strong>Overspending Alert</strong>: Single account daily spending &gt; 1.2x daily budget</li>
+<li><strong>Payment Failure Alert</strong>: Ad delivery interrupted with payment-related issues</li>
+<li><strong>Review Anomaly Alert</strong>: Active ad count drops suddenly by more than 30%</li>
+</ol>
+<p><strong>Implementation Advice</strong>: Automated notifications can be achieved through the Yiyu account management platform's balance alert feature, or configure bot notifications in Feishu/DingTalk.</p>
+<hr />
+<h2>Conclusion: Core Logic of Account Tiering Management</h2>
+<p>Account tiering is not a one-time task but a sustained management habit. The core lies in three points:</p>
+<ul>
+<li><strong>Unified Classification</strong>: The entire team uses a single classification standard to avoid fragmentation</li>
+<li><strong>Dynamic Tiering</strong>: Adjust regularly based on performance data, directing resources toward efficient accounts</li>
+<li><strong>Standardized Operations</strong>: Print SOPs and post them at workstations so new team members can get started quickly</li>
+</ul>
+<p>After fully implementing this SOP, teams can maintain clear organization even when managing 20+ accounts, freeing energy for actual optimization work.</p>
+<hr />
+<p><strong>Recommended Tools</strong>: Yiyu Media supports unified balance monitoring across multiple accounts, top-up record reconciliation, and balance alert notifications, effectively supporting the execution of this SOP.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
