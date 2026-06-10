@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">案例拆解：广告账户被封后，3步找回充值余额并恢复投放</span>
+                    <span x-show="lang === 'en'" x-cloak>Case Study: 3 Steps to Recover Account Balance &amp; Resume Campaigns After an Ad Account Ban</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-06-11</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="177" data-base-views="85">85</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu8215/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>凌晨两点，广告账户突然被封了</h2>
+<p>某工具类 App 的出海运营负责人小林，在凌晨两点收到 Meta Business Manager 的邮件通知：<strong>广告账户已被禁用，原因涉及“可疑支付活动”</strong>。</p>
+<p>更糟糕的是，账户里还有约 3200 美元的充值余额，5 款素材正在跑 A/B 测试，次日还有一场大促预热。如果不能快速解决，损失的不只是余额，还有整个推广节奏。</p>
+<p>这个场景并不罕见。根据我们的后台数据，<strong>超过 40% 的出海团队曾在广告投放过程中遭遇账户封禁</strong>，其中，因合规问题导致的封号占了大多数。而很多团队的问题在于：只知道申诉，却不知道如何系统性地排查根源、建立预防机制。</p>
+<hr />
+<h2>问题拆解：账户被封的四类常见原因</h2>
+<p>在讨论处理动作之前，先明确“问题是什么”。广告账户被封，通常逃不出这四类原因：</p>
+<h3>1. 支付相关问题</h3>
+<ul>
+<li>使用的信用卡/支付方式被平台标记为高风险</li>
+<li>多个账户共享同一支付方式</li>
+<li>充值金额异常（如单笔大额充值后立即大量消耗）</li>
+</ul>
+<h3>2. 素材政策违规</h3>
+<ul>
+<li>落地页与广告宣传内容不符</li>
+<li>图片/文案涉及夸大功效、对比性宣传</li>
+<li>触犯目标市场的特殊监管要求（如欧美市场的健康声称、东南亚的宗教敏感内容）</li>
+</ul>
+<h3>3. 账户行为异常</h3>
+<ul>
+<li>频繁修改广告组结构或预算</li>
+<li>短时间大量创建/暂停素材</li>
+<li>登录 IP 和操作地点频繁切换</li>
+</ul>
+<h3>4. 关联风险</h3>
+<ul>
+<li>多账户共用同一企业主体或管理员身份</li>
+<li>域名、品牌名称与已封账户相似</li>
+</ul>
+<p>回到小林的案例，经过初步排查，他们发现问题出在<strong>支付环节</strong>：上周刚更换了一张企业信用卡，但新卡的开户名与 Business Manager 注册信息存在细微差异（大小写不一致），被系统判定为“可疑支付活动”。</p>
+<hr />
+<h2>处理动作：三步走策略</h2>
+<h3>第一步：冻结当前操作，收集证据</h3>
+<p>账户被封后，<strong>切忌反复提交申诉或频繁修改信息</strong>，这只会让风控模型进一步锁定账户。正确的第一步是：</p>
+<ul>
+<li>截图保存账户状态页面和封号通知邮件</li>
+<li>导出最近 7 天的广告投放数据、消耗报表</li>
+<li>记录账户的支付历史、绑定的所有支付方式</li>
+<li>确认落地页 URL 和当前在线的素材版本</li>
+</ul>
+<h3>第二步：精准定位原因，提交针对性申诉</h3>
+<p>申诉不是写得越诚恳越好，而是<strong>提供的信息越精准越有效</strong>。针对小林的情况，他们在申诉表单中重点说明了：</p>
+<ul>
+<li>支付方式更换的时间点</li>
+<li>两张卡片开户名的对应关系</li>
+<li>企业营业执照与支付账户的关联证明</li>
+</ul>
+<p><strong>48 小时后，账户解封，余额全部恢复。</strong></p>
+<p>但如果是素材违规导致的封号，申诉重点就要转向：提供落地页后台截图证明内容合规性、说明目标市场的监管要求适用情况、承诺修改或下架问题素材。</p>
+<h3>第三步：余额转移或退款处理</h3>
+<p>如果申诉失败或账户无法恢复，下一步是处理账户余额：</p>
+<ul>
+<li><strong>Meta</strong>：在 Business Support 中申请余额退款，通常需要 5-10 个工作日</li>
+<li><strong>Google Ads</strong>：联系官方客服提交退款申请，余额会退回原支付方式</li>
+<li><strong>TikTok</strong>：在 Ads Manager 中提交工单，说明账户封禁原因和退款诉求</li>
+</ul>
+<hr />
+<h2>预防机制：合规巡检 SOP 清单</h2>
+<p>问题处理完了，更重要的是<strong>不再犯同样的错</strong>。以下是针对出海广告团队的日常合规巡检 SOP，建议每周执行一次：</p>
+<p><strong>账户层面检查项</strong></p>
+<ul>
+<li>验证 Business Manager 主页名称与营业执照一致</li>
+<li>确认所有绑定的支付方式开户名完全匹配</li>
+<li>检查账户安全设置：管理员邮箱、操作日志、登录提醒</li>
+<li>确认目标投放国家/地区与账户注册主体无冲突</li>
+</ul>
+<p><strong>素材层面检查项</strong></p>
+<ul>
+<li>对照平台最新的广告政策文档（Meta Policy、 Google Ads Policies）逐条过审</li>
+<li>特别关注落地页与广告描述的一致性</li>
+<li>敏感行业（健康、金融、游戏）素材需额外审核当地法规</li>
+<li>避免在同一广告组中混用不同国家的落地页 URL</li>
+</ul>
+<p><strong>操作行为层面</strong></p>
+<ul>
+<li>避免单日大幅调整预算（建议幅度不超过 20%）</li>
+<li>不要在短时间内批量创建/暂停广告</li>
+<li>保持登录 IP 和操作设备的稳定性</li>
+</ul>
+<hr />
+<h2>一句话总结</h2>
+<p>账户被封不可怕，<strong>可怕的是不知道为什么被封、申诉时说不清问题、事后没有复盘机制</strong>。建立合规巡检 SOP，把问题前置发现，比事后补救成本低得多。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>2 AM: The Ad Account Suddenly Gets Banned</h2>
+<p>Xiao Lin, head of overseas operations for a utility app, received an email notification from Meta Business Manager at 2 AM: <strong>Your ad account has been disabled due to "suspicious payment activity."</strong></p>
+<p>Worse, there was approximately $3,200 remaining in the account balance, with 5 creative variations running A/B tests, and a major promotional campaign scheduled for the next day. If this couldn't be resolved quickly, the losses wouldn't just be the balance—the entire promotion timeline would be derailed.</p>
+<p>This scenario isn't uncommon. According to our backend data, <strong>over 40% of overseas teams have experienced account bans during ad campaigns</strong>, with compliance issues accounting for the majority. The problem for many teams is: they only know how to appeal, but not how to systematically investigate the root cause or establish preventive mechanisms.</p>
+<hr />
+<h2>Problem Analysis: Four Common Reasons for Account Bans</h2>
+<p>Before discussing solutions, let's clarify "what the problem is." Ad account bans typically fall into these four categories:</p>
+<h3>1. Payment-Related Issues</h3>
+<ul>
+<li>Credit cards/payment methods flagged as high-risk by the platform</li>
+<li>Multiple accounts sharing the same payment method</li>
+<li>Abnormal recharge amounts (e.g., large single deposits immediately followed by heavy spending)</li>
+</ul>
+<h3>2. Creative Policy Violations</h3>
+<ul>
+<li>Landing page content doesn't match ad claims</li>
+<li>Images/copy involve exaggerated efficacy or comparative advertising</li>
+<li>Violating special regulatory requirements in target markets (e.g., health claims in EU/US, religious sensitivity in Southeast Asia)</li>
+</ul>
+<h3>3. Abnormal Account Behavior</h3>
+<ul>
+<li>Frequently modifying ad group structure or budgets</li>
+<li>Creating/pausing creatives in large batches within short timeframes</li>
+<li>Frequent IP and operation location switches</li>
+</ul>
+<h3>4. Association Risks</h3>
+<ul>
+<li>Multiple accounts sharing the same business entity or admin identity</li>
+<li>Domain names or brand names similar to already-banned accounts</li>
+</ul>
+<p>Returning to Xiao Lin's case: after initial investigation, they found the problem was in the <strong>payment环节</strong>: they'd just switched to a new corporate credit card the previous week, but the account holder name had a slight discrepancy (capitalization difference) with the Business Manager registration, triggering the system's "suspicious payment activity" flag.</p>
+<hr />
+<h2>Resolution Actions: A Three-Step Strategy</h2>
+<h3>Step 1: Freeze Current Operations, Gather Evidence</h3>
+<p>After an account ban, <strong>definitely avoid repeatedly submitting appeals or frequently modifying information</strong>—this only causes the risk control model to further lock the account. The correct first step is:</p>
+<ul>
+<li>Screenshot and save the account status page and ban notification email</li>
+<li>Export the last 7 days of ad performance data and spending reports</li>
+<li>Record account payment history and all currently linked payment methods</li>
+<li>Confirm landing page URLs and currently online creative versions</li>
+</ul>
+<h3>Step 2: Precisely Identify the Cause, Submit Targeted Appeal</h3>
+<p>Effective appeals aren't about writing the most heartfelt plea—they're about <strong>providing the most precise information</strong>. For Xiao Lin's situation, they focused their appeal on:</p>
+<ul>
+<li>The exact timing of the payment method change</li>
+<li>The correspondence between the two card account holder names</li>
+<li>Supporting documentation linking the business license to the payment account</li>
+</ul>
+<p><strong>48 hours later, the account was unbanned with the full balance restored.</strong></p>
+<p>However, for bans caused by creative violations, the appeal focus shifts to: providing landing page backend screenshots proving content compliance, explaining applicable local regulatory considerations, and committing to modify or remove problematic creatives.</p>
+<h3>Step 3: Balance Transfer or Refund Processing</h3>
+<p>If the appeal fails or the account cannot be recovered, the next step is handling the account balance:</p>
+<ul>
+<li><strong>Meta</strong>: Apply for a balance refund through Business Support, typically taking 5-10 business days</li>
+<li><strong>Google Ads</strong>: Contact official support to submit a refund request; balance returns to the original payment method</li>
+<li><strong>TikTok</strong>: Submit a ticket through Ads Manager explaining the account ban reason and refund request</li>
+</ul>
+<hr />
+<h2>Prevention Mechanism: Compliance Audit SOP Checklist</h2>
+<p>Problem solved, but more importantly: <strong>don't make the same mistake again</strong>. Here's the daily compliance audit SOP for overseas ad teams, recommended to execute weekly:</p>
+<p><strong>Account-Level Checks</strong></p>
+<ul>
+<li>Verify that Business Manager page name matches the business license exactly</li>
+<li>Confirm all linked payment method account holder names match completely</li>
+<li>Check account security settings: admin emails, operation logs, login alerts</li>
+<li>Confirm target投放国家/地区与账户注册主体无冲突</li>
+</ul>
+<p><strong>Creative-Level Checks</strong></p>
+<ul>
+<li>Review against the platform's latest advertising policy documents (Meta Policy, Google Ads Policies) line by line</li>
+<li>Pay special attention to consistency between landing pages and ad descriptions</li>
+<li>Creatives in sensitive industries (health, finance, gaming) require additional local regulation review</li>
+<li>Avoid mixing landing page URLs from different countries in the same ad group</li>
+</ul>
+<p><strong>Operational Behavior Checks</strong></p>
+<ul>
+<li>Avoid significant budget adjustments in a single day (recommended change幅度不超过 20%)</li>
+<li>Don't create/pause ads in large batches within short timeframes</li>
+<li>Maintain stability in login IPs and operation devices</li>
+</ul>
+<hr />
+<h2>One-Line Summary</h2>
+<p>Account bans aren't scary—<strong>what's scary is not knowing why you were banned, being unable to explain the problem during appeals, and having no post-mortem mechanism afterward</strong>. Establishing a compliance audit SOP and detecting problems proactively costs far less than remediation after the fact.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
