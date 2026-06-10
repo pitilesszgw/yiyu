@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g, request, jsonify, Response
+from flask import Flask, render_template, g, request, jsonify, Response, send_from_directory
 import os
 import sqlite3
 import re
@@ -63,6 +63,10 @@ def tools_douyin_video():
 def tools():
     return render_template('tools.html')
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(app.static_folder, 'favicon.ico', mimetype='image/x-icon')
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -70,6 +74,10 @@ def index():
 @app.route('/pricing')
 def pricing():
     return render_template('pricing.html')
+
+@app.route('/product-intro')
+def product_intro():
+    return render_template('product_intro.html')
 
 @app.route('/login')
 def login():
