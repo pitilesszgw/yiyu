@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">代理开户服务为什么需要系统化看板</span>
+                    <span x-show="lang === 'en'" x-cloak>Why Agency Account Management Needs a Systematic Dashboard</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-06-12</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="179" data-base-views="56">56</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu1205/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>一张表格管不了三个平台：为什么代理开户需要看板</h2>
+<p>做出海投放的团队，往往同时跑着 Meta、Google、TikTok、Kwai 等多个平台。每个平台的户头、余额、消耗、充值记录、发票状态都分散在不同的对话窗口和表格里。运营人员每周花 2-3 小时对账，结果对不上；财务催充值，运营才发现余额早就见底了。这类问题的根源不是人不认真，而是<strong>信息分散、没有统一视图</strong>。</p>
+<p>系统化看板解决的不是“记没记录”，而是“能不能一眼看清全局”。本文提供一套可操作的搭建清单，适用于广告代理服务商或企业内部的多账户管理场景。</p>
+<hr />
+<h2>运营清单：代理开户系统化看板的搭建步骤</h2>
+<h3>第一步：明确看板的使用角色和核心需求</h3>
+<p>在动手之前，先问三个问题：</p>
+<ul>
+<li>谁会看这个看板？运营、投放、财务、管理层，各自关注的数据不一样。</li>
+<li>看板要解决的核心问题是什么？余额预警、充值记录、消耗追踪，还是多账户对比？</li>
+<li>数据从哪里来？手动录入、平台 API 对接，还是代理后台导出？</li>
+</ul>
+<p><strong>检查项：</strong> 每个角色有专属视图 ✓ | 核心数据维度已定义 ✓ | 数据来源已确认 ✓</p>
+<hr />
+<h3>第二步：设计账户主表结构</h3>
+<p>看板的底层是一张规范的账户主表。建议包含以下字段：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>平台</td>
+<td>Meta / Google / TikTok 等</td>
+</tr>
+<tr>
+<td>账户 ID</td>
+<td>平台分配的账户编号</td>
+</tr>
+<tr>
+<td>账户名称</td>
+<td>便于识别的业务名称</td>
+</tr>
+<tr>
+<td>账户类型</td>
+<td>代理商户 / 直客户</td>
+</tr>
+<tr>
+<td>充值余额</td>
+<td>当前账户可用余额</td>
+</tr>
+<tr>
+<td>消耗预警阈值</td>
+<td>低于多少触发提醒</td>
+</tr>
+<tr>
+<td>账户状态</td>
+<td>正常 / 受限 / 已封</td>
+</tr>
+<tr>
+<td>归属销售/运营</td>
+<td>负责人</td>
+</tr>
+<tr>
+<td>创建日期</td>
+<td>便于追踪账户生命周期</td>
+</tr>
+</tbody>
+</table>
+<p><strong>检查项：</strong> 字段覆盖核心运营数据 ✓ | 有账户状态实时更新机制 ✓ | 支持筛选和批量操作 ✓</p>
+<hr />
+<h3>第三步：建立充值与消耗的流水看板</h3>
+<p>这是最容易出问题的环节。建议将充值记录和消耗数据做双向绑定：</p>
+<p><strong>充值流程检查项：</strong><br />
+- 客户发起充值需求 ✓<br />
+- 运营确认充值金额和账户 ✓<br />
+- 财务审核打款凭证 ✓<br />
+- 代理侧确认到账 ✓<br />
+- 账户余额更新 ✓<br />
+- 记录充值单号和到账时间 ✓<br />
+- 发送充值完成通知 ✓</p>
+<p><strong>对账流程检查项：</strong><br />
+- 每周固定日期拉取平台后台消耗报告 ✓<br />
+- 与系统记录比对消耗数据 ✓<br />
+- 核查异常消耗（如凌晨突增、单账户超阈值） ✓<br />
+- 生成对账差异报告 ✓<br />
+- 问题账户标注并跟进 ✓</p>
+<hr />
+<h3>第四步：配置余额预警与充值预警</h3>
+<p>看板的核心价值之一是<strong>提前发现风险</strong>，而不是事后补救。</p>
+<p><strong>预警规则检查项：</strong><br />
+- 单账户余额低于设定阈值时自动提醒 ✓<br />
+- 充值申请提交后超过 24 小时未处理 ✓<br />
+- 单日消耗超过日均消耗 200% 时触发审查 ✓<br />
+- 账户出现政策违规警告时立即通知运营 ✓<br />
+- 发票状态变更（如开票完成、待寄送） ✓</p>
+<hr />
+<h3>第五步：定期复盘看板数据，优化流程</h3>
+<p>看板上线后第一个月是磨合期。建议在月底做一次结构化复盘：</p>
+<ul>
+<li>有没有数据字段长期为空？是录入习惯问题还是字段设计不合理？</li>
+<li>预警触发后，处理时效是否达标？</li>
+<li>有没有高频重复的手工操作可以自动化？</li>
+<li>财务和运营对数据的理解是否一致？</li>
+</ul>
+<hr />
+<h2>真实场景举例</h2>
+<p>某工具类 App 的出海团队，同时运营 12 个 Meta 账户、5 个 Google 账户。在引入看板管理之前，运营人员每天早上花 40 分钟手动汇总各平台余额和昨日消耗，还经常因为时差问题错过充值时机。</p>
+<p>引入系统化看板后，充值响应时间从平均 6 小时缩短到 2 小时，对账错误率下降了 80%。关键改变是把“充值申请—审核—到账—通知”这条链路从微信对话搬到了看板内，每个节点都有时间戳和负责人。</p>
+<hr />
+<h2>写在最后</h2>
+<p>代理开户服务做得好不好，不在于开了多少个户，而在于<strong>能不能把这些账户管清楚、用明白</strong>。一张好的看板，不是把所有数据堆在一起，而是让正确的信息、在正确的时间、出现在正确的人面前。</p>
+<p>如果你的团队现在还在靠表格和群消息管理广告账户，不妨从今天开始，列一张账户主表、搭一个最小可用的看板原型，先跑起来再说。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Why Spreadsheets Can't Manage Three Platforms: The Case for a Systematic Dashboard</h2>
+<p>Teams running overseas advertising typically manage multiple platforms simultaneously—Meta, Google, TikTok, and more. Account balances, spending records, top-up history, and invoice status are scattered across various chat windows and spreadsheets. Operations teams spend 2-3 hours weekly on reconciliation, only to find mismatches. The root cause isn't carelessness—it's <strong>information fragmentation and lack of a unified view</strong>.</p>
+<p>A systematic dashboard doesn't just solve "whether something was recorded"—it enables "can I see the big picture at a glance." This guide provides a practical checklist for building an agency account management dashboard.</p>
+<hr />
+<h2>Operations Checklist: Building a Systematic Agency Account Dashboard</h2>
+<h3>Step 1: Define Dashboard Users and Core Requirements</h3>
+<p>Before building, answer three questions:</p>
+<ul>
+<li>Who will use this dashboard? Operations, media buyers, finance, and management each need different data views.</li>
+<li>What's the core problem to solve? Balance alerts, top-up tracking, spending monitoring, or multi-account comparison?</li>
+<li>Where does the data come from? Manual entry, platform API integration, or agency portal export?</li>
+</ul>
+<p><strong>Checklist:</strong> Dedicated views for each role ✓ | Core data dimensions defined ✓ | Data sources confirmed ✓</p>
+<hr />
+<h3>Step 2: Design the Account Master Table Structure</h3>
+<p>The foundation of your dashboard is a well-structured account master table. Suggested fields:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Platform</td>
+<td>Meta / Google / TikTok etc.</td>
+</tr>
+<tr>
+<td>Account ID</td>
+<td>Platform-assigned account number</td>
+</tr>
+<tr>
+<td>Account Name</td>
+<td>Business-friendly identifier</td>
+</tr>
+<tr>
+<td>Account Type</td>
+<td>Agency account / Direct client</td>
+</tr>
+<tr>
+<td>Balance</td>
+<td>Current available balance</td>
+</tr>
+<tr>
+<td>Alert Threshold</td>
+<td>Minimum balance before alert</td>
+</tr>
+<tr>
+<td>Account Status</td>
+<td>Active / Restricted / Suspended</td>
+</tr>
+<tr>
+<td>Owner</td>
+<td>Sales/Operations person in charge</td>
+</tr>
+<tr>
+<td>Created Date</td>
+<td>For lifecycle tracking</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Checklist:</strong> Fields cover core operational data ✓ | Real-time status updates ✓ | Filtering and bulk operations supported ✓</p>
+<hr />
+<h3>Step 3: Build Top-up and Spending Flow Views</h3>
+<p>This is where most issues arise. Bind top-up records with spending data bidirectionally.</p>
+<p><strong>Top-up Flow Checklist:</strong><br />
+- Client submits top-up request ✓<br />
+- Operations confirms amount and target account ✓<br />
+- Finance reviews payment proof ✓<br />
+- Agency confirms receipt ✓<br />
+- Account balance updated ✓<br />
+- Top-up reference number and timestamp recorded ✓<br />
+- Top-up completion notification sent ✓</p>
+<p><strong>Reconciliation Flow Checklist:</strong><br />
+- Pull platform spending reports on fixed weekly schedule ✓<br />
+- Compare against system records ✓<br />
+- Flag anomalies (e.g., midnight spikes, threshold breaches) ✓<br />
+- Generate discrepancy report ✓<br />
+- Annotate problematic accounts for follow-up ✓</p>
+<hr />
+<h3>Step 4: Configure Balance and Top-up Alerts</h3>
+<p>One key value of a dashboard is <strong>proactive risk identification</strong>, not reactive damage control.</p>
+<p><strong>Alert Rules Checklist:</strong><br />
+- Auto-alert when single account balance drops below threshold ✓<br />
+- Reminder when top-up request pending over 24 hours ✓<br />
+- Alert when daily spend exceeds 200% of daily average ✓<br />
+- Immediate notification when account receives policy violation warning ✓<br />
+- Alert on invoice status changes (issued, pending shipment) ✓</p>
+<hr />
+<h3>Step 5: Conduct Regular Dashboard Reviews and Optimize</h3>
+<p>The first month after launch is a calibration period. Conduct a structured monthly review:</p>
+<ul>
+<li>Are any fields consistently empty? Is it a habit issue or a design flaw?</li>
+<li>Is alert response time meeting targets?</li>
+<li>Any high-frequency manual tasks that could be automated?</li>
+<li>Is finance aligned with operations on data definitions?</li>
+</ul>
+<hr />
+<h2>Real-World Example</h2>
+<p>A utility app's overseas team managed 12 Meta accounts and 5 Google accounts. Before implementing dashboard management, operations spent 40 minutes every morning manually compiling platform balances and previous-day spending, often missing top-up windows due to time zone gaps.</p>
+<p>After adopting a systematic dashboard, top-up response time dropped from an average of 6 hours to 2 hours, and reconciliation errors decreased by 80%. The key change was moving the "request—review—receipt—notification" chain from WeChat conversations into the dashboard, with timestamps and owners for each step.</p>
+<hr />
+<h2>Final Thoughts</h2>
+<p>Quality agency account management isn't about how many accounts you've opened—it's about <strong>whether you can manage them clearly and use them effectively</strong>. A good dashboard doesn't dump all data together; it delivers the right information to the right person at the right time.</p>
+<p>If your team still manages ad accounts via spreadsheets and group chats, start today: create an account master table and build a minimum viable dashboard prototype. Get it running first, then refine.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
