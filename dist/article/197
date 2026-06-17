@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">账户余额、实际消耗、发票金额三张表总是对不平？我拆了三个真实案例</span>
+                    <span x-show="lang === 'en'" x-cloak>Why Your Overseas Ad Spend Never Balances: 3 Real Cases Explained</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-06-18</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="197" data-base-views="73">73</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu486/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>凌晨两点，财务群里炸了</h2>
+<p>“双十一大促刚结束，我们投放经理小王和财务小李对着三张表对了三遍，Meta后台显示消耗 12.3 万美元，账户余额少了 14.8 万，预充值返点还没到账，发票还只开到了上个月……这账怎么平？”</p>
+<p>这不是某一家公司的问题。我接触过的出海团队，超过七成在月底对账时都会遇到充值金额、平台消耗、发票金额三者不一致的情况。今天用三个真实案例，拆开来看看到底卡在哪里。</p>
+<h2>案例一：汇率差吃掉了一万块的利润</h2>
+<p><strong>问题：</strong> 某工具类 App 团队月初充值 5 万美元到 Google Ads，月底对账发现消耗 4.8 万美元，账户余额显示 2100 美元，差了 100 美元去哪儿了？</p>
+<p><strong>判断：</strong> 充值时汇率 7.25，实际消耗统计时平台按 7.18 结算，差额 0.07 × 5万 = 3500 美元。再叠加 Google 的预扣税（约 6%）和账户级别的返点未到账期，整体数字就会出现明显偏差。</p>
+<p><strong>处理：</strong></p>
+<ol>
+<li>以平台账单（Invoice/Billing Summary）上的金额为准，这是最终结算依据</li>
+<li>建立汇率锁定机制：充值超过 2 万美元时，登记当日汇率和充值批次</li>
+<li>返点回款单独建表追踪，不要混在消耗里核算</li>
+</ol>
+<p><strong>结果：</strong> 次月对账时间从 6 小时压缩到 45 分钟，差异率从 3.2% 降至 0.15%。</p>
+<h2>案例二：时区差导致的消耗数字“穿越”</h2>
+<p><strong>问题：</strong> 某跨境电商团队在 TikTok 投放美区广告，太平洋时间 11 月 30 日 23:59 投放经理看到当日消耗 8000 美元，第二天打开后台显示 11 月 30 日总消耗 9200 美元——这笔钱怎么凭空多出来？</p>
+<p><strong>判断：</strong> TikTok 后台默认 UTC 时区，而团队成员习惯看本地时间。UTC 0 点对应美西时间下午 4 点，跨日节点前后的消耗会被计入不同日期，加上报表刷新有 2-4 小时延迟，导致“当日消耗”数据始终在变化。</p>
+<p><strong>处理：</strong></p>
+<ol>
+<li>对账统一使用 UTC 时间或固定一个基准时区</li>
+<li>所有报表截图统一标注采集时间</li>
+<li>跨日消耗以上传发票金额和平台结算单（Statements）为准，日报差异不超过 5% 可接受</li>
+</ol>
+<p><strong>结果：</strong> 团队约定每周五下午 3 点（UTC 0 点）统一拉取报表，对账分歧减少 80%。</p>
+<h2>案例三：发票滞后导致月度报表“缺一块”</h2>
+<p><strong>问题：</strong> 某游戏出海公司 10 月消耗 28 万美元，财务按充值金额入账 30 万美元，11 月初收到发票发现只开了 26 万，剩下 2 万去哪了？</p>
+<p><strong>判断：</strong> Meta 和 Google 的发票通常有 30-45 天开具周期，发票金额基于实际消耗而非预充值，且部分平台会对未消耗完的余额持续扣除服务费。另外，有些平台充值返点会分批到账，导致“已充值未到账余额”和“已消耗未开票金额”同时存在。</p>
+<p><strong>处理：</strong></p>
+<ol>
+<li>建立“三表核对”习惯：充值记录表、消耗明细表、发票到票表</li>
+<li>发票未到期间，以平台结算单作为入账依据</li>
+<li>充值返点单独挂账，不计入当期消耗成本</li>
+</ol>
+<p><strong>结果：</strong> 财务对账周期从每月 5 天缩短至 1.5 天，审计时不再出现“已付未耗”争议。</p>
+<h2>快速判断对账差异的 SOP</h2>
+<p>当你拿到三张表发现数字不一致，按这个顺序排查最省时间：</p>
+<blockquote>
+<p><strong>Step 1：</strong> 确认时间口径——用的是哪个时区、哪个日期段的消耗</p>
+<p><strong>Step 2：</strong> 汇率换算——充值汇率 vs 结算汇率差异是否在 0.5% 以内</p>
+<p><strong>Step 3：</strong> 预扣税和返点——平台预扣税（通常 6%）和充值返点是否已扣除</p>
+<p><strong>Step 4：</strong> 发票状态——发票是否已开具、是否只开具了部分</p>
+<p><strong>Step 5：</strong> 余额冻结——部分平台对未消耗完的余额有冻结机制</p>
+</blockquote>
+<h2>三个提醒</h2>
+<p>对账这件事，表面是财务问题，根源在流程。建议出海团队在跑量之前就把充值审批、消耗确认、发票归集三个环节的负责人定死，不要让一个人既充值又管消耗又对发票——职责分离是对自己最好的保护。</p>
+<p>另外，如果你管理着三个以上的海外广告账户，建议尽早使用多账户管理工具统一对账，靠表格手动比对的时代已经不够用了。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>2 AM: The Finance Team Group Chat Explodes</h2>
+<p>"The Double 11 sale just ended. Our performance marketer Xiao Wang and accountant Xiao Li have been cross-checking three reports for three rounds. Meta shows $123K spend, the account balance dropped by $148K, the recharge bonus hasn't arrived yet, and the invoice only covers last month... How do we balance this?"</p>
+<p>This isn't a problem unique to one company. Among the cross-border teams I've worked with, over 70% encounter mismatches between recharge amounts, platform spend, and invoice values during month-end reconciliation. Today, I'll break down three real cases to see exactly where things go wrong.</p>
+<h2>Case 1: Exchange Rate Differences Eating $10K in Profit</h2>
+<p><strong>Problem:</strong> A utility app team recharged $50,000 to Google Ads at the start of the month. At month-end reconciliation, spend was $48,000, account balance showed $2,100 - where did the extra $100 go?</p>
+<p><strong>Diagnosis:</strong> The recharge was made at 7.25 exchange rate, but the platform settled at 7.18. The difference of 0.07 × $50,000 = $3,500. Adding Google's withholding tax (~6%) and uncredited account bonuses creates a noticeable gap.</p>
+<p><strong>Action:</strong></p>
+<ol>
+<li>Use the platform invoice (Invoice/Billing Summary) as the final settlement basis</li>
+<li>Establish an exchange rate locking mechanism for recharges exceeding $20,000</li>
+<li>Track rebate credits separately in a dedicated table</li>
+</ol>
+<p><strong>Result:</strong> Reconciliation time dropped from 6 hours to 45 minutes, discrepancy rate reduced from 3.2% to 0.15%.</p>
+<h2>Case 2: Timezone Differences Causing Data "Time Travel"</h2>
+<p><strong>Problem:</strong> A cross-border e-commerce team running TikTok ads for the US market checked daily spend at 11:59 PM PST on November 30th - showing $8,000. When they opened the dashboard the next day, November 30th total showed $9,200. Where did the extra money go?</p>
+<p><strong>Diagnosis:</strong> TikTok's dashboard uses UTC timezone by default, while team members check local time. UTC midnight corresponds to 4 PM PST, causing cross-day spending to be recorded on different dates. Combined with 2-4 hour report refresh delays, "daily spend" figures keep changing.</p>
+<p><strong>Action:</strong></p>
+<ol>
+<li>Use UTC time consistently for all reconciliations</li>
+<li>Timestamp all report screenshots with collection time</li>
+<li>Use uploaded invoices and platform statements for cross-day spend, accept up to 5% daily variance</li>
+</ol>
+<p><strong>Result:</strong> The team agreed to pull unified reports every Friday at 3 PM (UTC midnight), reducing reconciliation disputes by 80%.</p>
+<h2>Case 3: Delayed Invoices Leaving Monthly Reports "Incomplete"</h2>
+<p><strong>Problem:</strong> A game publishing company's October spend was $280,000. Finance recorded $300,000 based on recharge amounts. When invoices arrived in early November, only $260,000 was invoiced - where did the remaining $20,000 go?</p>
+<p><strong>Diagnosis:</strong> Meta and Google invoices typically have a 30-45 day issuance cycle, based on actual spend rather than pre-recharges. Some platforms also continuously deduct fees from unspent balances. Additionally, recharge rebates arrive in batches, creating simultaneous "recharged but not credited" and "spent but not invoiced" situations.</p>
+<p><strong>Action:</strong></p>
+<ol>
+<li>Establish "three-table reconciliation": recharge records, spend details, invoice status</li>
+<li>Use platform statements as booking basis during uninvoiced periods</li>
+<li>Keep recharge rebates as separate deferred accounts</li>
+</ol>
+<p><strong>Result:</strong> Finance reconciliation cycle shortened from 5 days to 1.5 days per month, no more "paid but unspent" disputes during audits.</p>
+<h2>Quick SOP for Identifying Reconciliation Discrepancies</h2>
+<p>When you find mismatches across three tables, check in this order to save time:</p>
+<blockquote>
+<p><strong>Step 1:</strong> Confirm time scope - which timezone and date range of spend</p>
+<p><strong>Step 2:</strong> Exchange rate conversion - is the difference between recharge and settlement rates within 0.5%</p>
+<p><strong>Step 3:</strong> Withholding tax and rebates - have platform withholding (~6%) and recharge bonuses been deducted</p>
+<p><strong>Step 4:</strong> Invoice status - issued or partially issued</p>
+<p><strong>Step 5:</strong> Balance freezes - some platforms freeze unspent balances</p>
+</blockquote>
+<h2>Three Takeaways</h2>
+<p>Reconciliation is seemingly a finance issue, but the root cause is process. I recommend that cross-border teams designate specific people for recharge approval, spend confirmation, and invoice collection before scaling spend. Don't let one person handle recharges, spend tracking, AND reconciliation - separation of duties is your best protection.</p>
+<p>Also, if you're managing more than three overseas ad accounts, consider adopting multi-account management tools for unified reconciliation early on. The era of manual spreadsheet reconciliation is no longer sufficient.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
