@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">Q1独立站广告预算分配指南：三大渠道权重如何动态调整</span>
+                    <span x-show="lang === 'en'" x-cloak>Q1 Independent Website Ad Budget Allocation: Dynamic Adjustment Strategies Across Three Major Channels</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-06-19</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="201" data-base-views="54">54</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu6695/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>本周变化：流量成本分化加剧</h2>
+<p>开年第一周，跨境电商广告投放出现明显分化信号。Meta平台CPM在欧美市场持续走高，部分品类（如3C配件）单次展示成本较Q4上涨15%-20%；Google搜索广告的CPC相对稳定，但购物广告的转化成本有所波动；TikTok信息流广告价格则保持优势，部分东南亚市场的CPM仅为Meta的40%-60%。</p>
+<p>这种分化意味着"平均分配"策略正在失效。独立站卖家需要更精细的预算分配逻辑。</p>
+<h2>实操框架：按目的划分的预算分配原则</h2>
+<h3>1. 流量型预算：追求规模与效率的平衡</h3>
+<p>如果你的独立站处于爬坡期，核心目标是扩大流量入口，建议采用以下分配比例：</p>
+<ul>
+<li><strong>Meta广告组（60%-70%）</strong>：优先投放再营销受众和相似受众，利用其精准定向能力降低CAC</li>
+<li><strong>Google购物广告（20%-25%）</strong>：承接高意向搜索流量，配合产品Feed优化</li>
+<li><strong>TikTok测试组（10%-15%）</strong>：以低成本测试素材方向，容忍更高CPA</li>
+</ul>
+<blockquote>
+<p><strong>本周提示</strong>：如果你发现某个渠道的7日ROAS持续低于1.5倍，建议将该渠道预算削减20%，而非直接关停——有时候只是素材疲劳而非渠道问题。</p>
+</blockquote>
+<h3>2. 利润型预算：严控CAC与LTV比</h3>
+<p>成熟站点的预算分配逻辑完全不同。此时核心指标是"获客成本与客户终身价值"的比率。某家居品类独立站的经验是：将60%预算放在Google搜索和购物广告（高意向流量，转化率高），30%放在Meta再营销（提升客单价和复购），仅保留10%用于新受众测试。</p>
+<p><strong>关键公式</strong>：</p>
+<pre><code>安全获客成本 = 平均客单价 × 毛利率 × 目标ROI阈值
+</code></pre>
+<p>以客单价80美元、毛利率35%、目标ROI 2.0为例，安全CAC上限为22.4美元。超过这个数字的渠道应该立即审视。</p>
+<h3>3. 爆品型预算：高风险高回报的配置</h3>
+<p>节假日促销或爆品推广期，预算分配需要激进但有序：</p>
+<ul>
+<li><strong>测试期（第1-3天）</strong>：每个渠道分配小预算快速验证素材方向</li>
+<li><strong>放量期（第4-7天）</strong>：集中预算到已验证的高转化素材</li>
+<li><strong>收割期（第8天后）</strong>：降低CPM成本，维持ROI的同时延长爆品生命周期</li>
+</ul>
+<h2>本周建议：建立"预算缓冲池"机制</h2>
+<p>基于本周观察到的流量波动，建议独立站团队建立<strong>10%-15%的弹性预算池</strong>：</p>
+<ol>
+<li><strong>监控指标</strong>：每日跟踪渠道级CPM、CPC、CTR、7日ROAS</li>
+<li><strong>触发条件</strong>：当某渠道CPM单周上涨超过10%，自动启用缓冲池补充</li>
+<li><strong>回收机制</strong>：效果不佳的渠道预算自动回流缓冲池，重新分配</li>
+</ol>
+<p>这种机制的好处是避免"一刀切"关停导致的流量断崖，同时保持预算的灵活响应能力。</p>
+<h2>本周风险提示</h2>
+<ul>
+<li>Meta近期对"诱导性点击"素材的审查趋严，服饰类卖家需特别注意</li>
+<li>欧盟区GDPR合规要求持续加码，再营销受众池可能出现缩窄</li>
+<li>建议在Q1前完成一次受众清理，去除低活跃度用户，提升相似受众质量</li>
+</ul>
+<hr />
+<p><strong>下期预告</strong>：独立站弃单率居高不下？下周我们将从广告归因角度分析，购物车放弃广告与首单转化广告的预算配比优化方案。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>This Week's Changes: Traffic Cost Divergence Intensifies</h2>
+<p>In the first week of the new year, cross-border e-commerce advertising shows clear divergence. Meta's CPM continues rising in European and American markets, with some categories (like 3C accessories) seeing 15%-20% increases per impression compared to Q4. Google's CPC remains relatively stable, but shopping ad conversion costs show some fluctuation. Meanwhile, TikTok feed ads maintain price advantages, with CPMs in certain Southeast Asian markets reaching only 40%-60% of Meta's rates.</p>
+<p>This divergence means the "equal distribution" strategy is becoming ineffective. Independent website sellers need more refined budget allocation logic.</p>
+<h2>Practical Framework: Budget Allocation Principles by Objective</h2>
+<h3>1. Traffic-Oriented Budget: Balancing Scale and Efficiency</h3>
+<p>If your independent website is in a growth phase with expanding traffic as the core goal, consider this allocation:</p>
+<ul>
+<li><strong>Meta Ad Sets (60%-70%)</strong>: Prioritize retargeting audiences and lookalike audiences, leveraging precise targeting to reduce CAC</li>
+<li><strong>Google Shopping Ads (20%-25%)</strong>: Capture high-intent search traffic with optimized product feeds</li>
+<li><strong>TikTok Test Group (10%-15%)</strong>: Test creative directions at lower costs, tolerating higher CPA</li>
+</ul>
+<blockquote>
+<p><strong>This Week's Tip</strong>: If a channel shows 7-day ROAS consistently below 1.5x, consider reducing that channel's budget by 20% rather than shutting it down entirely—sometimes it's creative fatigue, not a channel issue.</p>
+</blockquote>
+<h3>2. Profit-Oriented Budget: Strict CAC and LTV Ratio Control</h3>
+<p>For mature sites, budget allocation logic differs entirely. The core metric now is the "customer acquisition cost to lifetime value" ratio. One home goods independent website's approach: allocating 60% to Google search and shopping ads (high-intent traffic, higher conversion rates), 30% to Meta retargeting (increasing AOV and repeat purchases), and reserving only 10% for new audience testing.</p>
+<p><strong>Key Formula</strong>:</p>
+<pre><code>Safe CAC = Average Order Value × Gross Margin × Target ROI Threshold
+</code></pre>
+<p>Using an AOV of $80, gross margin of 35%, and target ROI of 2.0x as examples, the safe CAC ceiling is $22.4. Any channel exceeding this should be immediately reviewed.</p>
+<h3>3. Hot Product Budget: High-Risk, High-Reward Configuration</h3>
+<p>During holiday promotions or product launches, budget allocation needs to be aggressive yet orderly:</p>
+<ul>
+<li><strong>Testing Phase (Days 1-3)</strong>: Small budgets across channels to quickly validate creative directions</li>
+<li><strong>Scaling Phase (Days 4-7)</strong>: Concentrate budget on verified high-converting creatives</li>
+<li><strong>Harvesting Phase (Day 8+)</strong>: Reduce CPM costs while maintaining ROI and extending the product lifecycle</li>
+</ul>
+<h2>This Week's Recommendation: Establish a "Budget Buffer Pool" Mechanism</h2>
+<p>Based on this week's traffic volatility observations, we recommend independent website teams establish a <strong>10%-15% flexible budget buffer</strong>:</p>
+<ol>
+<li><strong>Monitoring Metrics</strong>: Daily tracking of channel-level CPM, CPC, CTR, and 7-day ROAS</li>
+<li><strong>Trigger Conditions</strong>: When a channel's CPM rises more than 10% in a single week, automatically supplement from the buffer pool</li>
+<li><strong>Recovery Mechanism</strong>: Underperforming channel budgets automatically flow back to the buffer pool for reallocation</li>
+</ol>
+<p>The benefit of this mechanism is avoiding the traffic cliff caused by "blanket cuts" while maintaining budget flexibility.</p>
+<h2>This Week's Risk Alerts</h2>
+<ul>
+<li>Meta is tightening review of "click-bait" creatives; apparel sellers should pay special attention</li>
+<li>EU GDPR compliance requirements continue strengthening; retargeting audience pools may narrow</li>
+<li>Recommend completing an audience cleanup before Q1, removing low-activity users to improve lookalike audience quality</li>
+</ul>
+<hr />
+<p><strong>Next Week's Preview</strong>: Struggling with high cart abandonment rates? Next week we'll analyze, from an advertising attribution perspective, the optimal budget allocation between cart abandonment ads and first-purchase conversion ads.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
