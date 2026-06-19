@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">AI 广告文案同质化困局破解：5步检查清单与实操技巧</span>
+                    <span x-show="lang === 'en'" x-cloak>Breaking Free from AI Ad Copy Homogenization: 5-Step Checklist and Practical Tips</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-06-20</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="205" data-base-views="36">36</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu7615/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>为什么你的 AI 广告文案总像「复制粘贴」</h2>
+<p>同一个产品、同一个卖点、三家竞争对手同时用「Unlock Your Potential」开场——这不是巧合，是 AI 工具的同质化输出正在成为出海投放的新痛点。当 Prompt 相似、模型相似、数据集相似，生成结果趋同几乎是必然。</p>
+<p>以下是一套可直接用于团队的检查清单，先诊断问题，再逐项修复。</p>
+<hr />
+<h2>检查清单 A：诊断同质化程度</h2>
+<p>在动手修改之前，先确认问题的严重程度。</p>
+<ul>
+<li>[ ] <strong>抽样检查</strong>：从近期投放的 20 条 AI 文案中随机抽取 5 条，对比竞品或行业头部素材，列出相似度最高的 3 处表达</li>
+<li>[ ] <strong>关键词重合率</strong>：统计文案中高频出现的名词/动词TOP5，如果与竞品高度重叠，说明模型在「抄作业」</li>
+<li>[ ] <strong>CTR 对比</strong>：同赛道、同产品类型中，你的 AI 文案 CTR 是否低于行业均值 15% 以上</li>
+<li>[ ] <strong>素材疲劳周期</strong>：AI 文案的转化衰减速度是否明显快于预期（正常周期通常为 2-3 周）</li>
+</ul>
+<blockquote>
+<p>如果以上 3 项以上为「是」，同质化问题已经影响投放效果，需要立即进入修复流程。</p>
+</blockquote>
+<hr />
+<h2>检查清单 B：5步修复流程（可直接执行）</h2>
+<h3>步骤 1：重新定义 Prompt 的「约束条件」</h3>
+<p><strong>❌ 同质化 Prompt 示例：</strong></p>
+<blockquote>
+<p>"为某工具类 App 写一条 Facebook 广告文案，突出效率提升，包含 CTA"</p>
+</blockquote>
+<p><strong>✅ 去同质化 Prompt 示例：</strong></p>
+<blockquote>
+<p>"为一款主打[功能名称]的工具类 App 写广告文案。目标用户是[具体人群，如：北美自由职业者，年龄 25-40 岁]，语言风格：[幽默/专业/口语化，指定一种]，禁止使用以下词汇：[列举竞品常用词]，每条文案必须包含一个[具体数字/场景/情绪]，长度控制在 25 词以内"</p>
+</blockquote>
+<p><strong>检查项：</strong><br />
+- [ ] Prompt 中是否指定了目标用户的具体画像（地域/职业/痛点）<br />
+- [ ] 是否列明了「禁止使用」的词汇清单<br />
+- [ ] 是否要求模型输出「具体场景」而非「抽象概念」</p>
+<hr />
+<h3>步骤 2：注入品牌专属「语言变量」</h3>
+<p>AI 模型倾向于生成高频出现的通用表达。要打破这一点，需要主动注入品牌独有的语言风格。</p>
+<p><strong>实操方法：</strong><br />
+1. 收集品牌历史转化最高的 10 条文案（哪怕是人工写的），提取其语言特征<br />
+2. 将特征整理为「风格指南」写入 Prompt：例如「使用短句、前置数字、避免形容词堆砌」<br />
+3. 为不同产品线设置独立的「语言变量包」，避免全账户共用同一风格</p>
+<p><strong>检查项：</strong><br />
+- [ ] 是否建立了品牌语言风格文档<br />
+- [ ] 是否为不同产品/地区/平台设置了差异化语言包</p>
+<hr />
+<h3>步骤 3：强制加入「非常规元素」</h3>
+<p>同质化文案的最大特征是「四平八稳」。加入以下元素可以快速拉开差异：</p>
+<table>
+<thead>
+<tr>
+<th>元素类型</th>
+<th>示例</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>具体场景描述</td>
+<td>"帮你把周三下午的 3 小时会议压缩到 45 分钟"</td>
+<td>效率类工具</td>
+</tr>
+<tr>
+<td>反常识陈述</td>
+<td>"免费工具往往最贵——这里有个例外"</td>
+<td>订阅类产品</td>
+</tr>
+<tr>
+<td>本地化俚语</td>
+<td>"This hack is lowkey underrated"</td>
+<td>TikTok/年轻受众</td>
+</tr>
+<tr>
+<td>数字前置</td>
+<td>"73% 的用户在第二周放弃，你在坚持第几天？"</td>
+<td>留存/习惯类产品</td>
+</tr>
+</tbody>
+</table>
+<p><strong>检查项：</strong><br />
+- [ ] 近 10 条文案中是否至少有 3 条包含上述「非常规元素」<br />
+- [ ] 不同广告组之间的文案风格是否存在可感知的差异</p>
+<hr />
+<h3>步骤 4：建立「对比测试」机制</h3>
+<p>发现问题靠人工，验证效果靠数据。建议每周固定进行一次 AI 文案与人工文案的对比测试。</p>
+<p><strong>最小化测试方案：</strong><br />
+- 同一广告组下设 2 条文案：1 条纯 AI 生成，1 条人工修改版<br />
+- 预算分配 50/50，运行 3 天后对比 CTR 和 CPA<br />
+- 将胜出文案的特征记入「优质模板库」</p>
+<p><strong>检查项：</strong><br />
+- [ ] 是否每周至少进行一次 AI vs 人工的 A/B 测试<br />
+- [ ] 测试数据是否有记录并归档<br />
+- [ ] 是否有团队成员专门负责文案质量复盘</p>
+<hr />
+<h3>步骤 5：定期更新「输入数据」</h3>
+<p>AI 生成质量高度依赖 Prompt 和上下文。如果你的 Prompt 三个月没换过，生成结果大概率已经「模式化」。</p>
+<p><strong>建议节奏：</strong><br />
+- 每周：更新竞品动态和热门表达（用于 Prompt 补充）<br />
+- 每月：复盘低转化文案特征，调整 Prompt 约束条件<br />
+- 每季度：评估当前使用的 AI 模型是否仍适配业务需求</p>
+<hr />
+<h2>快速自检：你的文案通过了吗？</h2>
+<p>在完成上述步骤后，用以下 3 个问题做最终判断：</p>
+<ol>
+<li><strong>陌生感测试</strong>：把文案发给不了解产品的同事，能否一眼看出与竞品的区别？</li>
+<li><strong>场景具体性测试</strong>：文案中是否有一个只有你的产品才能实现的「具体结果」？</li>
+<li><strong>情绪触发测试</strong>：文案能否让目标用户产生「这说的就是我」的共鸣感？</li>
+</ol>
+<p>三个问题中至少 2 个为「是」，文案同质化问题才算基本解决。</p>
+<hr />
+<p><strong>写在最后</strong></p>
+<p>AI 是工具，不是答案本身。同质化的根源不在于 AI，而在于「用 AI 代替思考」这个心态。把这套检查清单固化到团队 SOP 中，让 AI 负责执行，真正需要投入人的时间的是：定义差异化方向、注入品牌个性、验证内容效果。这三件事，目前 AI 仍无法替你完成。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Why Your AI Ad Copy Looks Like "Copy-Paste"</h2>
+<p>When the same product, the same USP, and three competitors all start with "Unlock Your Potential" — that's not coincidence. AI-driven homogenization in ad copy has become a real pain point for 出海 teams. When prompts are similar, models are similar, and datasets overlap, convergent output is almost inevitable.</p>
+<p>Below is a checklist your team can use immediately: diagnose the problem first, then fix it step by step.</p>
+<hr />
+<h2>Checklist A: Diagnosing the Degree of Homogenization</h2>
+<p>Before making changes, confirm how severe the problem is.</p>
+<ul>
+<li>[ ] <strong>Spot check</strong>: Randomly select 5 from your last 20 AI-generated ad copies and compare them with top competitor materials. List the 3 most similar expressions.</li>
+<li>[ ] <strong>Keyword overlap rate</strong>: Analyze the TOP5 most frequent nouns/verbs in your copies. If they heavily overlap with competitors, your model is "copying homework."</li>
+<li>[ ] <strong>CTR comparison</strong>: In the same category and product type, is your AI copy's CTR more than 15% below industry average?</li>
+<li>[ ] <strong>Creative fatigue cycle</strong>: Does your AI copy's conversion decay faster than expected (normal cycle is typically 2-3 weeks)?</li>
+</ul>
+<blockquote>
+<p>If 3 or more items above are "Yes," homogenization is affecting your campaign performance and requires immediate action.</p>
+</blockquote>
+<hr />
+<h2>Checklist B: 5-Step Fixing Process (Actionable Now)</h2>
+<h3>Step 1: Redefine "Constraints" in Your Prompt</h3>
+<p><strong>❌ Homogenized Prompt:</strong></p>
+<blockquote>
+<p>"Write a Facebook ad copy for a utility app, highlighting efficiency improvements, include a CTA."</p>
+</blockquote>
+<p><strong>✅ De-homogenized Prompt:</strong></p>
+<blockquote>
+<p>"Write ad copy for a utility app focused on [feature name]. Target audience: [specific persona, e.g., North American freelancers, age 25-40]. Language style: [humorous/professional/casual — specify one]. DO NOT use the following words: [list competitor-common words]. Each copy must include one [specific number/scenario/emotion]. Keep it under 25 words."</p>
+</blockquote>
+<p><strong>Check items:</strong><br />
+- [ ] Does the prompt specify a concrete target user profile (location/job/pain point)?<br />
+- [ ] Is there a "DO NOT USE" vocabulary list?<br />
+- [ ] Does it require "specific scenarios" instead of "abstract concepts"?</p>
+<hr />
+<h3>Step 2: Inject Brand-Exclusive "Language Variables"</h3>
+<p>AI models gravitate toward high-frequency, generic expressions. To break this pattern, actively inject your brand's unique voice.</p>
+<p><strong>Practical approach:</strong><br />
+1. Collect your top 10 historically converting copies (even if manually written) and extract their language features<br />
+2. Organize these features into a "Style Guide" and include it in your prompts: e.g., "Use short sentences, lead with numbers, avoid adjective stacking"<br />
+3. Set up independent "Language Packs" for different product lines to avoid sharing one style across the entire account</p>
+<p><strong>Check items:</strong><br />
+- [ ] Is there a brand language style document established?<br />
+- [ ] Are there differentiated language packs for different products/regions/platforms?</p>
+<hr />
+<h3>Step 3: Force-Inject "Unconventional Elements"</h3>
+<p>The biggest sign of homogenized copy is "perfectly safe language." Adding the following can quickly differentiate:</p>
+<table>
+<thead>
+<tr>
+<th>Element Type</th>
+<th>Example</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Specific scenario</td>
+<td>"Compress your Wednesday 3-hour meeting into 45 minutes"</td>
+<td>Productivity tools</td>
+</tr>
+<tr>
+<td>Counter-intuitive statement</td>
+<td>"Free tools are often the most expensive — here's an exception"</td>
+<td>Subscription products</td>
+</tr>
+<tr>
+<td>Local slang</td>
+<td>"This hack is lowkey underrated"</td>
+<td>TikTok/younger audiences</td>
+</tr>
+<tr>
+<td>Number-leading</td>
+<td>"73% of users quit by week 2. Which day are you on?"</td>
+<td>Retention/habit products</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Check items:</strong><br />
+- [ ] Out of your last 10 copies, do at least 3 contain any of the "unconventional elements" above?<br />
+- [ ] Is there a perceptible style difference between ad groups?</p>
+<hr />
+<h3>Step 4: Build a "Comparative Testing" Mechanism</h3>
+<p>Problem identification needs human judgment; solution validation needs data. Run weekly AI vs. human copy comparisons.</p>
+<p><strong>Minimum viable test:</strong><br />
+- Set 2 copies under the same ad group: 1 pure AI-generated, 1 human-edited version<br />
+- 50/50 budget split, run for 3 days, then compare CTR and CPA<br />
+- Document winning copy features in a "High-Performance Template Library"</p>
+<p><strong>Check items:</strong><br />
+- [ ] Is there at least one AI vs. human A/B test per week?<br />
+- [ ] Are test results recorded and archived?<br />
+- [ ] Is there a team member dedicated to copy quality reviews?</p>
+<hr />
+<h3>Step 5: Regularly Update "Input Data"</h3>
+<p>AI output quality highly depends on prompts and context. If your prompt hasn't changed in 3 months, the output has likely become "patterned."</p>
+<p><strong>Recommended cadence:</strong><br />
+- <strong>Weekly</strong>: Update competitor trends and trending expressions (for prompt enrichment)<br />
+- <strong>Monthly</strong>: Review low-converting copy patterns and adjust prompt constraints<br />
+- <strong>Quarterly</strong>: Evaluate whether the current AI model still fits your business needs</p>
+<hr />
+<h2>Quick Self-Check: Does Your Copy Pass?</h2>
+<p>After completing the steps above, make the final judgment with these 3 questions:</p>
+<ol>
+<li><strong>Unfamiliarity test</strong>: Show the copy to a colleague who doesn't know the product. Can they immediately spot the difference from competitors?</li>
+<li><strong>Scenario specificity test</strong>: Does the copy include a "concrete result" that only your product can deliver?</li>
+<li><strong>Emotional trigger test</strong>: Does the copy make the target user feel "this is talking about me"?</li>
+</ol>
+<p>At least 2 out of 3 questions answered "Yes" means the homogenization issue is basically resolved.</p>
+<hr />
+<p><strong>Final Note</strong></p>
+<p>AI is a tool, not the answer itself. The root cause of homogenization isn't AI — it's the mindset of "using AI to replace thinking." Embed this checklist into your team's SOP. Let AI handle execution. What still requires human time investment is: defining differentiation direction, injecting brand personality, and validating content effectiveness. These three things, AI still cannot do for you.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
