@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">代理开户服务为什么需要系统化看板？5个核心问题解答</span>
+                    <span x-show="lang === 'en'" x-cloak>Why Does Agency Account Opening Service Need a Systematic Dashboard?</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-06-27</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="226" data-base-views="45">45</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu2417/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>问题一：代理开户服务的核心痛点是什么？</h2>
+<p>代理开户涉及多个环节——客户提交资质、代理审核材料、开户平台提交、下户反馈。每个环节都可能出状况：材料不全需要反复催促，下户后没有及时通知客户，账户信息散落在不同聊天窗口，月底对账时发现某个账户遗漏了。</p>
+<p>这些问题的本质是<strong>信息不集中、流程不透明、状态不清晰</strong>。当客户量少时，靠人工记忆尚可应付；当客户量增长到每周十几个甚至几十个时，纯靠人力管理的瓶颈立刻显现。</p>
+<h2>问题二：为什么Excel和聊天记录管理开户需求已经不够用了？</h2>
+<p>很多团队早期用微信或飞书传递开户需求，用Excel表格记录账户状态。这种方式有三个致命缺陷：</p>
+<ol>
+<li>
+<p><strong>信息更新滞后</strong>。一个账户的状态变化需要人工修改表格，如果负责人忘记更新，其他人看到的就是过期信息。</p>
+</li>
+<li>
+<p><strong>查询困难</strong>。几十个账户混在一张表里，想找某个客户的开户进度，只能靠关键词搜索或逐行浏览，效率极低。</p>
+</li>
+<li>
+<p><strong>权限混乱</strong>。多人协作时，表格可能被不同人同时修改，导致数据覆盖或版本冲突。聊天记录更是无法追溯历史状态。</p>
+</li>
+</ol>
+<p>当业务规模从“试试看”变成“正经营收”时，管理工具必须升级。</p>
+<h2>问题三：系统化看板能解决哪些具体问题？</h2>
+<p>看板的本质是将流程拆解成可视化的卡片，每个卡片代表一个开户任务，状态随流程推进而更新。具体能解决三类问题：</p>
+<ul>
+<li>
+<p><strong>进度一目了然</strong>。每个账户当前处于哪个阶段——资料待审核、平台提交中、下户待确认——通过颜色或标签即可区分。团队成员打开看板，立刻知道整体情况，无需逐个询问。</p>
+</li>
+<li>
+<p><strong>避免遗漏和重复</strong>。新需求进入看板时，系统自动检查是否存在重复开户；任务超时未完成时，看板自动预警。这些规则可以替代人工记忆。</p>
+</li>
+<li>
+<p><strong>数据可追溯</strong>。从需求提出到下户完成的每一步操作都有记录，出了问题可以快速定位环节，也能为后续优化流程提供数据依据。</p>
+</li>
+</ul>
+<h2>问题四：哪些信号表明代理开户服务需要看板化？</h2>
+<p>如果你的团队出现以下情况，看板化已经是刚需而非可选项：</p>
+<ul>
+<li>每周新增开户需求超过5个，靠人工跟进开始出现遗漏</li>
+<li>客户频繁追问“我的账户到哪一步了”，因为团队自己也说不准</li>
+<li>月底对账时发现部分账户的费用没有及时记录或催收</li>
+<li>团队成员超过3人，协作时频繁出现信息不对称</li>
+</ul>
+<p>出现两条以上，说明当前的沟通方式已经无法支撑业务规模。</p>
+<h2>问题五：以渔的代理开户看板提供哪些具体功能？</h2>
+<p>以渔数媒针对出海企业的代理开户场景，搭建了专属的看板管理系统，核心功能包括：</p>
+<ul>
+<li><strong>多账户状态追踪</strong>：支持Meta、Google、TikTok等多平台开户任务统一管理，实时显示每个账户所处阶段</li>
+<li><strong>逾期自动预警</strong>：超过设定时限未完成的任务自动标记，提醒负责人及时处理</li>
+<li><strong>余额与费用联动</strong>：开户进度与账户充值状态关联，避免下户后余额为零的尴尬</li>
+<li><strong>财务对账同步</strong>：每月自动生成开户清单，支持导出核对，财务审核效率提升50%以上</li>
+<li><strong>团队权限管理</strong>：不同成员可设置不同操作权限，防止误操作导致的数据混乱</li>
+</ul>
+<hr />
+<p>代理开户从“靠嘴跟进”走向“看板驱动”，本质是从人工管理升级为系统管理。这不是选配，而是业务规模增长后的必然选择。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Q1: What are the core pain points of agency account opening services?</h2>
+<p>Agency account opening involves multiple stages—client submits qualifications, agent reviews materials, platform submission, and account delivery feedback. Problems can occur at any stage: incomplete materials requiring repeated follow-ups, delayed client notifications after account approval, account information scattered across different chat windows, and discovering missed accounts during monthly reconciliation.</p>
+<p>The root cause is <strong>disconnected information, opaque processes, and unclear status</strong>. When client volume is low, manual tracking may suffice. But when growth reaches dozens of accounts per week, human-only management hits its limit immediately.</p>
+<h2>Q2: Why are spreadsheets and chat records no longer sufficient?</h2>
+<p>Many teams initially use WeChat or Feishu for account opening requests and spreadsheets for status tracking. This approach has three critical flaws:</p>
+<ol>
+<li>
+<p><strong>Outdated information</strong>. Status changes require manual table updates. If someone forgets, others see stale data.</p>
+</li>
+<li>
+<p><strong>Difficult retrieval</strong>. With dozens of accounts mixed in one sheet, finding a specific client's progress requires keyword searches or row-by-row browsing—highly inefficient.</p>
+</li>
+<li>
+<p><strong>Permission chaos</strong>. During multi-person collaboration, simultaneous edits cause data overwrites or version conflicts. Chat records cannot track historical status.</p>
+</li>
+</ol>
+<p>When operations scale from "trial" to "formal business," management tools must evolve.</p>
+<h2>Q3: What specific problems can a systematic dashboard solve?</h2>
+<p>A dashboard visualizes processes as cards, each representing an account opening task, updating status as it progresses. It solves three core issues:</p>
+<ul>
+<li>
+<p><strong>Instant progress visibility</strong>. Each account's current stage—materials pending review, platform submission in progress, awaiting confirmation—is distinguished by color or tags. Team members see overall status immediately without individual inquiries.</p>
+</li>
+<li>
+<p><strong>Prevent omissions and duplicates</strong>. When new requests enter the dashboard, the system automatically checks for duplicate openings; overdue tasks trigger automatic alerts. These rules replace human memory.</p>
+</li>
+<li>
+<p><strong>Traceable data</strong>. Every step from request to delivery has records. When issues arise, the problematic stage can be quickly identified, providing data for future process optimization.</p>
+</li>
+</ul>
+<h2>Q4: When does agency account opening need dashboard management?</h2>
+<p>Dashboard management becomes essential rather than optional if your team experiences:</p>
+<ul>
+<li>More than 5 new account opening requests per week, with manual follow-ups beginning to miss items</li>
+<li>Clients frequently asking "What's the status of my account?" because the team itself cannot provide clear answers</li>
+<li>Discovering unbilled accounts or unpaid fees during monthly reconciliation</li>
+<li>More than 3 team members with frequent information asymmetry during collaboration</li>
+</ul>
+<p>Two or more symptoms indicate current communication methods cannot support business scale.</p>
+<h2>Q5: What specific features does Yiyu's agency account opening dashboard provide?</h2>
+<p>Yiyu Shumei built a dedicated dashboard system for outbound enterprises' agency account opening scenarios, with core features including:</p>
+<ul>
+<li><strong>Multi-account status tracking</strong>: Unified management of Meta, Google, TikTok, and other platform account opening tasks with real-time stage display</li>
+<li><strong>Automatic overdue alerts</strong>: Tasks exceeding set time limits automatically flagged, prompting timely handling</li>
+<li><strong>Balance and fee linkage</strong>: Account progress linked to recharge status, avoiding the awkward situation of zero balance after account approval</li>
+<li><strong>Financial reconciliation sync</strong>: Monthly automatic account opening list generation with export support, improving financial audit efficiency by 50%+</li>
+<li><strong>Team permission management</strong>: Different members assigned different operation permissions to prevent data chaos from misoperations</li>
+</ul>
+<hr />
+<p>Transitioning agency account opening from "verbal follow-ups" to "dashboard-driven" represents an upgrade from manual to systematic management. This is not optional—it's inevitable as business scales.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
