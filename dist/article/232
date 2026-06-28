@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">AI广告文案避同质化：运营检查清单与5步实操方案</span>
+                    <span x-show="lang === 'en'" x-cloak>AI Ad Copy Differentiation: An Actionable Checklist for Avoiding Generic Output</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-06-29</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="232" data-base-views="99">99</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu4794/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <p>在出海广告投放中，AI工具已深度嵌入文案创作流程。但当所有团队都用同一套提示词生成文案时，“AI味”就成了新的同质化标签。</p>
+<p>以下是一份针对广告文案同质化问题的运营检查清单，适用于Meta、TikTok、Google等主流平台。</p>
+<h2>一、文案生成前的检查项</h2>
+<p>在调用AI之前，先完成这些准备：</p>
+<p><strong>1. 明确目标用户的具体场景</strong><br />
+- ❌ 模糊定位："针对年轻女性"<br />
+- ✅ 精准定位："美国25-34岁都市女性，在亚马逊搜索平价护肤品的用户"</p>
+<p><strong>2. 锁定核心转化动机</strong><br />
+- 是价格敏感型还是品质导向型？<br />
+- 用户处于哪个决策阶段？</p>
+<p><strong>3. 梳理竞品常见表达方式</strong><br />
+- 列出3-5个主要竞争对手的文案关键词<br />
+- 确认这些词你本次要避免使用</p>
+<h2>二、AI提示词的结构优化</h2>
+<p>拿到AI初稿前，提示词需要包含：</p>
+<p><strong>基础要素（必须包含）：</strong><br />
+- 产品/服务具体名称<br />
+- 目标受众详细画像<br />
+- 主要卖点USP<br />
+- 期望的行动号召</p>
+<p><strong>差异化指令（区分平庸文案的关键）：</strong><br />
+- "避免使用：最好、优质、超值等空洞词汇"<br />
+- "请用具体数字或场景替代抽象描述"<br />
+- "加入[具体文化背景]用户会产生的[具体情绪]"</p>
+<p><strong>案例对比：</strong></p>
+<table>
+<thead>
+<tr>
+<th>通用提示词</th>
+<th>差异化提示词</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"写一个电商广告文案"</td>
+<td>"为一款专为程序员设计的颈椎按摩仪写Tiktok广告开场白，前3秒要制造'久坐党被戳中痛点'的共鸣感，避免使用'智能''人体工学'等已被用烂的词"</td>
+</tr>
+</tbody>
+</table>
+<h2>三、初稿筛选的5项检查</h2>
+<p>AI生成后，用这些问题过滤：</p>
+<p><strong>Q1: 这段文案能放在竞品广告位上吗？</strong><br />
+如果答案是"可以，但分不清是谁的"，说明同质化严重。</p>
+<p><strong>Q2: 目标用户会用什么词搜索或描述这个需求？</strong><br />
+把AI使用的词与真实用户语言做对比，差距越大问题越大。</p>
+<p><strong>Q3: 文案中有没有可以量化或具体化的描述？</strong><br />
+"大幅提升" → "3周看到变化"<br />
+"效果显著" → "92%用户反馈"</p>
+<p><strong>Q4: 情感层次是否超过一个？</strong><br />
+单纯的"想要"或"害怕错过"太单薄，是否叠加了骄傲、归属、好奇等第二层情绪？</p>
+<p><strong>Q5: 是否植入了品牌独特基因？</strong><br />
+品牌态度、专业背书、独特风格是否在文案中有体现？</p>
+<h2>四、效率与差异化的平衡策略</h2>
+<p><strong>批量生成 + 人工精调模式</strong><br />
+1. 用AI生成10-15个不同角度的初稿<br />
+2. 按检查清单筛选出3-5个有差异化的版本<br />
+3. 人工介入加入品牌语调和具体数据<br />
+4. 最终保留2-3个差异化版本进入A/B测试</p>
+<p><strong>某工具类App的实践案例</strong><br />
+该团队在东南亚市场投放时，发现AI生成的"提高效率"类文案点击率持续下降。通过在提示词中加入"目标用户每天在地铁上使用手机的具体场景"和"当地用户对时间成本的独特表达方式"，配合人工替换竞品高频词，最终CTR提升了37%。</p>
+<h2>五、本周可执行的动作清单</h2>
+<ul>
+<li>[ ] 整理竞品文案高频词清单，标注需规避的词汇</li>
+<li>[ ] 重写AI提示词模板，加入差异化指令</li>
+<li>[ ] 对现有在投文案进行Q1-Q5检查</li>
+<li>[ ] 建立"AI初稿+人工差异化加工"的标准流程</li>
+<li>[ ] 记录每次测试中有效差异化的具体要素</li>
+</ul>
+<p><strong>核心原则：</strong> AI是加速器，不是终点站。避免同质化的关键不在于"不用AI"，而在于用AI的人有没有提供足够精准的场景、情感和差异化指令。</p>
+<hr />
+<p><strong>延伸阅读：</strong><br />
+- 《TikTok短视频广告出海投放策略与ROI提升》<br />
+- 《Meta广告高转化素材设计指南》</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Pre-Generation Checklist</h2>
+<p>Before calling AI, complete these preparations:</p>
+<p><strong>1. Define specific user scenarios</strong><br />
+- ❌ Vague: "Targeting young women"<br />
+- ✅ Specific: "Urban women 25-34 in the US searching for affordable skincare on Amazon"</p>
+<p><strong>2. Lock in core conversion motivations</strong><br />
+- Price-sensitive or quality-oriented?<br />
+- What decision stage is the user in?</p>
+<p><strong>3. Map out competitor expressions</strong><br />
+- List 3-5 main competitors' copy keywords<br />
+- Confirm which words you must avoid this round</p>
+<h2>Prompt Structure Optimization</h2>
+<p><strong>Basic elements (required):</strong><br />
+- Specific product/service name<br />
+- Detailed target audience profile<br />
+- Key USP<br />
+- Desired call-to-action</p>
+<p><strong>Differentiation instructions (key to standing out):</strong><br />
+- "Avoid: best, premium, great value and other empty words"<br />
+- "Replace abstract descriptions with specific numbers or scenarios"<br />
+- "Incorporate the [specific emotion] that [specific cultural background] users would feel"</p>
+<h2>5-Point Post-Generation Filter</h2>
+<p><strong>Q1: Could this copy belong to a competitor?</strong><br />
+If yes, it's generic.</p>
+<p><strong>Q2: What words would real users use to describe this need?</strong><br />
+The bigger the gap between AI language and user language, the bigger the problem.</p>
+<p><strong>Q3: Can any descriptions be quantified or made specific?</strong><br />
+"Dramatically improved" → "Visible changes in 3 weeks"</p>
+<p><strong>Q4: Does the emotional layer go beyond one dimension?</strong><br />
+Pure "want" or "FOMO" is too thin. Does it layer pride, belonging, or curiosity?</p>
+<p><strong>Q5: Does it embed unique brand DNA?</strong><br />
+Brand voice, credentials, or distinctive style—present?</p>
+<h2>Balancing Efficiency and Differentiation</h2>
+<p><strong>Batch Generate + Human Refine Model:</strong><br />
+1. Generate 10-15 different-angle drafts with AI<br />
+2. Filter 3-5 differentiated versions using the checklist<br />
+3. Add brand tone and specific data manually<br />
+4. Keep 2-3 differentiated versions for A/B testing</p>
+<p><strong>Case Study:</strong> A utility app team targeting Southeast Asia noticed declining CTR on AI-generated "boost efficiency" copy. By adding specific scene descriptions of users on subways and local expressions about time costs to their prompts, then manually replacing overused competitor terms, they achieved a 37% CTR improvement.</p>
+<h2>This Week's Action Items</h2>
+<ul>
+<li>[ ] Compile competitor copy high-frequency word list</li>
+<li>[ ] Rewrite AI prompt templates with differentiation instructions</li>
+<li>[ ] Run Q1-Q5 checks on current live copy</li>
+<li>[ ] Establish "AI draft + human differentiation" standard workflow</li>
+<li>[ ] Document effective differentiation elements from each test</li>
+</ul>
+<p><strong>Core Principle:</strong> AI is an accelerator, not a destination. Avoiding generic output isn't about "not using AI"—it's about whether the human operator provided precise scenarios, emotions, and differentiation instructions.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
