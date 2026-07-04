@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">海外广告账户资金管理的三个关键指标，老司机都在盯</span>
+                    <span x-show="lang === 'en'" x-cloak>Three Critical Metrics for Enterprise-Level Overseas Ad Account Fund Management</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-07-05</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="250" data-base-views="47">47</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu4690/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>结论先行：你的资金管理可能正在拖垮投放效率</h2>
+<p>很多出海团队把资金管理简单理解为“账户充值”，但真正拖累投放效率的，是三个被忽视的隐性指标：余额预警是否及时、充值到账是否稳定、以及账户健康度是否可控。这三个指标控制不好，再好的投放策略都可能因为余额归零而中断。</p>
+<hr />
+<h2>指标一：余额预警响应时效</h2>
+<p><strong>结论：</strong> 余额预警不能只靠系统通知，更重要的是团队的响应时效。</p>
+<p>在实际运营中，我们见过太多案例：某电商独立站团队配置了余额预警，但运营人员收到通知后平均需要4-6小时才能完成充值审批流程。这期间广告投放已经暂停，对于正在跑促销活动的账户来说，每小时的损失可能达到数百美元。</p>
+<p><strong>运营建议：</strong> 建立分级预警机制——余额低于50%时通知运营，低于20%时通知财务，低于10%时触发紧急充值流程。某工具类App团队通过这套机制，将预警响应时间从平均5小时压缩到45分钟以内。</p>
+<hr />
+<h2>指标二：充值到账周期</h2>
+<p><strong>结论：</strong> 不同平台的充值到账时间差异巨大，提前规划充值节奏是关键。</p>
+<p>Facebook/Meta广告账户使用企业账户模式时，大额充值通常需要1-3个工作日审核；Google Ads的支票或电汇可能需要3-5天；TikTok企业账户的充值到账相对较快，但也存在高峰期延迟。</p>
+<p>某游戏出海团队曾因为低估了Meta企业账户的审核周期，导致新游戏上线当天账户余额耗尽且无法及时补充，单日收入损失超过预期峰值的30%。事后复盘发现，如果提前2天安排充值，完全可以避免这次事故。</p>
+<p><strong>运营建议：</strong> 将充值周期纳入投放节奏规划，重要活动前至少提前3个工作日安排充值。同时建立多账户资金池机制，一个账户余额不足时自动切换到备用账户。</p>
+<hr />
+<h2>指标三：账户健康度评分</h2>
+<p><strong>结论：</strong> 账户健康度直接影响资金使用效率，被封账户的资金冻结是最大的隐性损失。</p>
+<p>很多团队只关注充值和消耗，却忽视了账户健康度这个“乘数因子”。一个频繁触发审核、遭遇限额、或者存在封号风险的账户，即使余额充足，也无法正常消耗预算。更糟糕的是，被封账户中的余额往往需要数周甚至数月才能完成申诉解冻。</p>
+<p>某跨境电商团队在旺季前曾因过度追求爆量，单日新建大量广告组，导致10%的账户被Meta临时限制。这些账户中冻结的资金超过2万美元，直接影响了旺季备货和投放计划。</p>
+<p><strong>运营建议：</strong> 每周检查一次账户健康度评分，关注以下信号：广告审核时间是否延长、是否收到政策违规警告、消耗是否出现异常波动。建立账户分级制度，健康度高的账户承担主力投放任务，健康度较低的账户控制预算。</p>
+<hr />
+<h2>总结</h2>
+<p>海外广告资金管理的核心不是“有没有钱”，而是“资金能不能持续稳定地支撑投放”。盯紧余额预警响应时效、充值到账周期、账户健康度这三个指标，建立对应的管理机制，才是真正的精细化运营。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Lead with the Conclusion: Your Fund Management Might Be Dragging Down Campaign Efficiency</h2>
+<p>Many overseas teams simplify fund management to "recharging accounts," but what truly undermines campaign efficiency are three overlooked metrics: whether balance alerts are timely, whether deposits arrive reliably, and whether account health is controllable. Without control over these three metrics, even the best campaign strategies can be interrupted by balance depletion.</p>
+<hr />
+<h2>Metric 1: Balance Alert Response Time</h2>
+<p><strong>Conclusion:</strong> Balance alerts shouldn't rely solely on system notifications—team response time matters more.</p>
+<p>In actual operations, we've seen countless cases: teams configured balance alerts, but operators needed 4-6 hours on average to complete the recharge approval process after receiving notifications. During this time, ad delivery had already paused. For accounts running promotions, hourly losses could reach hundreds of dollars.</p>
+<p><strong>Operational Recommendation:</strong> Establish a tiered alert mechanism—when balance drops below 50%, notify operations; below 20%, notify finance; below 10%, trigger emergency recharge procedures. One utility app team compressed average alert response time from 5 hours to under 45 minutes using this system.</p>
+<hr />
+<h2>Metric 2: Deposit Arrival Cycle</h2>
+<p><strong>Conclusion:</strong> Different platforms have vastly different deposit arrival times; planning recharge schedules in advance is crucial.</p>
+<p>When using Meta for Business accounts, large deposits typically require 1-3 business days for review; Google Ads checks or wire transfers may take 3-5 days; TikTok enterprise account deposits are relatively faster but also face peak-hour delays.</p>
+<p>One game overseas team underestimated Meta business account review cycles, resulting in account balance depletion on the new game's launch day with no way to replenish in time. Daily revenue loss exceeded the expected peak by over 30%. Post-mortem analysis revealed that arranging deposits 2 days in advance would have completely prevented this incident.</p>
+<p><strong>Operational Recommendation:</strong> Incorporate deposit cycles into campaign scheduling—arrange deposits at least 3 business days before important events. Also establish a multi-account fund pool mechanism where when one account runs low, it automatically switches to a backup account.</p>
+<hr />
+<h2>Metric 3: Account Health Score</h2>
+<p><strong>Conclusion:</strong> Account health directly impacts fund utilization efficiency; frozen funds in suspended accounts represent the largest hidden loss.</p>
+<p>Many teams only focus on deposits and spending while overlooking the "multiplier factor" of account health. An account frequently triggering reviews, facing restrictions, or at risk of suspension cannot properly spend its budget even with sufficient balance. Worse, balances in suspended accounts often require weeks or even months to complete appeals and unfreeze.</p>
+<p>One cross-border e-commerce team pursued aggressive scaling before peak season, creating numerous ad groups in a single day, causing 10% of accounts to face temporary Meta restrictions. Frozen funds in these accounts exceeded $20,000, directly impacting peak-season inventory and campaign planning.</p>
+<p><strong>Operational Recommendation:</strong> Check account health scores weekly, monitoring these signals: whether ad review times are lengthening, whether policy violation warnings have been received, whether spending shows abnormal fluctuations. Establish account tiering systems—accounts with high health undertake primary delivery tasks; accounts with lower health control budgets.</p>
+<hr />
+<h2>Summary</h2>
+<p>The core of overseas ad fund management isn't "whether there's money" but "whether funds can continuously and stably support delivery." Keeping close watch on these three metrics—balance alert response time, deposit arrival cycle, and account health score—and establishing corresponding management mechanisms is true refined operations.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
