@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">TikTok Shop 新品冷启动：素材池到底该搭多大？</span>
+                    <span x-show="lang === 'en'" x-cloak>TikTok Shop Cold Launch: How Big Should Your Creative Pool Be?</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-07-07</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="254" data-base-views="24">24</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu6006/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <p>新品上线前，素材储备不足是冷启动失败最常见的原因之一。多数团队在开跑后才发现素材枯竭，被迫暂停计划，白白浪费前期的模型学习时间。以下是 6 个高频业务问题，直接给出判断。</p>
+<h2>一、冷启动期至少要准备多少条素材</h2>
+<p>建议准备 <strong>20-30 条</strong>可上线素材，涵盖 3-5 个不同脚本方向。不要只准备 5-10 条就开跑——TikTok 算法需要足够的素材样本进行人群探索，素材太少会导致系统无法找到有效受众，CTR 和转化成本都会偏高。</p>
+<p>某家居品类团队曾在冷启动期只准备了 12 条素材，跑了一周后 GMV 增长停滞，原因是素材库已经耗尽，系统开始重复推送相同内容，用户疲劳导致点击率下降。补充素材后重新跑量，成本才逐步回落。</p>
+<h2>二、素材类型应该如何配比</h2>
+<table>
+<thead>
+<tr>
+<th>素材类型</th>
+<th>推荐占比</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>产品展示（工厂/使用场景）</td>
+<td>40%</td>
+<td>建立信任感</td>
+</tr>
+<tr>
+<td>UGC 口播/测评</td>
+<td>30%</td>
+<td>提升真实感</td>
+</tr>
+<tr>
+<td>剧情类/痛点解决方案</td>
+<td>20%</td>
+<td>拉长停留时间</td>
+</tr>
+<tr>
+<td>促销活动/倒计时</td>
+<td>10%</td>
+<td>制造紧迫感</td>
+</tr>
+</tbody>
+</table>
+<p>纯产品展示素材虽然制作成本低，但在 TikTok 的娱乐化环境中竞争力有限。冷启动期需要一定比例的 UGC 和剧情素材来提升完播率和互动率，这些指标直接影响系统流量分配。</p>
+<h2>三、单条素材跑多久判断是否替换</h2>
+<p>核心指标是 <strong>CVR（转化率）和 CPC（单次点击成本）</strong>。</p>
+<ul>
+<li>消耗 500-800 元且 CVR 持续低于品类均值 50% → 替换</li>
+<li>消耗超过 1500 元仍未达到盈亏平衡 → 替换</li>
+<li>展现量超过 5 万但 CTR 低于 1% → 替换</li>
+</ul>
+<p>不要因为某条素材播放量高就持续投放。如果播放量高但转化差，说明内容吸引了错误人群，继续消耗只会拉高整体 ACOS。</p>
+<h2>四、素材储备跟不上消耗怎么办</h2>
+<p>这是很多团队冷启动期的典型困境。应对方案有两种：</p>
+<p><strong>方案一：控制预算，留出素材生产窗口。</strong> 每天预算不要一开始就拉满，控制在日均消耗目标的三分之一，让素材团队有 3-5 天补产时间。</p>
+<p><strong>方案二：快速量产模板化素材。</strong> 准备 2-3 个可复用的脚本框架（如痛点切入+产品演示+购买引导），不同产品只需更换镜头和字幕模板，单条制作时间可压缩到 2 小时以内。</p>
+<h2>五、UGC 素材从哪里来</h2>
+<p>UGC 是 TikTok 冷启动期性价比最高的素材类型。来源包括：</p>
+<ul>
+<li>海外红人/素人达人合作，提供产品使用视频</li>
+<li>社媒评论区用户自发晒单，经授权后二次剪辑</li>
+<li>内部员工或真实用户模拟 UGC 风格拍摄</li>
+</ul>
+<p>注意不要直接搬运其他平台的广告素材，TikTok 平台对搬运内容的识别度很高，被判定为重复素材后会直接限流。</p>
+<h2>六、冷启动期素材预算占总预算多少合适</h2>
+<p>建议冷启动期素材生产预算占整体推广预算的 <strong>15-20%</strong>。如果总预算是 10 万，素材制作投入应为 1.5-2 万。这个比例看似不低，但能显著降低因素材断供导致的机会损失成本。</p>
+<p>当单品跑出 ROAS 超过 2 的素材后，可将该素材的预算占比提高到 60%，同时持续补充新素材进行 AB 测试。</p>
+<h2>写在最后</h2>
+<p>素材池的本质不是“越多越好”，而是“够用且持续更新”。冷启动期的目标是快速跑出 2-3 条稳定转化的主力素材，其余素材承担探索和补充功能。建立素材生产的流水线节奏，比一次性堆积大量素材更重要。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <p>Insufficient creative reserves before launch is one of the most common causes of cold launch failure. Most teams only realize their creative library is depleted after they've already started running ads, forcing them to pause campaigns and wasting the model learning time built up in earlier phases. Here are six high-frequency operational questions with direct answers.</p>
+<h2>1. How Many Creatives Do You Need for Cold Launch?</h2>
+<p>Prepare <strong>20-30</strong> deployable creatives covering 3-5 different script directions. Don't launch with just 5-10 pieces—TikTok's algorithm needs sufficient creative samples to explore audiences. Fewer creatives mean the system can't identify effective audience segments, and both CTR and conversion costs will suffer.</p>
+<p>A home goods category team once launched with only 12 creatives. After a week, GMV growth stalled because their creative library was exhausted. The system began repeatedly showing the same content, causing audience fatigue and declining click-through rates. Only after supplementing with new creatives did costs gradually recover.</p>
+<h2>2. How Should Creative Types Be Distributed?</h2>
+<table>
+<thead>
+<tr>
+<th>Creative Type</th>
+<th>Recommended Ratio</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Product showcase (factory/usage scenes)</td>
+<td>40%</td>
+<td>Build trust</td>
+</tr>
+<tr>
+<td>UGC testimonials/reviews</td>
+<td>30%</td>
+<td>Enhance authenticity</td>
+</tr>
+<tr>
+<td>Story-based/pain point solutions</td>
+<td>20%</td>
+<td>Extend watch time</td>
+</tr>
+<tr>
+<td>Promotions/countdown</td>
+<td>10%</td>
+<td>Create urgency</td>
+</tr>
+</tbody>
+</table>
+<p>Pure product showcase creatives have low production costs but limited competitiveness in TikTok's entertainment-focused environment. During cold launch, a certain proportion of UGC and story-based creatives is essential to improve completion rates and engagement—metrics that directly influence the platform's traffic distribution.</p>
+<h2>3. How Long Should a Single Creative Run Before Replacement?</h2>
+<p>Core metrics are <strong>CVR (conversion rate) and CPC (cost per click)</strong>.</p>
+<ul>
+<li>Spend ¥500-800 with CVR consistently below category average by 50% → Replace</li>
+<li>Spend over ¥1,500 without reaching break-even → Replace</li>
+<li>Impressions exceed 50,000 but CTR remains below 1% → Replace</li>
+</ul>
+<p>Don't keep running a creative just because it has high views. If views are high but conversions are poor, the content is attracting the wrong audience. Continued spending only raises overall ACOS.</p>
+<h2>4. What If Creative Production Can't Keep Up With Consumption?</h2>
+<p>This is a typical cold launch dilemma. Two solutions apply:</p>
+<p><strong>Solution 1: Control budget to create a production window.</strong> Don't max out daily budget from day one. Keep it at one-third of your daily spending target, giving the creative team 3-5 days to produce new materials.</p>
+<p><strong>Solution 2: Rapidly produce template-based creatives.</strong> Prepare 2-3 reusable script frameworks (e.g., pain point introduction + product demonstration + purchase call-to-action). For different products, only swap out footage and subtitle templates, cutting single-creative production time to under 2 hours.</p>
+<h2>5. Where Do UGC Creatives Come From?</h2>
+<p>UGC is the highest-cost-performance creative type during cold launch. Sources include:</p>
+<ul>
+<li>Overseas influencers/micro-creators providing product usage videos</li>
+<li>User-generated posts from social media comments, edited and repurposed with permission</li>
+<li>Internal staff or real users producing UGC-style content</li>
+</ul>
+<p>Note: Don't directly repurpose creatives from other platforms. TikTok's content recognition is highly sophisticated. Being flagged for duplicate content results in immediate traffic restrictions.</p>
+<h2>6. What Percentage of Budget Should Creatives Take During Cold Launch?</h2>
+<p>For cold launch, allocate <strong>15-20%</strong> of total promotional budget to creative production. If total budget is ¥100,000, invest ¥15,000-20,000 in creative development. This percentage may seem high, but it significantly reduces opportunity costs from creative depletion.</p>
+<p>Once a creative achieves ROAS above 2, increase its budget allocation to 60% while continuously supplementing new creatives for A/B testing.</p>
+<h2>Final Thoughts</h2>
+<p>The essence of a creative pool isn't "more is better"—it's "sufficient and continuously refreshed." The goal during cold launch is to quickly identify 2-3 stable, converting hero creatives, with other creatives serving exploratory and supplementary roles. Establishing a consistent creative production pipeline is more important than stockpiling a large volume upfront.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>

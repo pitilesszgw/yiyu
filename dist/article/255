@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">出海广告合规巡检 SOP｜每日/每周/每月检查清单</span>
+                    <span x-show="lang === 'en'" x-cloak>Overseas Advertising Compliance Checklist SOP: Daily, Weekly &amp; Monthly Inspection</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-07-07</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="255" data-base-views="79">79</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu8318/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>适用场景与阅读说明</h2>
+<p>本文适用于负责 Facebook (Meta)、Google Ads、TikTok Ads 等主流海外广告平台的运营人员。合规巡检是预防账户被封、素材被拒、预算浪费的第一道防线，建议团队将其纳入日常工作流，新人入职后需在 3 天内完成首次完整巡检。</p>
+<hr />
+<h2>一、每日巡检清单（耗时约 15 分钟）</h2>
+<h3>1. 账户状态检查</h3>
+<table>
+<thead>
+<tr>
+<th>检查项</th>
+<th>正常状态</th>
+<th>异常处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>账户余额</td>
+<td>显示当前余额</td>
+<td>若为 0 或接近预警值，检查充值是否到账</td>
+</tr>
+<tr>
+<td>支付方式</td>
+<td>绑定卡片/Pixel 正常</td>
+<td>更换备用支付方式</td>
+</tr>
+<tr>
+<td>账户权限</td>
+<td>运营人员均能正常登录</td>
+<td>核查权限列表，及时移除离职人员</td>
+</tr>
+<tr>
+<td>违规通知</td>
+<td>无新增警告</td>
+<td>打开通知推送，避免遗漏</td>
+</tr>
+</tbody>
+</table>
+<h3>2. 在投广告状态</h3>
+<p>打开广告管理器，按「状态」列筛选，确认以下几点：</p>
+<ul>
+<li><strong>无「已拒登」广告</strong>：素材或文案触发了平台政策，需立即进入编辑。</li>
+<li><strong>无「待审核」超 24 小时</strong>：若长时间未通过，初步判断是敏感品类或高频提交导致排队，可考虑精简素材后重新提交。</li>
+<li><strong>预算消耗正常</strong>：若某条广告今日消耗为 0 但状态为「在投」，可能是受众过窄或竞价比起量阈值低，需要调整。</li>
+</ul>
+<h3>3. 素材审核状态（重点）</h3>
+<p>登录 Meta Business Suite 或对应平台后台，进入「广告素材」页面，查看所有素材的审核状态。重点关注：</p>
+<ul>
+<li>标注「已拒绝」且原因为「误导性内容」或「敏感类别」的素材；</li>
+<li>同一套素材被连续拒绝 2 次以上的，建议暂停使用，避免触发更严格的账户审核。</li>
+</ul>
+<hr />
+<h2>二、每周巡检清单（耗时约 40 分钟）</h2>
+<h3>1. 历史违规记录复盘</h3>
+<p>以渔数媒运营团队建议：每周五下午抽出 30 分钟，复盘本周的违规情况。</p>
+<p>打开平台后台的「账户质量」或「政策违规」页面，记录以下信息：</p>
+<ul>
+<li>本周新增违规次数与类型；</li>
+<li>对应的广告组/广告系列；</li>
+<li>被拒素材的共性特征（如：涉及价格对比、绝对化用词、人物特写等）。</li>
+</ul>
+<p><strong>复盘模板示例</strong>：</p>
+<pre><code>违规类型：Facebook 广告政策第 4.7 条（争议性内容）
+涉及广告：A 产品线 - 夏季促销系列
+问题素材：第 3 版 banner，包含「100% 退款保证」字样
+处置措施：已替换文案为「支持退换货」，重新提交审核
+预防建议：后续所有退款相关文案统一改为平台合规表述
+</code></pre>
+<h3>2. 受众与投放地区合规</h3>
+<p>部分产品类目在特定地区有特殊限制，例如：</p>
+<ul>
+<li>某些健康类产品在欧盟地区投放需要额外资质审核；</li>
+<li>金融类广告在东南亚部分国家有受众年龄下限要求；</li>
+<li>酒精类广告在日本、韩国等地禁止向特定年龄以下群体展示。</li>
+</ul>
+<p>建议每周检查一次「广告系列」级别的地理位置和受众设置，确保与产品合规要求一致。</p>
+<h3>3. 像素/SDK 数据质量</h3>
+<p>打开 Facebook Events Manager 或 Google Analytics，检查以下指标：</p>
+<ul>
+<li><strong>信号质量分数</strong>：若低于 5 分，说明像素安装存在问题；</li>
+<li><strong>转化事件数量</strong>：若本周转化事件数环比下降超过 30%，可能是页面技术问题或用户路径中断；</li>
+<li><strong>重复事件</strong>：同一用户产生多次相同事件，可能触发平台风控。</li>
+</ul>
+<hr />
+<h2>三、每月巡检清单（耗时约 1.5 小时）</h2>
+<h3>1. 账户权限与团队审计</h3>
+<p>每月初检查以下内容：</p>
+<ul>
+<li>移除已离职人员或第三方代理商的账户权限；</li>
+<li>确认所有活跃运营人员的权限级别是否符合「最小必要」原则；</li>
+<li>检查是否有未知的「合作伙伴」或「广告账户」关联，若发现可疑关联立即报告。</li>
+</ul>
+<h3>2. 投放政策更新追踪</h3>
+<p>各大平台每月都会更新广告政策，运营团队需要订阅以下渠道：</p>
+<ul>
+<li>Meta 广告政策更新页面（每月邮件通知）；</li>
+<li>Google Ads 政策博客；</li>
+<li>TikTok for Business 创意中心公告。</li>
+</ul>
+<p>建议每月整理一份「本月政策变动摘要」，分享给团队成员，避免因政策更新导致的历史素材合规性下降。</p>
+<h3>3. 账户健康度评分</h3>
+<table>
+<thead>
+<tr>
+<th>平台</th>
+<th>查看入口</th>
+<th>健康标准</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Meta</td>
+<td>账户质量 → 账户表现评分</td>
+<td>分数 ≥ 6 分</td>
+</tr>
+<tr>
+<td>Google</td>
+<td>政策中心 → 合规性评分</td>
+<td>无严重违规记录</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>资产管理 → 内容安全评分</td>
+<td>绿色标识</td>
+</tr>
+</tbody>
+</table>
+<p>若评分持续下降，建议暂停相关产品线的广告投放，优先排查问题原因。</p>
+<hr />
+<h2>四、常见违规类型快速处理参考</h2>
+<table>
+<thead>
+<tr>
+<th>违规类型</th>
+<th>典型场景</th>
+<th>紧急处理步骤</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>素材被拒</td>
+<td>视频前 3 秒出现对比画面</td>
+<td>删除争议帧，重新剪辑后提交</td>
+</tr>
+<tr>
+<td>落地页不合规</td>
+<td>页面缺少联系方式或退换政策</td>
+<td>补充必要信息，联系平台重新审核</td>
+</tr>
+<tr>
+<td>受众误配</td>
+<td>健康产品面向 18 岁以下展示</td>
+<td>立即暂停该广告系列，调整年龄下限</td>
+</tr>
+<tr>
+<td>品牌侵权</td>
+<td>使用了他人的 logo 或商标</td>
+<td>全面替换素材，提交申诉说明</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>结语</h2>
+<p>合规巡检不是「出了问题再补救」，而是「不出问题」的日常习惯。建议团队将上述清单固化为工作流程的一部分，配合以渔数媒的账户监控工具，可以进一步提升巡检效率。</p>
+<p>如需了解以渔数媒的账户合规监控服务，欢迎联系顾问获取专属方案。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Applicable Scenarios and How to Use This Guide</h2>
+<p>This SOP is designed for operations staff managing overseas advertising campaigns on platforms such as Facebook (Meta), Google Ads, and TikTok Ads. Compliance inspection is the first line of defense against account bans, rejected creatives, and budget waste. We recommend integrating these checks into your daily workflow, and new team members should complete their first full inspection within 3 days of onboarding.</p>
+<hr />
+<h2>Part 1: Daily Inspection Checklist (Approximately 15 Minutes)</h2>
+<h3>1. Account Status Check</h3>
+<table>
+<thead>
+<tr>
+<th>Check Item</th>
+<th>Normal Status</th>
+<th>Action for Anomalies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Account Balance</td>
+<td>Shows current balance</td>
+<td>If 0 or near warning threshold, verify recharge status</td>
+</tr>
+<tr>
+<td>Payment Method</td>
+<td>Linked card/Pixel active</td>
+<td>Switch to backup payment method</td>
+</tr>
+<tr>
+<td>Account Permissions</td>
+<td>All staff can log in normally</td>
+<td>Review permission list, remove departed employees promptly</td>
+</tr>
+<tr>
+<td>Violation Notifications</td>
+<td>No new warnings</td>
+<td>Enable push notifications to avoid missing alerts</td>
+</tr>
+</tbody>
+</table>
+<h3>2. Active Ad Status</h3>
+<p>Open the Ads Manager and filter by "Status" column. Confirm the following:</p>
+<ul>
+<li><strong>No "Ad Disapproved" entries</strong>: Creatives or copy triggered platform policies and need immediate editing.</li>
+<li><strong>No "Pending Review" exceeding 24 hours</strong>: Extended pending status often indicates sensitive product categories or queue backlog. Consider streamlining creatives and resubmitting.</li>
+<li><strong>Normal budget consumption</strong>: If an ad shows "Active" but zero spend, the audience may be too narrow or the bid is below the threshold needed for delivery.</li>
+</ul>
+<h3>3. Creative Review Status (Priority Focus)</h3>
+<p>Log into Meta Business Suite or the respective platform backend. Navigate to "Ad Creatives" and review all review statuses. Key points:</p>
+<ul>
+<li>Creatives marked "Rejected" with reasons such as "Misleading Content" or "Sensitive Categories";</li>
+<li>Creatives rejected 2+ consecutive times should be paused immediately to avoid triggering more aggressive account review.</li>
+</ul>
+<hr />
+<h2>Part 2: Weekly Inspection Checklist (Approximately 40 Minutes)</h2>
+<h3>1. Historical Violation Review</h3>
+<p>We recommend setting aside 30 minutes every Friday afternoon to review this week's violations.</p>
+<p>Open the platform backend's "Account Quality" or "Policy Violations" page and record the following:</p>
+<ul>
+<li>Number and types of new violations this week;</li>
+<li>Corresponding ad groups/campaigns;</li>
+<li>Common patterns in rejected creatives (e.g., price comparisons, absolute claims, close-up portraits).</li>
+</ul>
+<p><strong>Review Template Example:</strong></p>
+<pre><code>Violation Type: Facebook Ad Policy Section 4.7 (Controversial Content)
+Affected Ads: Product Line A - Summer Promotion Series
+Problem Creative: Version 3 banner, contains &quot;100% Money-Back Guarantee&quot;
+Resolution: Replaced with &quot;Returns and exchanges accepted,&quot; resubmitted for review
+Prevention: Future refund-related copy will use platform-compliant language
+</code></pre>
+<h3>2. Audience and Geo-Targeting Compliance</h3>
+<p>Some product categories have special restrictions in certain regions:</p>
+<ul>
+<li>Certain health products require additional qualification reviews when targeting EU audiences;</li>
+<li>Financial ads have age lower bounds in some Southeast Asian countries;</li>
+<li>Alcohol ads are prohibited from showing to audiences below specific ages in Japan and South Korea.</li>
+</ul>
+<p>We recommend checking campaign-level geographic and audience settings weekly to ensure alignment with product compliance requirements.</p>
+<h3>3. Pixel/SDK Data Quality</h3>
+<p>Open Facebook Events Manager or Google Analytics and check the following metrics:</p>
+<ul>
+<li><strong>Signal Quality Score</strong>: Below 5 indicates pixel installation issues;</li>
+<li><strong>Conversion Event Volume</strong>: A week-over-week drop exceeding 30% may signal page technical issues or broken user paths;</li>
+<li><strong>Duplicate Events</strong>: Multiple identical events from the same user may trigger platform risk controls.</li>
+</ul>
+<hr />
+<h2>Part 3: Monthly Inspection Checklist (Approximately 1.5 Hours)</h2>
+<h3>1. Account Permissions and Team Audit</h3>
+<p>At the beginning of each month, verify:</p>
+<ul>
+<li>Remove permissions for departed employees or third-party agencies;</li>
+<li>Confirm all active staff have permission levels meeting the "least privilege" principle;</li>
+<li>Check for unknown "Business Partners" or linked "Ad Accounts." If suspicious links are found, report immediately.</li>
+</ul>
+<h3>2. Policy Update Tracking</h3>
+<p>Major platforms update advertising policies monthly. Operations teams should subscribe to:</p>
+<ul>
+<li>Meta Advertising Policies Updates page (monthly email notifications);</li>
+<li>Google Ads Policy Blog;</li>
+<li>TikTok for Business Creative Center Announcements.</li>
+</ul>
+<p>We recommend compiling a monthly "Policy Changes Summary" to share with team members, preventing compliance degradation of historical creatives due to policy updates.</p>
+<h3>3. Account Health Scores</h3>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Access Point</th>
+<th>Health Standard</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Meta</td>
+<td>Account Quality → Account Performance Rating</td>
+<td>Score ≥ 6</td>
+</tr>
+<tr>
+<td>Google</td>
+<td>Policy Center → Compliance Score</td>
+<td>No serious violation records</td>
+</tr>
+<tr>
+<td>TikTok</td>
+<td>Assets → Content Safety Score</td>
+<td>Green indicator</td>
+</tr>
+</tbody>
+</table>
+<p>If scores continue to decline, consider pausing campaigns for the related product line and prioritizing root cause investigation.</p>
+<hr />
+<h2>Part 4: Quick Reference for Common Violation Types</h2>
+<table>
+<thead>
+<tr>
+<th>Violation Type</th>
+<th>Typical Scenario</th>
+<th>Emergency Response Steps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Creative Rejection</td>
+<td>First 3 seconds show comparison imagery</td>
+<td>Delete controversial frames, re-edit and resubmit</td>
+</tr>
+<tr>
+<td>Landing Page Non-Compliance</td>
+<td>Page lacks contact info or return policy</td>
+<td>Add required information, request re-review</td>
+</tr>
+<tr>
+<td>Audience Misconfiguration</td>
+<td>Health product shown to under-18</td>
+<td>Pause campaign immediately, adjust age floor</td>
+</tr>
+<tr>
+<td>Brand Infringement</td>
+<td>Used another party's logo or trademark</td>
+<td>Replace all creatives globally, submit appeal with explanation</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Closing Notes</h2>
+<p>Compliance inspection is not about "fixing problems after they occur" but about developing the daily habit of "preventing problems from happening." We recommend that teams solidify the above checklists into routine workflow. Combined with Yiyu Media's account monitoring tools, inspection efficiency can be further improved.</p>
+<p>To learn more about Yiyu Media's account compliance monitoring services, please contact our consultants for a customized solution.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
