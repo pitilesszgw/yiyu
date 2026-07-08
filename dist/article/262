@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">海外广告账户频繁被封？一份实测有效的合规巡检 SOP 清单</span>
+                    <span x-show="lang === 'en'" x-cloak>Why Your Overseas Ad Accounts Keep Getting Banned: A Practical Compliance Inspection SOP</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-07-09</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="262" data-base-views="96">96</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu6198/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>结论先行：封号问题大多可以预防</h2>
+<p>海外广告平台对账户审核越来越严格，但大多数封号并非“突然袭击”，而是长期风险积累的结果。以渔数媒在服务上百个出海账户的过程中发现，<strong>超过80%的账户风控问题源于巡检环节缺失</strong>——要么没有建立巡检习惯，要么巡检维度不完整。</p>
+<p>本文不聊理论，直接给出实操层面的合规巡检 SOP。</p>
+<h2>高频踩坑点一：充值与支付异常</h2>
+<p>这是最容易触发风控但最容易被忽视的环节。</p>
+<p><strong>常见问题包括：</strong><br />
+- 短时间内的充值金额波动过大<br />
+- 频繁更换支付方式或卡片<br />
+- 账户余额长期为0或长期小额消耗后突然大额充值<br />
+- 预付费账户与后付费账户混用</p>
+<p>某工具类 App 团队曾反馈，月初大额充值后账户直接触发审核。排查后发现，运营人员同时绑定了3张不同地区的信用卡，触发了平台的欺诈检测机制。</p>
+<p><strong>巡检动作：</strong><br />
+- 充值前确认账户历史消费曲线是否平稳<br />
+- 优先使用稳定的支付方式，避免频繁更换<br />
+- 充值金额与历史消耗能力匹配</p>
+<h2>高频踩坑点二：素材合规性漏洞</h2>
+<p>素材是平台审核的重点，也是最容易“踩坑”的环节。</p>
+<p><strong>三个最容易出问题的方向：</strong></p>
+<ol>
+<li>
+<p><strong>夸大或误导性表述</strong><br />
+   使用“100%有效”“全球第一”等绝对化用语，或在落地页使用与素材不符的夸大承诺。</p>
+</li>
+<li>
+<p><strong>版权与授权问题</strong><br />
+   未经授权使用第三方品牌 logo、名人肖像、受版权保护的音乐或视频片段。某跨境电商团队曾因素材中使用了一段热门歌曲的副歌部分，收到平台下架通知并被扣除违规分数。</p>
+</li>
+<li>
+<p><strong>诱导互动话术</strong><br />
+   “点击即送”“转发得现金”等诱导性文案在多个平台都属于高风险内容。</p>
+</li>
+</ol>
+<p><strong>巡检动作：</strong><br />
+- 上线前对照平台广告政策逐项检查素材<br />
+- 建立内部素材审核清单，包含版权声明核查<br />
+- 定期回溯已上线素材，关注平台规则更新</p>
+<h2>高频踩坑点三：账户权限管理混乱</h2>
+<p>多人协作的账户最容易出现权限泄露和操作混乱问题。</p>
+<p><strong>典型场景：</strong><br />
+- 员工离职后未及时移除账户访问权限<br />
+- 多人使用同一账号登录，IP 和设备频繁变动<br />
+- BM（商务管理平台）与广告账户之间的权限配置不清晰</p>
+<p>平台的风控系统会记录登录行为模式。当一个账户在24小时内从三个不同国家的 IP 登录时，系统通常会触发安全验证，严重时直接限制投放。</p>
+<p><strong>巡检动作：</strong><br />
+- 建立员工权限变更的标准化流程，离职当天完成权限移除<br />
+- 限制高风险地区的登录权限<br />
+- 使用官方合作伙伴工具统一管理多账户权限</p>
+<h2>合规巡检清单（可直接复制使用）</h2>
+<p><strong>每日检查：</strong><br />
+- 账户投放状态是否正常<br />
+- 今日消耗是否异常（突增或突降）<br />
+- 是否有平台通知或违规警告</p>
+<p><strong>每周检查：</strong><br />
+- 支付方式是否稳定，无新增卡片或异常变更<br />
+- 素材是否出现平台政策更新导致的合规风险<br />
+- 登录记录是否有异常 IP 或设备</p>
+<p><strong>每月检查：</strong><br />
+- 权限清单清理，确认在职员工权限与岗位匹配<br />
+- 历史投放数据复盘，排查疑似异常消耗<br />
+- 账户健康分或信用评分是否下降</p>
+<h2>写在最后</h2>
+<p>合规不是一次性的工作，而是持续的习惯。把巡检流程 SOP 化，才能在平台规则不断收紧的环境下保持账户稳定。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Lead with the Conclusion: Most Bans Are Preventable</h2>
+<p>Overseas ad platforms are tightening their review processes, but most account bans aren't sudden attacks—they're the result of accumulated risk over time. During our service of hundreds of overseas accounts, Yiyu Shumei found that <strong>over 80% of account risk issues stem from missing inspection routines</strong>—either no inspection habit was established, or the inspection dimensions were incomplete.</p>
+<p>This article skips the theory and goes straight to practical compliance inspection SOPs.</p>
+<h2>High-Risk Point 1: Payment and Top-Up Anomalies</h2>
+<p>This is the most likely to trigger risk controls but the easiest to overlook.</p>
+<p><strong>Common issues include:</strong><br />
+- Sudden large fluctuations in top-up amounts over short periods<br />
+- Frequent changes to payment methods or cards<br />
+- Accounts with long-term zero balance or sudden large top-ups after prolonged low spending<br />
+- Mixing prepaid and postpaid accounts</p>
+<p>One tool app team reported that after a large top-up at the beginning of the month, their account triggered platform review immediately. Investigation revealed that the operations staff had bound 3 credit cards from different regions simultaneously, triggering the platform's fraud detection mechanism.</p>
+<p><strong>Inspection actions:</strong><br />
+- Before topping up, confirm whether the account's historical spending curve is stable<br />
+- Prefer stable payment methods, avoid frequent changes<br />
+- Match top-up amounts with historical spending capacity</p>
+<h2>High-Risk Point 2: Creative Compliance Gaps</h2>
+<p>Creatives are a key focus of platform review and the area most prone to "pitfalls."</p>
+<p><strong>Three most problematic directions:</strong></p>
+<ol>
+<li>
+<p><strong>Exaggerated or misleading statements</strong><br />
+   Using absolute language like "100% effective" or "world's first," or using exaggerated promises on landing pages that don't match the creatives.</p>
+</li>
+<li>
+<p><strong>Copyright and authorization issues</strong><br />
+   Using third-party brand logos, celebrity images, or copyrighted music/video clips without authorization. One cross-border e-commerce team received a platform takedown notice and had violation points deducted because a chorus from a popular song was used in their creative.</p>
+</li>
+<li>
+<p><strong>Inducement interaction tactics</strong><br />
+   Inducement copy like "click to get" or "share to win cash" is high-risk content on multiple platforms.</p>
+</li>
+</ol>
+<p><strong>Inspection actions:</strong><br />
+- Check creatives against platform advertising policies before launching<br />
+- Establish internal creative review checklists, including copyright declaration verification<br />
+- Regularly review already-launched creatives and monitor platform policy updates</p>
+<h2>High-Risk Point 3: Chaotic Account Permission Management</h2>
+<p>Accounts managed by multiple people are most prone to permission leaks and operation chaos.</p>
+<p><strong>Typical scenarios:</strong><br />
+- Employees not having account access removed promptly after departure<br />
+- Multiple people using the same account, causing frequent IP and device changes<br />
+- Unclear permission configuration between Business Manager (BM) and ad accounts</p>
+<p>The platform's risk control system records login behavior patterns. When an account logs in from three different countries within 24 hours, the system typically triggers security verification, and in serious cases, directly restricts advertising.</p>
+<p><strong>Inspection actions:</strong><br />
+- Establish standardized processes for employee permission changes, complete permission removal on the departure day<br />
+- Restrict login permissions for high-risk regions<br />
+- Use official partner tools to uniformly manage multi-account permissions</p>
+<h2>Compliance Inspection Checklist (Ready to Copy)</h2>
+<p><strong>Daily checks:</strong><br />
+- Is the account's delivery status normal?<br />
+- Is today's spending abnormal (sudden increase or decrease)?<br />
+- Are there any platform notifications or violation warnings?</p>
+<p><strong>Weekly checks:</strong><br />
+- Is the payment method stable without new cards or abnormal changes?<br />
+- Do creatives have compliance risks due to platform policy updates?<br />
+- Are there abnormal IPs or devices in login records?</p>
+<p><strong>Monthly checks:</strong><br />
+- Permission list cleanup, confirm active employee permissions match their positions<br />
+- Historical delivery data review, investigate suspected abnormal spending<br />
+- Has the account health score or credit score declined?</p>
+<h2>Final Thoughts</h2>
+<p>Compliance isn't a one-time task—it's an ongoing habit. Only by systematizing inspection processes can you maintain account stability in an environment where platform rules are constantly tightening.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
