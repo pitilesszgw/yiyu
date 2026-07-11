@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">独立站冷启动别急着砸广告费：90天预算分配实战方案</span>
+                    <span x-show="lang === 'en'" x-cloak>Stop Dumping Budget into Ads: A 90-Day Budget Allocation Playbook for DTC Sites</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-07-12</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="270" data-base-views="48">48</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu7532/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>结论先行：冷启动期付费广告预算占比别超过60%</h2>
+<p>做过独立站的朋友大概都听过"独立站不投广告就等于没流量"。这话对了一半——广告确实是独立站冷启动期的主要获客渠道，但如果在流量模型还没跑通、转化路径还没验证的情况下就把预算砸下去，大概率会陷入"烧钱换流量、流量不转化"的恶性循环。</p>
+<p>根据我们服务过的数十个跨境电商团队的实操经验，<strong>独立站冷启动期（0-90天）的正确预算分配逻辑是：先建基础设施，再逐步放量</strong>。具体来说，付费广告预算在第一阶段应控制在总预算的40%-60%，剩余预算用于SEO优化、内容储备、用户调研和再营销素材准备。</p>
+<hr />
+<h2>第一阶段（0-30天）：测试优先，别急着跑量</h2>
+<p>冷启动第一个月的核心目标是<strong>找到能出单的流量渠道和素材方向</strong>，而不是追求GMV。</p>
+<h3>预算分配建议</h3>
+<table>
+<thead>
+<tr>
+<th>用途</th>
+<th>预算占比</th>
+<th>关键动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Meta广告测试</td>
+<td>25%-30%</td>
+<td>开设广告账户，创建10-15个受众包测试</td>
+</tr>
+<tr>
+<td>Google广告测试</td>
+<td>15%-20%</td>
+<td>上线搜索广告和展示广告，抓搜索意图明确的长尾词</td>
+</tr>
+<tr>
+<td>独立站技术优化</td>
+<td>15%-20%</td>
+<td>页面加载速度、结账流程优化、A/B测试框架搭建</td>
+</tr>
+<tr>
+<td>内容与SEO</td>
+<td>10%-15%</td>
+<td>基础内容铺设，博客文章5-10篇，产品页SEO完善</td>
+</tr>
+<tr>
+<td>再营销素材储备</td>
+<td>10%</td>
+<td>制作首购优惠券素材、弃单挽回素材</td>
+</tr>
+</tbody>
+</table>
+<p><strong>实操要点</strong>：这个阶段Meta广告不要一次性创建大预算Campaign。建议每个Campaign设置5-10美元的日预算，用3-5天快速测出点击率（CTR）高于1%的受众包。同时，<strong>强烈建议在Google Analytics设置完整的漏斗追踪</strong>，搞清楚用户从哪个页面进入、在哪个环节流失、为什么没有加购。</p>
+<p>某工具类独立站团队在冷启动期犯了"先烧钱再说"的错误，第一周就把5000美元全部投入Meta广告，结果转化率（CVR）只有0.3%，单个订单成本（CPA）高达85美元。后来调整策略，把预算的40%用于页面优化和用户调研，第二周CVR提升到1.2%，CPA降到32美元。</p>
+<hr />
+<h2>第二阶段（31-60天）：找到爆款素材，稳步放量</h2>
+<p>如果第一阶段测试数据健康（参考指标：CVR &gt; 1%，CPA &lt; 40美元，加购率 &gt; 3%），就可以进入放量阶段。但放量的节奏很重要，不是翻倍那么简单。</p>
+<h3>预算分配建议</h3>
+<table>
+<thead>
+<tr>
+<th>用途</th>
+<th>预算占比</th>
+<th>关键动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主力广告渠道放量</td>
+<td>40%-50%</td>
+<td>复制第一阶段跑出的优质广告组，保持日预算微增</td>
+</tr>
+<tr>
+<td>再营销广告启动</td>
+<td>15%-20%</td>
+<td>对访问未购买用户投放首购优惠，对加购未付款用户强化催单</td>
+</tr>
+<tr>
+<td>新渠道测试</td>
+<td>10%-15%</td>
+<td>尝试TikTok、Pinterest或YouTube等渠道的内容型广告</td>
+</tr>
+<tr>
+<td>SEO与内容</td>
+<td>10%</td>
+<td>持续更新内容，强化长尾词排名</td>
+</tr>
+<tr>
+<td>运营储备</td>
+<td>10%</td>
+<td>客服响应、发货时效、邮件自动化配置</td>
+</tr>
+</tbody>
+</table>
+<p><strong>关键动作</strong>：这个阶段要建立"素材淘汰机制"。每周统计各广告组的新增转化数和CPA，<strong>连续两周CPA高于平均值1.5倍的广告组立即暂停</strong>。同时开始积累再营销用户池——这是独立站降低获客成本的核心杠杆。</p>
+<hr />
+<h2>第三阶段（61-90天）：稳定ROI，优化LTV</h2>
+<p>到了第三个月，你的独立站应该已经有稳定的自然流量来源（SEO或社媒内容），广告投放也从"测试驱动"转向"ROI驱动"。</p>
+<h3>预算分配建议</h3>
+<table>
+<thead>
+<tr>
+<th>用途</th>
+<th>预算占比</th>
+<th>关键动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>付费获客广告</td>
+<td>50%-60%</td>
+<td>设定明确的ROAS目标（建议首单ROAS &gt; 2.0），超目标立即扩量</td>
+</tr>
+<tr>
+<td>再营销广告</td>
+<td>20%-25%</td>
+<td>分层运营：低客单价用户推新品，高客单价用户推套装或会员</td>
+</tr>
+<tr>
+<td>内容与SEO</td>
+<td>10%-15%</td>
+<td>布局转化词（如"best [product] for [use case]"），承接搜索流量</td>
+</tr>
+<tr>
+<td>KOL/UGC合作</td>
+<td>5%-10%</td>
+<td>测试小额KOL投放，积累社媒资产</td>
+</tr>
+</tbody>
+</table>
+<p><strong>核心指标监控</strong>：这个阶段除了关注ROAS，还要追踪<strong>客户生命周期价值（LTV）</strong>。如果你的LTV/CAC比值低于3:1，说明要么客单价太低，要么复购率不够，需要调整产品组合或营销策略，而不是一味增加广告预算。</p>
+<hr />
+<h2>避坑清单</h2>
+<ul>
+<li>❌ 冷启动期all-in付费广告，等流量模型跑通再优化</li>
+<li>❌ 忽视再营销素材储备，第一批访客白白流失</li>
+<li>❌ 只盯GMV不看漏斗，流量大但转化差</li>
+<li>❌ 多个广告渠道同步大预算测试，预算分散啥都测不准</li>
+<li>❌ 忽视页面技术指标，加载慢3秒直接砍一半转化</li>
+</ul>
+<hr />
+<h2>写在最后</h2>
+<p>独立站投放预算分配的本质是<strong>风险管理</strong>——用小预算测试验证假设，用数据驱动决策，而不是凭感觉烧钱。每个阶段都要问自己："我今天的预算是在验证假设，还是在重复已知有效的动作？" 只有这样，才能在冷启动期少走弯路，把有限的预算花在真正能带来回报的地方。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Lead with the Conclusion: Don't Exceed 60% Paid Ad Budget in Cold Start</h2>
+<p>If you've run a DTC site, you've probably heard "no ads means no traffic." That's half-true—ads are indeed the primary acquisition channel during cold start, but dumping budget before validating your traffic model and conversion path will likely trap you in a cycle of "burning money for traffic that doesn't convert."</p>
+<p>Based on our work with dozens of cross-border e-commerce teams, <strong>the correct budget allocation logic for DTC cold start (0-90 days) is: build the foundation first, then scale gradually</strong>. Specifically, paid ad spend should stay within 40-60% of the total budget in the first phase, with the remaining budget allocated to SEO, content, user research, and retargeting asset preparation.</p>
+<hr />
+<h2>Phase One (Days 0-30): Test First, Don't Chase Volume</h2>
+<p>The core goal of the first month is <strong>identifying which traffic channels and creative directions generate orders</strong>, not chasing GMV.</p>
+<h3>Budget Allocation</h3>
+<table>
+<thead>
+<tr>
+<th>Purpose</th>
+<th>Budget %</th>
+<th>Key Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Meta Ad Testing</td>
+<td>25%-30%</td>
+<td>Set up ad account, create 10-15 audience packages for testing</td>
+</tr>
+<tr>
+<td>Google Ad Testing</td>
+<td>15%-20%</td>
+<td>Launch search and display ads, target long-tail keywords with clear search intent</td>
+</tr>
+<tr>
+<td>Site Technical Optimization</td>
+<td>15%-20%</td>
+<td>Page load speed, checkout flow optimization, A/B testing framework setup</td>
+</tr>
+<tr>
+<td>Content &amp; SEO</td>
+<td>10%-15%</td>
+<td>Basic content deployment, 5-10 blog posts, product page SEO completion</td>
+</tr>
+<tr>
+<td>Retargeting Asset Prep</td>
+<td>10%</td>
+<td>Create first-purchase coupon creatives, cart abandonment recovery assets</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Execution Tips</strong>: In this phase, don't create Meta ads with large budgets at once. Set $5-10 daily budget per Campaign, use 3-5 days to quickly identify audience packages with CTR above 1%. Simultaneously, <strong>strongly recommend setting up complete funnel tracking in Google Analytics</strong>—understand where users enter, where they drop off, and why they didn't add to cart.</p>
+<p>One tool-based DTC team made the "burn first, optimize later" mistake in cold start, investing their entire $5,000 weekly budget into Meta ads in the first week. Result: CVR at just 0.3%, CPA at $85. After pivoting strategy and allocating 40% of budget to page optimization and user research, CVR jumped to 1.2% the second week, CPA dropped to $32.</p>
+<hr />
+<h2>Phase Two (Days 31-60): Find Winning Creatives, Scale Steadily</h2>
+<p>If Phase One testing shows healthy data (CVR &gt; 1%, CPA &lt; $40, add-to-cart rate &gt; 3%), you can enter the scaling phase. But scaling rhythm matters—it's not about doubling budget overnight.</p>
+<h3>Budget Allocation</h3>
+<table>
+<thead>
+<tr>
+<th>Purpose</th>
+<th>Budget %</th>
+<th>Key Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scale Primary Ad Channel</td>
+<td>40%-50%</td>
+<td>Replicate high-performing ad sets from Phase One, maintain modest daily budget increases</td>
+</tr>
+<tr>
+<td>Launch Retargeting Ads</td>
+<td>15%-20%</td>
+<td>Target visitors who didn't purchase with first-purchase offers; intensify cart abandonment recovery</td>
+</tr>
+<tr>
+<td>Test New Channels</td>
+<td>10%-15%</td>
+<td>Experiment with content-style ads on TikTok, Pinterest, or YouTube</td>
+</tr>
+<tr>
+<td>SEO &amp; Content</td>
+<td>10%</td>
+<td>Consistently update content, strengthen long-tail keyword rankings</td>
+</tr>
+<tr>
+<td>Operations Reserve</td>
+<td>10%</td>
+<td>Customer service response, shipping speed, email automation configuration</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Action</strong>: Establish a "creative elimination mechanism" in this phase. Weekly track new conversions and CPA by ad set—<strong>immediately pause any ad set with CPA 1.5x above average for two consecutive weeks</strong>. Meanwhile, start building your retargeting user pool—DTC's core lever for reducing acquisition costs.</p>
+<hr />
+<h2>Phase Three (Days 61-90): Stabilize ROI, Optimize LTV</h2>
+<p>By month three, your DTC site should have stable organic traffic sources (SEO or social content), and ad spending shifts from "test-driven" to "ROI-driven."</p>
+<h3>Budget Allocation</h3>
+<table>
+<thead>
+<tr>
+<th>Purpose</th>
+<th>Budget %</th>
+<th>Key Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Paid Acquisition Ads</td>
+<td>50%-60%</td>
+<td>Set clear ROAS targets (recommend first-purchase ROAS &gt; 2.0), scale immediately when hitting targets</td>
+</tr>
+<tr>
+<td>Retargeting Ads</td>
+<td>20%-25%</td>
+<td>Segment operations: push new products to low-AOV customers, promote bundles or memberships to high-AOV customers</td>
+</tr>
+<tr>
+<td>Content &amp; SEO</td>
+<td>10%-15%</td>
+<td>Target conversion keywords (e.g., "best [product] for [use case]"), capture search traffic</td>
+</tr>
+<tr>
+<td>KOL/UGC Partnerships</td>
+<td>5%-10%</td>
+<td>Test small-budget KOL collaborations, build social assets</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Core Metrics to Monitor</strong>: Beyond ROAS, track <strong>Customer Lifetime Value (LTV)</strong>. If your LTV/CAC ratio falls below 3:1, it signals either low average order value or insufficient repeat purchase rate—adjust product mix or marketing strategy rather than blindly increasing ad budget.</p>
+<hr />
+<h2>Avoid These Pitfalls</h2>
+<ul>
+<li>❌ All-in on paid ads during cold start, optimize only after traffic model runs</li>
+<li>❌ Neglect retargeting asset preparation, lose first batch of visitors for free</li>
+<li>❌ Focus only on GMV, ignore funnel analysis—high traffic but poor conversion</li>
+<li>❌ Test multiple ad channels with large budgets simultaneously, diluted budget means nothing gets validated</li>
+<li>❌ Ignore page technical metrics—3 seconds slower loading cuts conversions in half</li>
+</ul>
+<hr />
+<h2>Final Thoughts</h2>
+<p>The essence of DTC ad budget allocation is <strong>risk management</strong>—use small budgets to validate hypotheses, let data drive decisions, rather than burning money on gut feelings. At every phase, ask yourself: "Is today's budget validating a hypothesis or repeating known-effective actions?" Only then can you avoid detours during cold start and invest limited budget where it truly generates returns.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
