@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">TikTok Shop 新品冷启动，素材池到底怎么搭？</span>
+                    <span x-show="lang === 'en'" x-cloak>TikTok Shop Cold Launch: How to Build Your Creative Pool Right</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-07-13</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="271" data-base-views="49">49</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu4508/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <p>TikTok Shop 新品冷启动，素材池到底怎么搭？</p>
+<p>新品上线最怕的不是预算不够，而是素材跑两周就枯了，账户空转，节奏全乱。素材池的搭建不是“拍几条视频备着”这么简单，它直接决定冷启动的成败和 ROI 起点。</p>
+<hr />
+<h2>一、冷启动为什么要提前建素材池，而不是边跑边拍？</h2>
+<p><strong>判断：必须提前建，否则节奏失控。</strong></p>
+<p>TikTok Shop 的算法反馈周期在 3-5 天左右，如果等素材跑死再补拍，中间至少有 5-7 天的空档期，这段时间的账户权重和跑量模型全部浪费。</p>
+<p>某家居品类团队的教训是：首周只准备了 3 条素材，其中两条 CTR 低于 0.3%，第三条跑了 4 天才起量，结果首周整体 CPA 是正常值的 2.3 倍。后来他们把冷启动素材池扩大到 12 条，首周 CPA 稳定在预期范围内。</p>
+<p><strong>结论：冷启动素材池的底线是 8-12 条，先跑出数据再迭代。</strong></p>
+<hr />
+<h2>二、素材池的规模怎么定，跟什么因素挂钩？</h2>
+<p><strong>判断：规模 = 测试需求 + 衰减备货，不是拍脑袋。</strong></p>
+<p>核心公式：</p>
+<blockquote>
+<p>素材池数量 = 单组广告测试素材数 × 同时运行组数 × 衰减系数</p>
+</blockquote>
+<p>举例：如果每天想同时跑 3 组广告，每组测试 4 条素材，加上素材平均 7 天衰减需要补货，合理的初始池规模是 12 条，后续每周补 5-8 条。</p>
+<p>衰减系数因品类差异很大：美妆、服饰等视觉驱动品类素材生命周期约 5-7 天；功能性工具、3C 配件可以撑到 10-14 天。</p>
+<hr />
+<h2>三、不同产品类型的素材比例怎么分配？</h2>
+<p><strong>判断：不要全押一个类型，分散测试才能快速找到起量素材。</strong></p>
+<p>通用配比建议（可根据品类调整）：</p>
+<table>
+<thead>
+<tr>
+<th>素材类型</th>
+<th>占比</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>场景展示类（使用场景真实拍摄）</td>
+<td>40%</td>
+<td>拉自然流量，算法偏爱真实感</td>
+</tr>
+<tr>
+<td>对比测评类（前后对比/平替对比）</td>
+<td>25%</td>
+<td>转化驱动，适合功效型产品</td>
+</tr>
+<tr>
+<td>口播种草类（达人/素人体验分享）</td>
+<td>20%</td>
+<td>建立信任，适合新品认知阶段</td>
+</tr>
+<tr>
+<td>工厂/源头类（供应链视角）</td>
+<td>15%</td>
+<td>打价格信任，适合白牌/性价比产品</td>
+</tr>
+</tbody>
+</table>
+<p><strong>实操注意</strong>：前两周集中跑场景展示类，先把流量入口打开，再逐步放量对比测评素材收割转化。</p>
+<hr />
+<h2>四、老品爆款素材能直接复用到新品冷启动吗？</h2>
+<p><strong>判断：可以复用结构，但必须换场景和痛点，不能直接搬运。</strong></p>
+<p>直接搬运老品素材的风险是：平台会识别重复素材并降权，而且用户对同质内容疲劳，CTR 会断崖式下跌。</p>
+<p>正确做法是提取爆款的结构公式：</p>
+<ul>
+<li>开头 3 秒的钩子形式（痛点提问/冲突画面/数据开场）</li>
+<li>中间的信息密度节奏</li>
+<li>结尾的行动号召（立即购买/评论区互动）</li>
+</ul>
+<p>然后用<strong>新品的新场景、新痛点、新包装</strong>重新演绎。某厨房工具团队就是这样把旧品爆款的开场形式套用到新品，首周 CTR 提升了 18%。</p>
+<hr />
+<h2>五、冷启动期素材上传频率和预算怎么配合？</h2>
+<p><strong>判断：素材上新节奏匹配预算释放，不要一次性全上。</strong></p>
+<p>推荐节奏：</p>
+<ol>
+<li><strong>Day 1-3</strong>：上线 4 条核心素材，每条预算 50-80 美元，观察 CTR 和 CPC</li>
+<li><strong>Day 4-5</strong>：保留 CTR &gt; 1% 的素材，关闭低效组，新增 3-4 条新素材测试</li>
+<li><strong>Day 6-7</strong>：跑出首条 ROAS &gt; 2 的素材，复制放大，同时保持 2-3 条新素材持续测试</li>
+</ol>
+<p><strong>核心原则</strong>：账户里永远保持 20-30% 的预算在测试新素材，否则一旦主力素材衰减，整个账户就跑不动了。</p>
+<hr />
+<h2>六、素材效果衰减后，怎么快速替换而不打乱账户模型？</h2>
+<p><strong>判断：衰减是必然的，但替换要有节奏，不能猛然切换。</strong></p>
+<p>判断素材衰减的信号：<br />
+- 同等预算下展示量连续 3 天下降超过 20%<br />
+- CTR 相比峰值下跌 40% 以上<br />
+- CPA 连续 2 天超出目标 1.5 倍</p>
+<p>替换策略：<br />
+1. 先新增备用素材，保持 1-2 周并行跑<br />
+2. 确认新素材 ROAS 稳定后，再逐步降低衰减素材预算<br />
+3. 切忌直接关停老素材——TikTok 的模型需要过渡期，关停太猛会导致整体账户跑量下滑</p>
+<hr />
+<p><strong>一句话总结：素材池不是一次性工程，而是持续补给的流水线。冷启动期建好池子、定好节奏，后续放量才能不慌。</strong></p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <p>TikTok Shop Cold Launch: How to Build Your Creative Pool Right</p>
+<p>The biggest nightmare during a product cold launch isn't running out of budget—it's running out of creatives while your ad account burns cash. Building a creative pool isn't about "shooting a few videos just in case"; it's the foundation that determines cold launch success and your starting ROI.</p>
+<hr />
+<h2>1. Why Build the Creative Pool in Advance Instead of Shooting While Running?</h2>
+<p><strong>Answer: You must prepare ahead, or you'll lose control of the节奏.</strong></p>
+<p>TikTok Shop's algorithm feedback cycle runs 3-5 days. If you wait for creatives to die before shooting replacements, you're looking at a 5-7 day gap where account权重 and traffic models are completely wasted.</p>
+<p>A home goods team's lesson: they launched with only 3 creatives in week one. Two had CTR below 0.3%, and the third took 4 days to gain traction. Result? Their first-week CPA was 2.3× the normal benchmark. When they expanded their cold launch pool to 12 creatives, CPA stabilized within expected range.</p>
+<p><strong>Bottom line: The minimum cold launch creative pool is 8-12 pieces. Generate data first, then iterate.</strong></p>
+<hr />
+<h2>2. How to Determine Creative Pool Size—What Factors Matter?</h2>
+<p><strong>Answer: Size = Testing Needs + Decay Buffer, not guesswork.</strong></p>
+<p>Core formula:</p>
+<blockquote>
+<p>Pool Size = Creatives per Ad Group × Number of Active Groups × Decay Factor</p>
+</blockquote>
+<p>Example: If you want to run 3 ad groups daily with 4 creatives each, and average creative lifespan is ~7 days before decay, your initial pool should be 12 pieces, with 5-8 new creatives added weekly.</p>
+<p>Decay rates vary by category: beauty and apparel creatives last 5-7 days; functional tools and 3C accessories can stretch to 10-14 days.</p>
+<hr />
+<h2>3. What's the Right Creative Type Mix for Different Products?</h2>
+<p><strong>Answer: Don't bet everything on one format—diversified testing finds winners faster.</strong></p>
+<p>General ratio (adjustable by category):</p>
+<table>
+<thead>
+<tr>
+<th>Creative Type</th>
+<th>Share</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scene-based (authentic usage footage)</td>
+<td>40%</td>
+<td>Drive organic reach; algorithm favors authenticity</td>
+</tr>
+<tr>
+<td>Comparison/Review (before-after, alternatives)</td>
+<td>25%</td>
+<td>Drive conversions; ideal for functional products</td>
+</tr>
+<tr>
+<td>Spoken Recommendation (KOL/testimonial)</td>
+<td>20%</td>
+<td>Build trust; great for new product awareness</td>
+</tr>
+<tr>
+<td>Factory/Source story (supply chain angle)</td>
+<td>15%</td>
+<td>Price credibility; fits white-label/value products</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Execution tip</strong>: Focus on scene-based creatives in the first two weeks to open the traffic tap, then scale up comparison creatives to capture conversions.</p>
+<hr />
+<h2>4. Can Old Product Winning Creatives Be Directly Reused for New Product Cold Launch?</h2>
+<p><strong>Answer: You can replicate structure, but must swap scenes and pain points—no direct copy-paste.</strong></p>
+<p>Risk of direct reuse: the platform detects duplicate creatives and penalizes them, plus users get fatigue. CTR will crater.</p>
+<p>The right approach is extracting the winning structure:</p>
+<ul>
+<li>The first 3-second hook (pain point question, conflict scene, data opener)</li>
+<li>Information density rhythm in the middle</li>
+<li>Call-to-action ending (buy now, comment below)</li>
+</ul>
+<p>Then reinterpret with the <strong>new product's fresh scene, new pain point, new packaging</strong>. One kitchen tools team applied this method to repurpose their old winning format for a new product and saw CTR improve 18% in week one.</p>
+<hr />
+<h2>5. How Does Creative Upload Frequency Coordinate with Budget Allocation?</h2>
+<p><strong>Answer: New creative rollout should match budget release—don't dump everything at once.</strong></p>
+<p>Recommended cadence:</p>
+<ol>
+<li><strong>Day 1-3</strong>: Launch 4 core creatives at $50-80 budget each, monitor CTR and CPC</li>
+<li><strong>Day 4-5</strong>: Keep creatives with CTR &gt; 1%, pause low performers, add 3-4 new creatives for testing</li>
+<li><strong>Day 6-7</strong>: Once the first ROAS &gt; 2 creative emerges, duplicate and scale it, while maintaining 2-3 fresh creatives in testing</li>
+</ol>
+<p><strong>Core principle</strong>: Always keep 20-30% of your budget flowing to new creative testing. Otherwise, when your main creative decays, the whole account stops running.</p>
+<hr />
+<h2>6. How to Quickly Replace Decaying Creatives Without Disrupting Account Performance?</h2>
+<p><strong>Answer: Decay is inevitable, but replacement requires rhythm—never switch abruptly.</strong></p>
+<p>Warning signs of creative decay:<br />
+- Impressions drop 20%+ for 3 consecutive days at the same budget level<br />
+- CTR falls 40%+ from peak<br />
+- CPA exceeds target by 1.5× for 2 consecutive days</p>
+<p>Replacement strategy:<br />
+1. First add backup creatives, running them in parallel for 1-2 weeks<br />
+2. After new creatives stabilize ROAS, gradually reduce budget on decaying creatives<br />
+3. Never directly pause old creatives—TikTok's model needs a transition period; aggressive cuts will cause overall account performance to drop</p>
+<hr />
+<p><strong>One-line takeaway: The creative pool isn't a one-time project—it's a continuous supply pipeline. Build the pool right and set the rhythm during cold launch, and scaling later becomes much less stressful.</strong></p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
