@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">Meta广告素材复盘清单：3步区分“能跑量”和“能卖货”</span>
+                    <span x-show="lang === 'en'" x-cloak>Meta Ad Creative Review Checklist: 3 Steps to Tell Apart ‘High-Volume’ vs ‘High-Converting’ Ads</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-07-14</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="276" data-base-views="51">51</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu4892/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>问题：素材能跑量，为什么不赚钱？</h2>
+<p>“这条素材CTR 6%，跑得挺猛，结果ROI亏一半。”</p>
+<p>这是很多出海运营会遇到的情况。</p>
+<p>能跑量的素材和能卖货的素材，是两件事。前者解决“用户愿不愿意点”，后者解决“用户愿不愿意买”。两个指标如果分开看，很容易被数据误导。</p>
+<p>复盘素材的目的，就是把这两个维度拆开看，找到真正值得加投的素材。</p>
+<hr />
+<h2>复盘清单：3步区分能跑和能卖</h2>
+<h3>第1步：筛选可分析素材</h3>
+<p><strong>复盘前提</strong>：素材至少跑了7天，累计消耗超过该渠道日均预算的3倍。</p>
+<p>检查项：<br />
+- [ ] 素材累计曝光量 ≥ 10,000<br />
+- [ ] 素材累计点击量 ≥ 200<br />
+- [ ] 素材对应的转化事件数 ≥ 10<br />
+- [ ] 排除新素材前3天的“新鲜期”数据（用户好奇心导致的异常表现）</p>
+<hr />
+<h3>第2步：数据横向对比</h3>
+<p>把同一广告组下的素材拉出来，横向对比以下指标：</p>
+<table>
+<thead>
+<tr>
+<th>检查项</th>
+<th>计算方式</th>
+<th>参考标准</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CTR（点击率）</td>
+<td>点击 / 曝光 × 100%</td>
+<td>高于广告组均值1.5倍为“能跑”</td>
+</tr>
+<tr>
+<td>CVR（转化率）</td>
+<td>转化数 / 点击 × 100%</td>
+<td>高于广告组均值2倍为“能卖”</td>
+</tr>
+<tr>
+<td>CPA（单次转化成本）</td>
+<td>消耗 / 转化数</td>
+<td>低于目标CPA</td>
+</tr>
+<tr>
+<td>素材效率分</td>
+<td>CTR × CVR × 1000</td>
+<td>综合排名靠前的素材优先保留</td>
+</tr>
+</tbody>
+</table>
+<p><strong>实操建议</strong>：</p>
+<blockquote>
+<p>某工具类App测试发现，素材A CTR 4.8%、CVR 0.4%；素材B CTR 2.1%、CVR 2.2%。</p>
+<p>按“效率分=CTR×CVR×1000”计算：素材A=19.2，素材B=46.2。</p>
+<p>素材B虽然点击率低，但转化效率是A的2.4倍，实际加投后CPA降低了38%。</p>
+</blockquote>
+<hr />
+<h3>第3步：做转化漏斗分析</h3>
+<p>只看最终转化数不够，需要拆解每个环节的流失：</p>
+<p>检查项：<br />
+- [ ] 点击 → 落地页加载（检查landing page速度）<br />
+- [ ] 落地页 → 加购/注册（检查素材与页面的相关性）<br />
+- [ ] 加购/注册 → 付款（检查支付流程是否顺畅）</p>
+<p>如果素材在“落地页加载后立即流失”，说明<strong>素材吸引的用户和目标用户不匹配</strong>。</p>
+<p>如果素材在“加购后大量流失”，说明<strong>产品页或价格设计有问题</strong>，不是素材问题。</p>
+<hr />
+<h2>复盘后行动清单</h2>
+<p>根据第2步和第3步的结果，对应操作：</p>
+<table>
+<thead>
+<tr>
+<th>素材类型</th>
+<th>特征</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>能跑不能卖</td>
+<td>CTR高、CVR低、漏斗卡在落地页</td>
+<td>换人群定向，或优化落地页</td>
+</tr>
+<tr>
+<td>能卖不能跑</td>
+<td>CTR低、CVR高、曝光量不足</td>
+<td>测试新广告位，或增加预算</td>
+</tr>
+<tr>
+<td>两项都强</td>
+<td>CTR高、CVR高</td>
+<td>直接扩量，优先分配预算</td>
+</tr>
+<tr>
+<td>两项都弱</td>
+<td>CTR低、CVR低</td>
+<td>暂停，分析其他变量</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>复盘频率建议</h2>
+<ul>
+<li><strong>新素材</strong>：上线第7天做一次初筛，能跑但转化弱的提前优化或暂停</li>
+<li><strong>主力素材</strong>：每周做一次横向对比，检查是否出现“跑量能力下降”</li>
+<li><strong>稳定素材</strong>：每两周做一次漏斗分析，防止流量质量下滑</li>
+</ul>
+<hr />
+<h2>总结</h2>
+<p>能跑量的素材不一定能卖货，能卖货的素材不一定能跑量。</p>
+<p>复盘时先把CTR和CVR拆开看，再通过漏斗分析找到卡点，最后对号入座决定加投、暂停还是优化。这套清单的核心是<strong>用数据做决策，而不是凭感觉看数据</strong>。</p>
+<p>一个可执行的动作比一份完美报告更有价值。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>The Problem: High-Volume Creatives That Don't Convert</h2>
+<p>"This creative has a 6% CTR, running strong—yet ROI is in the red."</p>
+<p>This is a common scenario in performance marketing. High-volume creatives and high-converting creatives are two different things. One solves "will users click," the other solves "will users buy."</p>
+<p>The purpose of a creative review is to separate these dimensions and find creatives worth scaling.</p>
+<hr />
+<h2>Creative Review Checklist: 3 Steps</h2>
+<h3>Step 1: Filter Review-Eligible Creatives</h3>
+<p><strong>Prerequisite</strong>: Creatives must run for at least 7 days with total spend ≥ 3× daily budget.</p>
+<p>Checklist:<br />
+- [ ] Total impressions ≥ 10,000<br />
+- [ ] Total clicks ≥ 200<br />
+- [ ] Corresponding conversions ≥ 10<br />
+- [ ] Exclude first 3-day "newness spike" data</p>
+<hr />
+<h3>Step 2: Horizontal Data Comparison</h3>
+<p>Pull all creatives under the same ad set and compare these metrics:</p>
+<table>
+<thead>
+<tr>
+<th>Check Item</th>
+<th>Formula</th>
+<th>Benchmark</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CTR</td>
+<td>Clicks / Impressions × 100%</td>
+<td>1.5× above ad set average = "volume"</td>
+</tr>
+<tr>
+<td>CVR</td>
+<td>Conversions / Clicks × 100%</td>
+<td>2× above average = "convert"</td>
+</tr>
+<tr>
+<td>CPA</td>
+<td>Spend / Conversions</td>
+<td>Below target CPA</td>
+</tr>
+<tr>
+<td>Efficiency Score</td>
+<td>CTR × CVR × 1000</td>
+<td>Higher = priority to keep</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Practical insight</strong>:</p>
+<blockquote>
+<p>A utility app tested Creative A (CTR 4.8%, CVR 0.4%) vs Creative B (CTR 2.1%, CVR 2.2%).</p>
+<p>Efficiency scores: A=19.2, B=46.2. Creative B's CPA was 38% lower despite lower click volume.</p>
+</blockquote>
+<hr />
+<h3>Step 3: Conversion Funnel Analysis</h3>
+<p>Final conversion numbers aren't enough—break down each stage:</p>
+<p>Checklist:<br />
+- [ ] Click → Landing page load (check page speed)<br />
+- [ ] Landing page → Add-to-cart/Signup (check creative-to-page relevance)<br />
+- [ ] Add-to-cart → Purchase (check payment flow)</p>
+<p>If users drop immediately after landing page load → <strong>creative attracts wrong audience</strong>. If drop-off happens at checkout → <strong>product page or pricing issue</strong>, not creative.</p>
+<hr />
+<h2>Post-Review Action Plan</h2>
+<table>
+<thead>
+<tr>
+<th>Creative Type</th>
+<th>Pattern</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>High-volume, low-convert</td>
+<td>High CTR, low CVR, drop at landing</td>
+<td>Refine targeting or optimize landing page</td>
+</tr>
+<tr>
+<td>High-convert, low-volume</td>
+<td>Low CTR, high CVR, insufficient impressions</td>
+<td>Test new placements or increase budget</td>
+</tr>
+<tr>
+<td>Both strong</td>
+<td>High CTR + high CVR</td>
+<td>Scale immediately, prioritize budget</td>
+</tr>
+<tr>
+<td>Both weak</td>
+<td>Low CTR + low CVR</td>
+<td>Pause, investigate other variables</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Review Frequency</h2>
+<ul>
+<li><strong>New creatives</strong>: First review at Day 7, optimize or pause underperformers early</li>
+<li><strong>Top performers</strong>: Weekly horizontal comparison, watch for CTR decay</li>
+<li><strong>Stable creatives</strong>: Bi-weekly funnel analysis to catch traffic quality drop</li>
+</ul>
+<hr />
+<h2>Key Takeaway</h2>
+<p>High-volume ≠ high-converting. High-converting ≠ high-volume.</p>
+<p>Separate CTR from CVR in your reviews, use funnel analysis to identify drop-off points, then match actions to findings. The core principle: <strong>let data drive decisions, not gut feeling interpreting data</strong>.</p>
+<p>One actionable step beats a perfect report every time.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
