@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">广告账户余额预警设置与放量中断急救SOP</span>
+                    <span x-show="lang === 'en'" x-cloak>Ad Account Balance Alert Setup &amp; Delivery Interruption Emergency SOP</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-07-28</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="317" data-base-views="62">62</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu6127/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>背景：余额不足为何会成为投放的隐形杀手</h2>
+<p>在出海广告投放中，账户余额耗尽引发的放量中断，往往比素材衰减更具破坏力。一次意外中断可能导致： campaign 质量得分下降、重新冷启动需要额外 3-5 天恢复成本、竞价系统将账户视为低质量玩家导致 CPM 上涨 15%-30%。某工具类 App 运营团队曾反馈，他们一次凌晨的余额耗尽事件，造成当日获客量直接归零，直接损失超过 200 个潜在付费用户。</p>
+<p>本文提供一套可直接落地的 SOP，帮助你从被动救火转向主动防御。</p>
+<h2>SOP 第一步：配置多级余额预警机制</h2>
+<h3>1.1 确定预警阈值</h3>
+<p>根据账户日消耗量和业务容忍度，设置三级预警阈值：</p>
+<table>
+<thead>
+<tr>
+<th>预警级别</th>
+<th>触发条件</th>
+<th>通知方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>初级预警</td>
+<td>余额 ≤ 账户 3 天平均日消耗</td>
+<td>邮件通知</td>
+</tr>
+<tr>
+<td>中级预警</td>
+<td>余额 ≤ 账户 1.5 天平均日消耗</td>
+<td>邮件 + 短信双渠道</td>
+</tr>
+<tr>
+<td>紧急预警</td>
+<td>余额 ≤ 账户 0.5 天平均日消耗</td>
+<td>邮件 + 短信 + 电话</td>
+</tr>
+</tbody>
+</table>
+<h3>1.2 配置预警渠道</h3>
+<p>在 Meta Business Manager、TikTok Ads Manager 或 Google Ads 等平台的通知设置中，完成以下配置：</p>
+<ol>
+<li>登录广告账户 → 进入“设置” → “通知偏好设置”</li>
+<li>开启“账户余额”相关通知选项</li>
+<li>添加至少两个接收人（建议包含投放负责人和财务对接人）</li>
+<li>测试预警通知是否成功送达</li>
+</ol>
+<h3>1.3 接入第三方监控工具</h3>
+<p>对于管理多账户的团队，建议使用以渔数媒的余额预警系统：</p>
+<ul>
+<li>支持批量导入多个广告账户</li>
+<li>自定义预警阈值和通知频率</li>
+<li>提供余额趋势图表，辅助消耗预测</li>
+<li>支持余额低于阈值时自动暂停 campaign</li>
+</ul>
+<h2>SOP 第二步：建立标准充值流程</h2>
+<h3>2.1 充值前置准备</h3>
+<p>收到预警通知后，运营人员应在 2 小时内完成以下确认：</p>
+<ul>
+<li>[ ] 核实当前余额和今日实时消耗</li>
+<li>[ ] 确认本期投放预算和剩余投放周期</li>
+<li>[ ] 检查账户是否存在未审核的发票或历史欠款</li>
+<li>[ ] 与财务确认可用充值额度</li>
+</ul>
+<h3>2.2 发起充值申请</h3>
+<p>以渔数媒平台充值操作步骤：</p>
+<ol>
+<li>登录以渔数媒后台 → 选择目标广告账户</li>
+<li>点击“充值” → 输入充值金额（建议至少覆盖 5-7 天消耗）</li>
+<li>确认汇率和手续费后提交</li>
+<li>完成付款并上传水单</li>
+<li>等待到账确认（通常 1-4 小时内到账）</li>
+</ol>
+<h3>2.3 充值后验证</h3>
+<p>充值完成后务必确认：</p>
+<ul>
+<li>[ ] 在广告平台后台刷新余额显示</li>
+<li>[ ] 检查被暂停的 campaign 是否已自动恢复</li>
+<li>[ ] 如未自动恢复，手动启用并观察投放状态</li>
+</ul>
+<h2>SOP 第三步：多账户余额管理策略</h2>
+<p>管理 5 个以上广告账户时，建议采用以下策略：</p>
+<p><strong>分组管理法</strong>：将账户按消耗量分为高（&gt;$5000/天）、中（$1000-5000/天）、低（&lt;$1000/天）三组，高消耗账户设置更频繁的检查频率。</p>
+<p><strong>集中池模式</strong>：在主账户保留一定备用金，低于阈值时从主账户调拨。这种方式适合短期内预算在各 campaign 间流动的场景。</p>
+<p><strong>智能分配工具</strong>：使用以渔数媒的多账户管理功能，设置跨账户余额预警和自动调拨规则，减少人工盯盘压力。</p>
+<h2>SOP 第四步：放量中断应急处理</h2>
+<p>即便配置了预警，仍可能遇到突发情况。以下是中断发生后的处理步骤：</p>
+<h3>4.1 第一时间（0-30 分钟）</h3>
+<ol>
+<li>登录广告平台确认中断原因</li>
+<li>立即发起充值或调拨余额</li>
+<li>如已充值，等待余额到账</li>
+</ol>
+<h3>4.2 恢复投放（30 分钟-2 小时）</h3>
+<ol>
+<li>余额到账后，优先恢复跑量最好的 2-3 个 campaign</li>
+<li>观察消耗速度是否正常</li>
+<li>如有需要，小幅提高出价以加速消耗恢复</li>
+</ol>
+<h3>4.3 后续优化（2-24 小时）</h3>
+<ul>
+<li>分析中断期间的消耗损失</li>
+<li>检查是否有 campaign 因中断被系统降权</li>
+<li>调整预算分配，减少未来中断风险</li>
+</ul>
+<h2>关键检查清单</h2>
+<p>运营人员每日开始工作前，应确认以下事项：</p>
+<ul>
+<li>[ ] 所有活跃账户余额充足，至少覆盖 48 小时消耗</li>
+<li>[ ] 预警通知渠道畅通，无漏接风险</li>
+<li>[ ] 充值流程相关人员（财务、对接商务）已就位</li>
+<li>[ ] 存在跨账户调拨需求时，已提前规划路径</li>
+</ul>
+<p>建立这套 SOP 后，团队可以将余额管理从“救火式响应”升级为“预防式运维”，有效降低放量中断风险，保障广告投放的连续性和 ROI 稳定性。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Background: Why Insufficient Balance Becomes a Hidden Killer for Delivery</h2>
+<p>In overseas ad delivery, running out of account balance causes delivery interruption that is often more damaging than creative decay. An unexpected pause can result in: campaign quality score decline, requiring an additional 3-5 days of recovery costs for cold restarts, and the bidding system treating your account as a low-quality player, causing CPM to increase by 15%-30%. A utility app operations team once reported that a balance depletion incident at midnight caused their daily acquisitions to drop to zero, directly losing over 200 potential paying users.</p>
+<p>This article provides a directly actionable SOP to help you shift from reactive firefighting to proactive prevention.</p>
+<h2>Step 1: Configure Multi-Level Balance Alert Mechanism</h2>
+<h3>1.1 Determine Alert Thresholds</h3>
+<p>Set three-level alert thresholds based on daily account spending and business tolerance:</p>
+<table>
+<thead>
+<tr>
+<th>Alert Level</th>
+<th>Trigger Condition</th>
+<th>Notification Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Initial Alert</td>
+<td>Balance ≤ 3 days average daily spend</td>
+<td>Email notification</td>
+</tr>
+<tr>
+<td>Medium Alert</td>
+<td>Balance ≤ 1.5 days average daily spend</td>
+<td>Email + SMS dual channel</td>
+</tr>
+<tr>
+<td>Urgent Alert</td>
+<td>Balance ≤ 0.5 days average daily spend</td>
+<td>Email + SMS + Phone call</td>
+</tr>
+</tbody>
+</table>
+<h3>1.2 Configure Alert Channels</h3>
+<p>In Meta Business Manager, TikTok Ads Manager, or Google Ads, complete the following configuration:</p>
+<ol>
+<li>Log into ad account → Go to "Settings" → "Notification Preferences"</li>
+<li>Enable balance-related notification options</li>
+<li>Add at least two recipients (recommend including both campaign manager and finance contact)</li>
+<li>Test whether alert notifications are successfully delivered</li>
+</ol>
+<h3>1.3 Integrate Third-Party Monitoring Tools</h3>
+<p>For teams managing multiple accounts, it is recommended to use Yiyu Media's balance alert system:</p>
+<ul>
+<li>Supports batch import of multiple ad accounts</li>
+<li>Customizable alert thresholds and notification frequency</li>
+<li>Provides balance trend charts to assist with spend forecasting</li>
+<li>Supports automatic campaign pause when balance falls below threshold</li>
+</ul>
+<h2>Step 2: Establish Standard Top-Up Procedures</h2>
+<h3>2.1 Pre-Top-Up Preparation</h3>
+<p>Upon receiving an alert notification, operations staff should complete the following confirmation within 2 hours:</p>
+<ul>
+<li>[ ] Verify current balance and real-time spending today</li>
+<li>[ ] Confirm current campaign budget and remaining delivery period</li>
+<li>[ ] Check for pending invoices or historical arrears</li>
+<li>[ ] Confirm available top-up quota with finance</li>
+</ul>
+<h3>2.2 Submit Top-Up Request</h3>
+<p>Yiyu Media platform top-up operation steps:</p>
+<ol>
+<li>Log into Yiyu Media backend → Select target ad account</li>
+<li>Click "Top Up" → Enter top-up amount (recommend covering at least 5-7 days of spending)</li>
+<li>Confirm exchange rate and fees, then submit</li>
+<li>Complete payment and upload payment receipt</li>
+<li>Wait for balance confirmation (usually arrives within 1-4 hours)</li>
+</ol>
+<h3>2.3 Post-Top-Up Verification</h3>
+<p>After top-up completion, be sure to confirm:</p>
+<ul>
+<li>[ ] Refresh balance display in ad platform backend</li>
+<li>[ ] Check if paused campaigns have automatically resumed</li>
+<li>[ ] If not auto-resumed, manually enable and observe delivery status</li>
+</ul>
+<h2>Step 3: Multi-Account Balance Management Strategy</h2>
+<p>When managing 5+ ad accounts, it is recommended to adopt the following strategies:</p>
+<p><strong>Grouped Management</strong>: Divide accounts into high (&gt;$5000/day), medium ($1000-5000/day), and low (&lt;$1000/day) spend groups. Set more frequent check frequency for high-spend accounts.</p>
+<p><strong>Central Pool Model</strong>: Maintain a certain reserve in the main account for allocation when balances fall below thresholds. This approach suits scenarios where budgets flow across campaigns in the short term.</p>
+<p><strong>Smart Allocation Tools</strong>: Use Yiyu Media's multi-account management feature to set up cross-account balance alerts and automatic allocation rules, reducing manual monitoring pressure.</p>
+<h2>Step 4: Delivery Interruption Emergency Response</h2>
+<p>Even with alerts configured, unexpected situations can still occur. Here are the steps to follow after an interruption:</p>
+<h3>4.2 First Response (0-30 Minutes)</h3>
+<ol>
+<li>Log into ad platform to confirm interruption cause</li>
+<li>Immediately submit top-up or allocate balance</li>
+<li>If already topped up, wait for balance to arrive</li>
+</ol>
+<h3>4.3 Resume Delivery (30 Minutes - 2 Hours)</h3>
+<ol>
+<li>Once balance arrives, prioritize resuming top 2-3 best-performing campaigns</li>
+<li>Observe whether spend rate returns to normal</li>
+<li>If needed, slightly increase bids to accelerate spend recovery</li>
+</ol>
+<h3>4.4 Follow-up Optimization (2-24 Hours)</h3>
+<ul>
+<li>Analyze spend loss during interruption period</li>
+<li>Check whether any campaigns were downgraded by the system due to interruption</li>
+<li>Adjust budget allocation to reduce future interruption risk</li>
+</ul>
+<h2>Key Checklist</h2>
+<p>Before starting work each day, operations staff should confirm the following:</p>
+<ul>
+<li>[ ] All active account balances are sufficient, covering at least 48 hours of spending</li>
+<li>[ ] Alert notification channels are functioning, no risk of missed alerts</li>
+<li>[ ] Top-up process personnel (finance, account manager) are available</li>
+<li>[ ] For cross-account allocation needs, pathways are planned in advance</li>
+</ul>
+<p>After establishing this SOP, teams can upgrade balance management from "firefighting response" to "preventive maintenance," effectively reducing delivery interruption risk and ensuring advertising delivery continuity and ROI stability.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">独立站广告预算怎么分？一张清单帮你做对第一步</span>
+                    <span x-show="lang === 'en'" x-cloak>How to Allocate Ad Budget for E-commerce Store: A Practical Checklist</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-07-28</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="318" data-base-views="29">29</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu8457/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <p>独立站投广告，最怕的不是花不出去钱，而是花出去了没效果。Facebook、Google、TikTok、Pinterest……每个平台都想试，结果预算被切得稀碎，每条广告跑三天就关停，根本跑不出数据。</p>
+<p>本文给出一套可直接执行的预算分配清单，按阶段和渠道拆解，帮助你在有限预算下做出最优决策。</p>
+<h2>一、分配前的准备工作（先回答这3个问题）</h2>
+<p>在打开广告后台之前，先完成以下检查：</p>
+<ul>
+<li>[ ] <strong>明确核心目标</strong>：是追求即时 ROI，还是跑规模养模型？新手独立站建议以 ROI 为优先</li>
+<li>[ ] <strong>确定单渠道最低测试预算</strong>：每个渠道单条广告组建议不少于 300 美元/周，否则数据没有统计意义</li>
+<li>[ ] <strong>划定总预算红线</strong>：月度广告预算不超过可流动资金的 30%，留足运营缓冲</li>
+</ul>
+<blockquote>
+<p><strong>提示</strong>：如果你每月广告预算低于 5000 美元，建议先集中火力打 1-2 个渠道，不要分散铺开。</p>
+</blockquote>
+<h2>二、测试期 vs 稳定期：两套不同的分配逻辑</h2>
+<h3>测试期（前 4 周）：小步快跑，快速试错</h3>
+<p>这个阶段的核心目标不是赚钱，是找到能赚钱的受众和素材组合。</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>预算占比</th>
+<th>操作要点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主攻渠道</td>
+<td>60-70%</td>
+<td>选择一个主力平台深度测试</td>
+</tr>
+<tr>
+<td>辅助渠道</td>
+<td>20-30%</td>
+<td>保持存在感，积累基础数据</td>
+</tr>
+<tr>
+<td>备用实验</td>
+<td>10%</td>
+<td>测试新格式、新受众</td>
+</tr>
+</tbody>
+</table>
+<p><strong>检查项</strong>：<br />
+- [ ] 单渠道至少测试 3 套不同的受众定向<br />
+- [ ] 每个广告位至少跑 1 个创意版本<br />
+- [ ] 记录每个 Campaign 的 CPA（单次获客成本）和加购率<br />
+- [ ] 第 2 周复盘：淘汰 CPA 高于目标 2 倍的广告组</p>
+<h3>稳定期（第 5 周起）：加大有效投入，砍掉无效消耗</h3>
+<p>当你找到了 2-3 个正向 ROI 的广告组，就可以进入放量阶段。</p>
+<p><strong>检查项</strong>：<br />
+- [ ] 将 70% 预算集中到表现 Top 20% 的广告组<br />
+- [ ] 每日监控 CPA 波动，超过阈值立即暂停<br />
+- [ ] 每周扩量不超过 20%，避免破坏模型稳定性<br />
+- [ ] 设置自动规则：CPA 超过目标 1.5 倍时自动暂停</p>
+<h2>三、主平台预算分配参考</h2>
+<h3>Facebook/Meta（适合 B2C 电商、爆品站）</h3>
+<ul>
+<li>预算分配建议：总广告预算的 <strong>40-50%</strong></li>
+<li>优先测试：Dynamic Product Ads（DPA）+ 再营销受众</li>
+<li>避开坑：不要一开始就用 Broad 定向，新店没有足够数据支撑</li>
+</ul>
+<h3>Google Ads（适合有搜索需求的品类）</h3>
+<ul>
+<li>预算分配建议：总广告预算的 <strong>20-30%</strong></li>
+<li>优先测试：Shopping 广告 &gt; 搜索广告 &gt; P-Max</li>
+<li>冷启动技巧：先用手动 CPC 跑 2 周积累转化数据，再切换智能出价</li>
+</ul>
+<h3>TikTok（适合年轻人消费品类）</h3>
+<ul>
+<li>预算分配建议：总广告预算的 <strong>15-25%</strong></li>
+<li>优先测试：Video Shopping Ads + TikTok Sparks</li>
+<li>注意：素材生命周期短，保持每周更新 3-5 个新视频</li>
+</ul>
+<h3>再营销分配</h3>
+<p>无论主渠道怎么分配，<strong>再营销预算不低于总预算的 20%</strong>。已经访问过你网站的用户，转化成本通常是新用户的 1/3 到 1/5，是独立站最值得抓住的流量。</p>
+<h2>四、每日/每周必须检查的 5 个指标</h2>
+<ul>
+<li>[ ] <strong>当日 CPA</strong>：是否在目标范围内？</li>
+<li>[ ] <strong>广告频次</strong>：频次超过 5 的用户占比是否过高？（过高说明受众太窄）</li>
+<li>[ ] <strong>加购率 vs 转化率</strong>：加购多但转化少，说明落地页或结账流程有问题，不只是广告问题</li>
+<li>[ ] <strong>广告疲劳度</strong>：同一创意 CTR 下降超过 30% 时，立即替换素材</li>
+<li>[ ] <strong>预算消耗速度</strong>：预算在下午就花完了，说明出价太低或竞争加剧，需要调整</li>
+</ul>
+<h2>五、常见预算分配错误</h2>
+<blockquote>
+<p><strong>错误 1：所有渠道平分预算</strong><br />
+正确做法：根据各渠道 ROI 动态调整，集中资源到回报最高的渠道</p>
+<p><strong>错误 2：测试期就追求正向 ROI</strong><br />
+正确做法：测试期允许一定亏损，目的是找到可放量的模型</p>
+<p><strong>错误 3：预算调整过于频繁</strong><br />
+正确做法：每次调整后至少观察 3-5 天再决定是否回撤</p>
+</blockquote>
+<h2>快速执行清单</h2>
+<ul>
+<li>[ ] 列出你目前所有在投的广告渠道</li>
+<li>[ ] 确认每个渠道的测试预算和目标 CPA</li>
+<li>[ ] 打开广告后台，标记 CPA 超过目标 2 倍的广告组</li>
+<li>[ ] 暂停表现最差的 20% 广告组</li>
+<li>[ ] 将释放的预算加到 Top 2 的广告组</li>
+<li>[ ] 设置本周的每日监控闹钟</li>
+</ul>
+<p><strong>预算分配不是一次性决策，而是持续优化的过程。</strong> 先按这套清单执行 2 周，你会明显看到数据质量的提升。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <p>Running ads for an independent store, the biggest fear isn't spending money—it's spending it with no results. Facebook, Google, TikTok, Pinterest... every platform tempts you to try, but the budget gets fragmented, each campaign shuts down after three days, and you never build meaningful data.</p>
+<p>This article provides a practical budget allocation checklist, broken down by phase and channel, to help you maximize ROI with limited ad spend.</p>
+<h2>Before Allocating: Answer These 3 Questions First</h2>
+<p>Before opening any ad dashboard, complete these checks:</p>
+<ul>
+<li>[ ] <strong>Define your core objective</strong>: Pursuing immediate ROI or building scale? New store owners should prioritize ROI</li>
+<li>[ ] <strong>Set minimum test budget per channel</strong>: At least $300/week per ad set, or data won't be statistically meaningful</li>
+<li>[ ] <strong>Establish total budget ceiling</strong>: Monthly ad spend shouldn't exceed 30% of liquid capital</li>
+</ul>
+<blockquote>
+<p><strong>Tip</strong>: If your monthly ad budget is under $5,000, focus on 1-2 channels first. Don't spread yourself thin.</p>
+</blockquote>
+<h2>Two Different Allocation Logic: Test Phase vs. Stabilization Phase</h2>
+<h3>Test Phase (First 4 Weeks): Small Steps, Fast Iteration</h3>
+<p>The core goal isn't making money—it's finding audiences and creatives that can make money.</p>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Budget %</th>
+<th>Key Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary channel</td>
+<td>60-70%</td>
+<td>Deep test on one main platform</td>
+</tr>
+<tr>
+<td>Secondary channels</td>
+<td>20-30%</td>
+<td>Maintain presence, gather baseline data</td>
+</tr>
+<tr>
+<td>Experimental</td>
+<td>10%</td>
+<td>Test new formats, new audiences</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Checklist</strong>:<br />
+- [ ] Test at least 3 different audience targeting per channel<br />
+- [ ] Run at least 1 creative version per ad placement<br />
+- [ ] Log CPA and add-to-cart rate for each campaign<br />
+- [ ] Week 2 review: Kill ad sets with CPA above 2x target</p>
+<h3>Stabilization Phase (Week 5+): Scale What's Working, Cut What's Not</h3>
+<p>Once you find 2-3 positive ROI ad sets, it's time to scale.</p>
+<p><strong>Checklist</strong>:<br />
+- [ ] Concentrate 70% of budget on top 20% performing ad sets<br />
+- [ ] Monitor CPA daily; pause immediately if threshold exceeded<br />
+- [ ] Scale by no more than 20% weekly to avoid model instability<br />
+- [ ] Set automation rules: pause when CPA exceeds 1.5x target</p>
+<h2>Channel Budget Allocation Reference</h2>
+<h3>Facebook/Meta (Best for B2C e-commerce, trending products)</h3>
+<ul>
+<li>Recommended allocation: 40-50% of total ad budget</li>
+<li>Priority: Dynamic Product Ads + retargeting audiences</li>
+<li>Pitfall to avoid: Don't start with Broad targeting—new stores lack sufficient data</li>
+</ul>
+<h3>Google Ads (Best for products with search demand)</h3>
+<ul>
+<li>Recommended allocation: 20-30% of total ad budget</li>
+<li>Priority: Shopping ads &gt; Search ads &gt; P-Max</li>
+<li>Cold start tip: Run Manual CPC for 2 weeks to gather conversion data before switching to Smart Bidding</li>
+</ul>
+<h3>TikTok (Best for Gen Z consumer products)</h3>
+<ul>
+<li>Recommended allocation: 15-25% of total ad budget</li>
+<li>Priority: Video Shopping Ads + TikTok Sparks</li>
+<li>Note: Creative lifespan is short—refresh with 3-5 new videos weekly</li>
+</ul>
+<h3>Retargeting Allocation</h3>
+<p>Regardless of channel split, <strong>retargeting should receive at least 20% of total budget</strong>. Users who've already visited your store convert at 1/3 to 1/5 the cost of new users—they're your most valuable traffic.</p>
+<h2>5 Metrics to Check Daily/Weekly</h2>
+<ul>
+<li>[ ] <strong>Daily CPA</strong>: Is it within target range?</li>
+<li>[ ] <strong>Ad frequency</strong>: Is the percentage of users with frequency over 5 too high? (Too high means audience is too narrow)</li>
+<li>[ ] <strong>Add-to-cart rate vs. conversion rate</strong>: High cart adds but low conversions indicate landing page or checkout issues, not just ad problems</li>
+<li>[ ] <strong>Ad fatigue</strong>: Replace creatives immediately when same creative's CTR drops by 30%</li>
+<li>[ ] <strong>Budget burn rate</strong>: If budget depletes by afternoon, either bids are too low or competition increased—adjust accordingly</li>
+</ul>
+<h2>Common Budget Allocation Mistakes</h2>
+<blockquote>
+<p><strong>Mistake 1: Equal budget split across all channels</strong><br />
+Correct approach: Dynamically adjust based on each channel's ROI; concentrate resources on highest returns</p>
+<p><strong>Mistake 2: Expecting positive ROI during test phase</strong><br />
+Correct approach: Test phase allows controlled losses; goal is finding a scalable model</p>
+<p><strong>Mistake 3: Adjusting budget too frequently</strong><br />
+Correct approach: Observe changes for 3-5 days minimum before deciding to revert</p>
+</blockquote>
+<h2>Quick Execution Checklist</h2>
+<ul>
+<li>[ ] List all currently running ad channels</li>
+<li>[ ] Confirm test budget and target CPA for each channel</li>
+<li>[ ] Open ad dashboard, flag ad sets with CPA above 2x target</li>
+<li>[ ] Pause the bottom 20% performing ad sets</li>
+<li>[ ] Reallocate freed budget to top 2 ad sets</li>
+<li>[ ] Set daily monitoring reminders for this week</li>
+</ul>
+<p><strong>Budget allocation isn't a one-time decision—it's an ongoing optimization process.</strong> Execute this checklist for 2 weeks and you'll see noticeable improvement in data quality.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
