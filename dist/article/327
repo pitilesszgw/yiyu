@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">多账户投放团队如何做账户分层管理？实战案例拆解</span>
+                    <span x-show="lang === 'en'" x-cloak>Multi-Account Management for Paid Media Teams: A Practical Case Study</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-01</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="327" data-base-views="19">19</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu3755/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>案例开场：某工具类 App 团队的账户“混乱之夏”</h2>
+<p>去年夏天，某工具类 App 出海团队遇到了一个典型困境——他们的广告投放覆盖了 Meta、Google、TikTok 三个平台，共计 23 个广告账户。团队 5 个人，每个人都能登录所有账户。</p>
+<p>听起来分工明确，实际上问题重重：</p>
+<ul>
+<li>预算分配全靠感觉，今天觉得这个账户表现好就多投，明天感觉那个平台有机会就挪预算</li>
+<li>同一素材在多个账户重复测试，数据分散在各个后台，汇总一次周报要花大半天</li>
+<li>某个 Google 账户因为信用卡过期被封，但过了三天才有人发现，错过了最佳申诉时间</li>
+<li>两个人同时在改同一个广告系列的出价，导致出价逻辑混乱，当天的 CPA 直接翻倍</li>
+</ul>
+<p>团队负责人老王后来回忆：“那时候我们每天都在救火，哪个账户出问题就去处理哪个，完全没有主动管理的概念。”</p>
+<h2>问题拆解：多账户管理的四大症结</h2>
+<p>仔细分析这个案例，问题的根源并不在于账户数量多，而在于缺少一套清晰的管理框架。具体来说，有四个核心症结：</p>
+<p><strong>1. 账户没有分类，优先级不清晰</strong></p>
+<p>23 个账户被“一视同仁”地对待，每个账户都可能是“重点账户”，结果就是每个账户都得不到足够的关注。团队精力分散在大量账户上，核心账户和实验账户抢夺资源。</p>
+<p><strong>2. 权限管理混乱，操作风险高</strong></p>
+<p>所有人都能操作所有账户，好处是“灵活”，坏处是没人知道谁改了什么。当账户出现异常时，根本无法追溯操作记录。</p>
+<p><strong>3. 数据没有汇总，全靠人工统计</strong></p>
+<p>各平台的报告格式不同，数据口径不一致。每周的投放复盘会，有一半时间都花在数据对齐上，而不是分析优化方向。</p>
+<p><strong>4. 缺少预警机制，问题被动暴露</strong></p>
+<p>账户封号、预算跑空、素材疲劳……这些问题总是在造成损失之后才被发现。团队忙于应对危机，没有精力做主动优化。</p>
+<h2>判断：账户分层是解决问题的关键</h2>
+<p>面对这些症结，老王团队决定引入<strong>账户分层管理体系</strong>。核心思路很简单：不是所有账户都同等重要，需要根据投放目标和风险等级，把账户分类管理，分配不同的资源和管理力度。</p>
+<p>这个判断基于一个朴素的道理——在资源有限的情况下，优先把精力放在最有可能产生回报的账户上，同时确保高风险账户不出大问题。</p>
+<h2>处理动作：四步建立账户分层管理体系</h2>
+<h3>第一步：账户分类，确定分层标准</h3>
+<p>团队根据两个维度对 23 个账户进行分类：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>投放目的</strong></td>
+<td>主力获客账户、测试实验账户、品牌曝光账户</td>
+</tr>
+<tr>
+<td><strong>风险等级</strong></td>
+<td>高风险（如新号、新市场）、中风险（如稳定投放中）、低风险（如长期稳定账户）</td>
+</tr>
+</tbody>
+</table>
+<p>交叉之后，得到一个 3×3 的矩阵，23 个账户被归入 6 个不同的组合（有些组合为空）。其中“主力获客+中风险”的 4 个账户被标记为核心账户组。</p>
+<h3>第二步：权限分级，权责对应</h3>
+<p>根据账户的重要性和操作风险，设置三级权限：</p>
+<ul>
+<li><strong>管理员权限</strong>：只有团队负责人和老王持有，可修改预算、暂停账户、处理支付问题</li>
+<li><strong>操作权限</strong>：投放优化师持有，可调整出价、更换素材、创建广告</li>
+<li><strong>观察权限</strong>：新人和实习生持有，仅可查看数据，不能操作</li>
+</ul>
+<p>权限写在 Notion 表格里，每次新账户接入时，先确认分层，再分配权限。</p>
+<h3>第三步：建立数据看板，统一数据口径</h3>
+<p>团队接入了以渔的多账户管理工具，把 23 个账户的数据汇总到一个看板。关键指标统一口径：</p>
+<ul>
+<li>所有平台的“转化”统一为“首次付费事件”</li>
+<li>归因窗口统一为 7 天点击</li>
+<li>预算消耗进度每小时刷新一次</li>
+</ul>
+<p>每周一，负责人打开看板就能看到全局，不再需要手动汇总。</p>
+<h3>第四步：设置自动化预警规则</h3>
+<p>针对高风险账户，设置三类预警：</p>
+<ul>
+<li><strong>余额预警</strong>：账户余额低于 3 天消耗量时，发送邮件和钉钉通知</li>
+<li><strong>异常预警</strong>：单小时消耗超过日均的 200%，触发告警</li>
+<li><strong>封号预警</strong>：检测到账户状态变更时，第一时间推送通知</li>
+</ul>
+<p>这套预警机制上线第一周，就及时发现了一个 Google 账户的支付异常，避免了账户被暂停的损失。</p>
+<h2>结果：三个月后的改变</h2>
+<p>三个月后，团队做了复盘，主要数据变化如下：</p>
+<ul>
+<li><strong>人均管理账户数</strong>：从 4.6 个提升到 9.2 个，效率翻倍</li>
+<li><strong>账户异常发现时间</strong>：从平均 3 天缩短到 4 小时</li>
+<li><strong>周报准备时间</strong>：从 4 小时缩短到 30 分钟</li>
+<li><strong>核心账户组 ROAS</strong>：提升了 35%（部分得益于精力聚焦）</li>
+</ul>
+<p>老王说：“最重要的改变不是这些数字，而是团队从‘救火模式’变成了‘预防模式’。我们终于有时间做主动优化，而不是每天被问题推着走。”</p>
+<h2>你的团队需要几步开始</h2>
+<p>如果你的团队也在管理多个广告账户，可以从最简单的一步开始：<strong>先把你所有的账户列出来，按投放目的和风险等级各自分个类。</strong> 这个动作不需要任何工具，花 15 分钟就能完成，但它能让你对账户资产有一个全局认知。</p>
+<p>接下来，再根据分类结果，决定每个账户的管理频率、权限分配和预警设置。分层管理不是一蹴而就的，是一个逐步迭代的过程——关键是先开始，再优化。</p>
+<hr />
+<p><strong>以渔服务提示</strong>：如果你正在头疼多账户管理，可以了解我们的<strong>多账户管理平台</strong>，支持 20+ 主流投放平台的数据汇总、自定义权限管理和智能预警功能，帮你把多账户运营从混乱变成有序。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Case Study: The 'Summer of Chaos' for a Tool App Team</h2>
+<p>Last summer, a tool app overseas team faced a typical predicament — their ads ran across Meta, Google, and TikTok, covering 23 advertising accounts in total. With a team of 5 people, everyone had access to all accounts.</p>
+<p>Seemingly well-organized, but the problems were actually numerous:</p>
+<ul>
+<li>Budget allocation was purely based on intuition: more budget to whichever account seemed to perform well today, and tomorrow they'd shift resources to whichever platform seemed promising</li>
+<li>The same creatives were tested across multiple accounts, with data scattered across various backends — compiling a weekly report took half a day</li>
+<li>A Google account was suspended due to an expired credit card, but it took three days before someone noticed, missing the optimal appeal window</li>
+<li>Two people simultaneously adjusted bids on the same campaign, causing chaotic bidding logic and doubling that day's CPA</li>
+</ul>
+<p>Team lead Lao Wang later recalled: "Back then, we were putting out fires every day — whatever account had problems, we'd deal with it. We had no concept of proactive management."</p>
+<h2>Problem Analysis: Four Core Issues in Multi-Account Management</h2>
+<p>Analyzing this case carefully, the root cause wasn't the number of accounts, but the lack of a clear management framework. Specifically, there were four core issues:</p>
+<p><strong>1. No Account Classification, Unclear Priorities</strong></p>
+<p>The 23 accounts were treated "equally" — every account could be a "priority account," which meant none received adequate attention. The team's energy was scattered across numerous accounts, with core accounts and experimental accounts competing for resources.</p>
+<p><strong>2. Chaotic Permission Management, High Operational Risk</strong></p>
+<p>Everyone could operate all accounts — beneficial for "flexibility," but dangerous because no one knew who changed what. When accounts showed abnormalities, there was no way to trace operation records.</p>
+<p><strong>3. No Data Aggregation, Reliant on Manual Statistics</strong></p>
+<p>Each platform had different report formats and inconsistent data standards. Half of the weekly performance review meeting was spent on data alignment rather than analyzing optimization directions.</p>
+<p><strong>4. Lack of Early Warning Mechanisms, Problems Discovered Passively</strong></p>
+<p>Account bans, budget depletion, creative fatigue — these problems were only discovered after causing losses. The team was too busy dealing with crises to focus on proactive optimization.</p>
+<h2>Diagnosis: Account Tiering is Key to Solving Problems</h2>
+<p>Facing these issues, Lao Wang's team decided to introduce a <strong>layered account management system</strong>. The core concept was simple: not all accounts are equally important. They needed to classify accounts based on campaign objectives and risk levels, managing each tier with different resource allocation and oversight intensity.</p>
+<p>This diagnosis was based on a straightforward principle — with limited resources, prioritize energy on accounts most likely to generate returns while ensuring high-risk accounts don't cause major problems.</p>
+<h2>Actions: Four Steps to Build an Account Tiering System</h2>
+<h3>Step 1: Account Classification, Determine Tiering Criteria</h3>
+<p>The team classified their 23 accounts based on two dimensions:</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Campaign Objective</strong></td>
+<td>Primary acquisition accounts, testing/experiment accounts, brand awareness accounts</td>
+</tr>
+<tr>
+<td><strong>Risk Level</strong></td>
+<td>High-risk (new accounts, new markets), medium-risk (stable campaigns), low-risk (long-term stable accounts)</td>
+</tr>
+</tbody>
+</table>
+<p>After cross-referencing, they obtained a 3×3 matrix, with 23 accounts distributed across 6 different combinations (some combinations were empty). The 4 accounts in "Primary Acquisition + Medium-Risk" were tagged as the core account group.</p>
+<h3>Step 2: Permission Tiering, Align Authority with Responsibility</h3>
+<p>Based on account importance and operational risk, three permission levels were set:</p>
+<ul>
+<li><strong>Admin Permission</strong>: Only held by team lead and Lao Wang — can modify budgets, pause accounts, handle payment issues</li>
+<li><strong>Operator Permission</strong>: Held by performance marketers — can adjust bids, replace creatives, create ads</li>
+<li><strong>Observer Permission</strong>: Held by new hires and interns — can only view data, cannot operate</li>
+</ul>
+<p>Permissions were documented in a Notion table. For each new account onboarding, tiering was confirmed first, then permissions were assigned.</p>
+<h3>Step 3: Build Data Dashboard, Standardize Data Definitions</h3>
+<p>The team integrated with Yiyu's multi-account management tool, aggregating data from all 23 accounts into one dashboard. Key metrics were standardized:</p>
+<ul>
+<li>"Conversions" across all platforms unified as "first paid event"</li>
+<li>Attribution window unified as 7-day click</li>
+<li>Budget consumption progress refreshed hourly</li>
+</ul>
+<p>Every Monday morning, the team lead could view the full picture by opening the dashboard — no more manual aggregation needed.</p>
+<h3>Step 4: Set Up Automated Alert Rules</h3>
+<p>For high-risk accounts, three types of alerts were configured:</p>
+<ul>
+<li><strong>Balance Alert</strong>: Send email and DingTalk notification when account balance falls below 3 days' consumption</li>
+<li><strong>Anomaly Alert</strong>: Trigger warning when hourly spend exceeds 200% of daily average</li>
+<li><strong>Suspension Alert</strong>: Push notification immediately upon detecting any account status change</li>
+</ul>
+<p>In the first week this alert system went live, it caught a Google account's payment anomaly in time, avoiding losses from potential account suspension.</p>
+<h2>Results: Changes After Three Months</h2>
+<p>Three months later, the team conducted a review with the following key data changes:</p>
+<ul>
+<li><strong>Accounts managed per person</strong>: Increased from 4.6 to 9.2, efficiency doubled</li>
+<li><strong>Account anomaly discovery time</strong>: Reduced from average 3 days to 4 hours</li>
+<li><strong>Weekly report preparation time</strong>: Reduced from 4 hours to 30 minutes</li>
+<li><strong>Core account group ROAS</strong>: Improved by 35% (partly due to focused attention)</li>
+</ul>
+<p>Lao Wang said: "The most important change isn't these numbers, but the team shifting from 'firefighting mode' to 'prevention mode.' We finally have time for proactive optimization instead of being pushed by problems every day."</p>
+<h2>Your Team's Starting Point</h2>
+<p>If your team also manages multiple advertising accounts, you can start with the simplest step: <strong>List all your accounts first, then classify each by campaign objective and risk level.</strong> This action requires no tools — 15 minutes is enough — but it gives you a holistic view of your account assets.</p>
+<p>Next, based on the classification results, decide on management frequency, permission allocation, and alert settings for each account. Layered management isn't achieved overnight — it's a gradual iterative process. The key is to start, then optimize.</p>
+<hr />
+<p><strong>Yiyu Service Note</strong>: If you're struggling with multi-account management, learn about our <strong>Multi-Account Management Platform</strong>, supporting data aggregation from 20+ major advertising platforms, custom permission management, and intelligent alert features — helping you transform chaotic multi-account operations into orderly, systematic processes.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
