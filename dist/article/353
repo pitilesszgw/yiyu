@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">案例拆解：多账户投放团队的账户分层实战</span>
+                    <span x-show="lang === 'en'" x-cloak>Case Study: Account Tiering for Multi-Account Ad Teams</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-10</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="353" data-base-views="12">12</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu9797/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>案例场景：投放经理小周的崩溃周一</h2>
+<p>周一早上9点，某出海工具类App的投放经理小周刚坐到工位，就被钉钉消息轰炸：</p>
+<ul>
+<li>东南亚市场账户余额告急，今天要跑量8000美元</li>
+<li>欧洲区新开户还在审核，素材已经备好</li>
+<li>美国市场上周被封一个账户，需要紧急申诉</li>
+<li>财务催对账，说上周充值记录和消耗对不上</li>
+</ul>
+<p>小周揉了揉太阳穴——团队管理着7个Meta广告账户、4个TikTok账户，分布在3个产品线、5个地区市场。账户状态参差不齐，优化师各自为战，老板还追问“为什么上个月投放成本涨了15%”。</p>
+<p>这不只是小周一个人的困境。<strong>多账户投放团队的核心矛盾是：账户数量增长快，但管理能力没有同步升级。</strong></p>
+<hr />
+<h2>问题诊断：四类典型症状</h2>
+<p>我们把多账户投放的常见问题归为四类，用以下清单可以快速自检：</p>
+<table>
+<thead>
+<tr>
+<th>症状</th>
+<th>表现</th>
+<th>严重程度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>账户失联</td>
+<td>余额耗尽、支付失败、被封禁后才知道</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>资源错配</td>
+<td>爆款账户拼命砸钱，冷门账户无人看管</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>责任模糊</td>
+<td>优化师之间互相推诿，“这个账户谁负责”</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr>
+<td>财务混乱</td>
+<td>充值、消耗、退款记录对不上</td>
+<td>⭐⭐⭐</td>
+</tr>
+</tbody>
+</table>
+<p>小周的团队中，<strong>账户失联</strong>是最致命的。上个月就因为东南亚账户余额归零，导致跑量计划中断整整6小时，损失潜在转化用户约1200人。</p>
+<hr />
+<h2>账户分层ABC模型：让每个账户各得其所</h2>
+<p>账户分层的本质是<strong>资源差异化配置</strong>。不是每个账户都值得同等的关注度。</p>
+<h3>A类账户：核心资产，重点守护</h3>
+<p><strong>判断标准（满足任意一项）：</strong><br />
+- 单账户日消耗超过5000美元<br />
+- 承担主力产品线80%以上的获客任务<br />
+- 近30天ROAS高于团队均值20%以上</p>
+<p><strong>处理动作：</strong><br />
+1. 配置独立余额预警，阈值设置为“单账户日消耗×1.5”<br />
+2. 每日至少两次检查账户状态（上午10点、下午4点）<br />
+3. 充值备付金不低于3天消耗量<br />
+4. 账户由高级优化师专属负责</p>
+<h3>B类账户：增长引擎，稳步放量</h3>
+<p><strong>判断标准：</strong><br />
+- 日消耗1000-5000美元<br />
+- 处于测试期或爬坡期，有明确的ROI目标<br />
+- 近期表现稳定，有扩量潜力</p>
+<p><strong>处理动作：</strong><br />
+1. 余额预警阈值设为“日消耗×2”<br />
+2. 每日检查一次账户状态<br />
+3. 充值按周规划，保持5天以上备付<br />
+4. 优化师轮值，但有明确的交接记录</p>
+<h3>C类账户：实验田，灵活调配</h3>
+<p><strong>判断标准：</strong><br />
+- 日消耗低于1000美元<br />
+- 新开户测试素材或新市场<br />
+- 表现不佳、处于暂停观察期</p>
+<p><strong>处理动作：</strong><br />
+1. 余额预警可适当放宽，采用批量管理<br />
+2. 每2-3天检查一次即可<br />
+3. 充值采用“小额多次”策略，控制风险<br />
+4. 可由初级优化师管理，资深优化师每周review一次</p>
+<hr />
+<h2>小周团队的改变：分层后第一周</h2>
+<p>实施账户分层两周后，小周团队的状态明显改善：</p>
+<blockquote>
+<p><strong>问题响应速度</strong>：账户异常从“出问题了才知道”变为“问题发生前就预警”。东南亚账户通过余额预警提前4小时发现余额不足，避免了跑量中断。</p>
+<p><strong>人力配置优化</strong>：原来3个优化师都在处理账户余额问题，分层后A类账户占用60%精力，B类30%，C类10%。</p>
+<p><strong>财务对账效率</strong>：账户分类清晰后，对账时间从每周末加班2小时缩短到30分钟。</p>
+</blockquote>
+<p>最关键的改变是<strong>心态</strong>。优化师不再觉得“每个账户都紧急”，而是有节奏地处理优先级。</p>
+<hr />
+<h2>实操清单：分层落地三步法</h2>
+<p>如果你的团队准备实施账户分层，建议按以下步骤推进：</p>
+<p><strong>Step 1：账户盘点（耗时1-2天）</strong><br />
+- 列出所有广告账户，包括投放平台、账户名称、所属产品线<br />
+- 统计近30天消耗、ROI、账户状态<br />
+- 标注每个账户的负责人</p>
+<p><strong>Step 2：分层定级（耗时0.5天）</strong><br />
+- 根据ABC模型标准，给每个账户定级<br />
+- 与团队对齐，确保理解一致<br />
+- 形成账户分级表，张贴在共享文档</p>
+<p><strong>Step 3：流程固化（耗时3-5天）</strong><br />
+- 配置每个层级的预警规则<br />
+- 制定不同层级的检查频率<br />
+- 设定充值审批流程<br />
+- 建立周度分层review机制</p>
+<hr />
+<h2>写在最后</h2>
+<p>账户分层不是“一劳永逸”的工程。随着业务发展，账户状态会动态变化。建议<strong>每月重新评估一次分层</strong>，根据消耗、ROI、战略优先级调整归属。</p>
+<p>管理的本质是<strong>让资源流向最需要的地方</strong>。当每个优化师都清楚“哪个账户该花多少精力”，团队效率的提升就是自然结果。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Case Scene: Campaign Manager Zhou's Chaotic Monday</h2>
+<p>At 9 AM Monday, Zhou, campaign manager at a tool app going global, was bombarded with DingTalk messages:</p>
+<ul>
+<li>Southeast Asia account balance critical, need to spend $8,000 today</li>
+<li>European new account still under review, creatives ready</li>
+<li>US market lost an account last week, need urgent appeal</li>
+<li>Finance demanding reconciliation of last week's top-ups vs spend</li>
+</ul>
+<p>Zhou rubbed her temples—she manages 7 Meta accounts, 4 TikTok accounts across 3 product lines and 5 markets. Account status varies wildly, optimizers work in silos, and the boss keeps asking "Why did our ad spend increase 15% last month?"</p>
+<p>This isn't just Zhou's problem. <strong>The core contradiction in multi-account teams is: account count grows fast, but management capability doesn't upgrade accordingly.</strong></p>
+<hr />
+<h2>Problem Diagnosis: Four Typical Symptoms</h2>
+<p>We categorize common multi-account issues into four types. Use this checklist for quick self-assessment:</p>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Manifestation</th>
+<th>Severity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Account blackout</td>
+<td>Zero balance, payment failure, banned without notice</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>Resource misallocation</td>
+<td>High-performing accounts over-invested, cold accounts ignored</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>Responsibility ambiguity</td>
+<td>Optimizers deflecting, "Whose account is this?"</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr>
+<td>Financial chaos</td>
+<td>Top-ups, spend, refunds don't reconcile</td>
+<td>⭐⭐⭐</td>
+</tr>
+</tbody>
+</table>
+<p>For Zhou's team, <strong>account blackout</strong> was most critical. Last month, the Southeast Asia account hit zero, causing a 6-hour delivery interruption and losing approximately 1,200 potential users.</p>
+<hr />
+<h2>ABC Tiering Model: Every Account in Its Place</h2>
+<p>Account tiering is essentially <strong>differentiated resource allocation</strong>. Not every account deserves equal attention.</p>
+<h3>Class A Accounts: Core Assets, Priority Protection</h3>
+<p><strong>Criteria (any one qualifies):</strong><br />
+- Daily spend exceeds $5,000<br />
+- Generates 80%+ of main product line's acquisitions<br />
+- 30-day ROAS exceeds team average by 20%+ </p>
+<p><strong>Actions:</strong><br />
+1. Set independent balance alerts at "daily spend × 1.5"<br />
+2. Check account status twice daily (10 AM, 4 PM)<br />
+3. Maintain prepaid balance for minimum 3 days of spend<br />
+4. Assign to senior optimizers exclusively</p>
+<h3>Class B Accounts: Growth Engines, Steady Scaling</h3>
+<p><strong>Criteria:</strong><br />
+- Daily spend $1,000-5,000<br />
+- In testing or ramp-up phase with clear ROI targets<br />
+- Recent stable performance with scaling potential</p>
+<p><strong>Actions:</strong><br />
+1. Alert threshold at "daily spend × 2"<br />
+2. Check account status daily<br />
+3. Weekly top-up planning, maintain 5+ days prepaid<br />
+4. Rotating optimizer assignment with clear handoff records</p>
+<h3>Class C Accounts: Test Beds, Flexible Deployment</h3>
+<p><strong>Criteria:</strong><br />
+- Daily spend below $1,000<br />
+- New account testing creatives or markets<br />
+- Poor performance, under pause observation</p>
+<p><strong>Actions:</strong><br />
+1. Alert thresholds can be looser, use batch management<br />
+2. Check every 2-3 days<br />
+3. "Small amounts, frequent top-ups" strategy to control risk<br />
+4. Can be managed by junior optimizers with weekly senior review</p>
+<hr />
+<h2>Zhou's Team Transformation: First Week After Tiering</h2>
+<p>Two weeks after implementing account tiering, Zhou's team improved significantly:</p>
+<blockquote>
+<p><strong>Response Speed</strong>: Account issues shifted from "only know when problems occur" to "alert before problems happen." The Southeast Asia account caught low balance 4 hours early via alert, avoiding delivery interruption.</p>
+<p><strong>Resource Optimization</strong>: Previously all 3 optimizers dealt with balance issues. After tiering: Class A 60% focus, Class B 30%, Class C 10%.</p>
+<p><strong>Reconciliation Efficiency</strong>: Clear account categorization reduced weekly reconciliation from 2 hours of overtime to 30 minutes.</p>
+</blockquote>
+<p>The most crucial change was <strong>mindset</strong>. Optimizers stopped feeling "every account is urgent" and began handling priorities rhythmically.</p>
+<hr />
+<h2>Action Checklist: Three Steps to Implementation</h2>
+<p>If your team is ready to implement account tiering:</p>
+<p><strong>Step 1: Account Inventory (1-2 days)</strong><br />
+- List all ad accounts: platform, account name, product line<br />
+- Calculate 30-day spend, ROI, account status<br />
+- Note responsible person for each account</p>
+<p><strong>Step 2: Tier Assignment (0.5 day)</strong><br />
+- Classify each account per ABC criteria<br />
+- Align with team to ensure shared understanding<br />
+- Create account tier table, publish to shared docs</p>
+<p><strong>Step 3: Process Solidification (3-5 days)</strong><br />
+- Configure alert rules for each tier<br />
+- Define check frequency per tier<br />
+- Set top-up approval workflows<br />
+- Establish weekly tier review mechanism</p>
+<hr />
+<h2>Final Thoughts</h2>
+<p>Account tiering isn't a "set it and forget it" project. As business evolves, account status changes dynamically. <strong>Re-evaluate tiers monthly</strong> based on spend, ROI, and strategic priorities to adjust assignments.</p>
+<p>Management essence is <strong>directing resources to where they're needed most</strong>. When every optimizer knows "how much attention this account deserves," team efficiency improvement becomes natural.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
