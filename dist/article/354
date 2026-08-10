@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">多账户投放团队如何做账户分层管理？核心结论先行</span>
+                    <span x-show="lang === 'en'" x-cloak>How Multi-Account Advertising Teams Should Implement Account Tiering Management</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-11</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="354" data-base-views="51">51</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu1070/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>结论先行：分层管理不是可选项，而是多账户团队的必选项</h2>
+<p>如果你同时管理着5个以上的广告账户，却还在用“一视同仁”的方式管理——每个账户每天检查、每周复盘、相同预算分配——那你一定经历过这种状态：忙到飞起但效果平平，账户之间互相抢量却浑然不知，团队成员分工模糊导致重复劳动。</p>
+<p><strong>多账户投放团队必须建立账户分层管理体系。</strong>这不是锦上添花，而是提升30%以上运营效率、避免资源错配的基础能力。</p>
+<hr />
+<h2>为什么要分层？三个现实问题逼你必须做</h2>
+<p><strong>问题一：账户生命周期阶段不同。</strong>新开户需要密集测试和调试，稳定账户需要精细化优化，衰退账户需要及时止损或重启。不同阶段需要完全不同的投入力度，用同一套管理逻辑必然导致资源浪费。</p>
+<p><strong>问题二：预算规模和容错空间不同。</strong>跑量账户一个账号月消耗可能超过10万美金，而测试账户可能只有几千。消耗大的账户出问题损失巨大，必须重点盯防；小账户则需要允许一定试错空间。</p>
+<p><strong>问题三：团队成员能力有差异。</strong>让新人直接操盘主力账户是冒险行为，让资深投手花费大量时间在边缘账户上是资源浪费。分层后才能实现“人岗匹配”。</p>
+<hr />
+<h2>如何分层？四维度的实操框架</h2>
+<h3>一、分级标准设定</h3>
+<p>建议按以下三个维度综合评估，每个维度20-30%权重：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>评估内容</th>
+<th>权重</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>消耗能力</td>
+<td>月均消耗、消耗增长率</td>
+<td>30%</td>
+</tr>
+<tr>
+<td>效果稳定性</td>
+<td>CPA波动、ROAS均值</td>
+<td>35%</td>
+</tr>
+<tr>
+<td>战略重要性</td>
+<td>品牌宣传、竞品压制、新市场测试</td>
+<td>35%</td>
+</tr>
+</tbody>
+</table>
+<p>综合得分划分A/B/C三级：A级为核心账户（得分≥80分），B级为常规账户（60-79分），C级为边缘账户（&lt;60分）。</p>
+<h3>二、分级管理策略</h3>
+<p><strong>A级账户：</strong><br />
+- 配置资深投手专人负责，每日数据复盘<br />
+- 预算调整需主管审批，单次调整幅度不超过20%<br />
+- 优先保障充值余额，避免因余额不足导致投放中断<br />
+- 素材更新频率建议每周2-3组新素材</p>
+<p><strong>B级账户：</strong><br />
+- 由中级投放负责，每2-3天复盘一次<br />
+- 常规优化操作（如调价、暂停广告组）可自主决策<br />
+- 周度汇总报告抄送主管<br />
+- 素材更新保持稳定节奏即可</p>
+<p><strong>C级账户：</strong><br />
+- 可由新人或初级投手管理<br />
+- 重点关注是否达到基础KPI（消耗量、CPA红线）<br />
+- 月度复盘，低于红线账户考虑关停或合并<br />
+- 允许较大试错空间，但需做好数据记录</p>
+<h3>三、动态调整机制</h3>
+<p>分层不是一劳永逸的。建议每月进行一次分级复评：</p>
+<ul>
+<li>A级账户连续两周效果下滑超过15%，降级处理</li>
+<li>C级账户测试到优质素材且CPA稳定，降级升级</li>
+<li>新开户默认进入C级，观察期2-4周后重新评级</li>
+<li>业务调整（如进入新市场）可能导致分级重新洗牌</li>
+</ul>
+<h3>四、跨账户防抢量规则</h3>
+<p>分层管理的延伸问题是：同产品、多账户之间如何避免内耗？</p>
+<p>建议建立“账户-产品-素材”三维矩阵，明确每个账户的主投产品和素材类型。同一素材在同一产品下不要超过2个账户跑通投，避免自己人相互抬价。</p>
+<hr />
+<h2>写给管理者的最后一句</h2>
+<p>账户分层管理的本质是<strong>资源分配效率最大化</strong>。你不需要平均用力，而是把有限的注意力、预算和人力，集中在最能产生价值的账户上。</p>
+<p>对于出海投放团队而言，早一天建立分层管理体系，就能早一天从“救火队员”的角色中解脱出来，把时间花在策略优化和团队成长上。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Lead with the Conclusion: Tiered Management is Not Optional</h2>
+<p>If you're managing 5+ advertising accounts simultaneously and still using a "one-size-fits-all" approach—checking every account daily, reviewing weekly, allocating identical budgets—you've likely experienced this situation: flying around busy but mediocre results, accounts competing against each other without realizing it, and team members' division of work so blurred that it leads to redundant efforts.</p>
+<p><strong>Multi-account advertising teams must establish an account tiering management system.</strong> This isn't a nice-to-have; it's the foundational capability that improves operational efficiency by 30%+ and avoids resource misalignment.</p>
+<hr />
+<h2>Why Tier? Three Real Problems Force Your Hand</h2>
+<p><strong>Problem 1: Different lifecycle stages.</strong> New accounts need intensive testing and debugging, stable accounts need refined optimization, and declining accounts need timely loss-cutting or restart. Different stages require completely different levels of attention—using the same management logic inevitably leads to resource waste.</p>
+<p><strong>Problem 2: Different budget scales and error tolerance.</strong> High-volume accounts may consume over $100,000 per month per account, while test accounts might only spend a few thousand. Large-consumption accounts face huge losses when problems occur and require close monitoring; smaller accounts need room for experimentation.</p>
+<p><strong>Problem 3: Team member capabilities vary.</strong> Putting new hires directly in charge of primary accounts is risky; having senior media buyers spend大量时间 on marginal accounts is resource waste. Only with tiering can you achieve "person-role matching."</p>
+<hr />
+<h2>How to Tier? A Practical Framework with Four Dimensions</h2>
+<h3>1. Setting Tiering Criteria</h3>
+<p>Evaluate comprehensively across three dimensions, each weighted 20-30%:</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Content</th>
+<th>Weight</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spending Capacity</td>
+<td>Monthly spend, spend growth rate</td>
+<td>30%</td>
+</tr>
+<tr>
+<td>Performance Stability</td>
+<td>CPA volatility, average ROAS</td>
+<td>35%</td>
+</tr>
+<tr>
+<td>Strategic Importance</td>
+<td>Brand awareness, competitor suppression, new market testing</td>
+<td>35%</td>
+</tr>
+</tbody>
+</table>
+<p>Comprehensive scoring divides into A/B/C three tiers: A-tier for core accounts (score ≥80), B-tier for regular accounts (60-79), C-tier for marginal accounts (&lt;60).</p>
+<h3>2. Tier-Specific Management Strategies</h3>
+<p><strong>A-Tier Accounts:</strong><br />
+- Assign senior media buyers for dedicated management, daily data review<br />
+- Budget adjustments require supervisor approval, single adjustment not exceeding 20%<br />
+- Prioritize balance guarantee to avoid mid-flight interruption due to insufficient funds<br />
+- Recommend 2-3 sets of new creatives weekly</p>
+<p><strong>B-Tier Accounts:</strong><br />
+- Managed by mid-level media buyers, review every 2-3 days<br />
+- Regular optimization (bidding adjustments, pausing ad groups) can be self-decided<br />
+- Weekly summary reports CC'd to supervisors<br />
+- Maintain steady creative update rhythm</p>
+<p><strong>C-Tier Accounts:</strong><br />
+- Can be managed by new hires or junior media buyers<br />
+- Focus on whether basic KPIs (spend volume, CPA red lines) are met<br />
+- Monthly review; accounts below red lines considered for shutdown or consolidation<br />
+- Allow larger experimentation space, but maintain thorough data records</p>
+<h3>3. Dynamic Adjustment Mechanism</h3>
+<p>Tiering isn't a one-time effort. Conduct monthly tier reassessment:</p>
+<ul>
+<li>A-tier accounts with two consecutive weeks of performance decline &gt;15%, demote</li>
+<li>C-tier accounts with quality creatives and stable CPA, upgrade</li>
+<li>New accounts default to C-tier, reassessed after 2-4 week observation period</li>
+<li>Business adjustments (like entering new markets) may trigger tier reshuffling</li>
+</ul>
+<h3>4. Cross-Account Anti-Cannibalization Rules</h3>
+<p>An extension of tiered management: how to avoid internal competition among accounts for the same product?</p>
+<p>Establish a three-dimensional matrix of "Account-Product-Creative," clarifying the primary product and creative type for each account. Don't run the same creative in the same product across more than 2 accounts with similar targeting, avoiding price inflation from in-house competition.</p>
+<hr />
+<h2>A Final Word for Managers</h2>
+<p>The essence of account tiering management is <strong>maximizing resource allocation efficiency</strong>. You don't need to apply equal effort everywhere; instead, concentrate limited attention, budget, and manpower on accounts that generate the most value.</p>
+<p>For overseas advertising teams, establishing a tiering management system one day earlier frees you from the "firefighter" role one day sooner, allowing you to invest time in strategic optimization and team growth.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
