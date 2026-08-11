@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">3周GMV翻3倍：一个家居品类TikTok Shop冷启动的素材池搭建复盘</span>
+                    <span x-show="lang === 'en'" x-cloak>From Zero to Scale: A TikTok Shop Cold Launch Case Study on Building a High-Performing Creative Pool</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-12</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="358" data-base-views="89">89</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu4315/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>凌晨两点的素材评审会</h2>
+<p>老周是某家居品类跨境团队的投放负责人，上个月他们上线了一款创意收纳盒，定价19.9美元，首批备货5000件。</p>
+<p>上线第一周，广告账户跑了20多组素材，消耗接近3000美元，但出单只有47单，ACOS高达58%。更让他焦虑的是，系统提示广告质量分持续下滑，再这样下去账户权重会受严重影响。</p>
+<p>“素材全是工厂提供的白底图加卖点字幕，换了个颜色背景就当新素材，这种做法在TikTok上根本跑不动。”老周后来复盘时承认，他们严重低估了TikTok Shop的内容属性。</p>
+<hr />
+<h2>问题诊断：冷启动期的三道坎</h2>
+<h3>第一道坎：素材同质化严重</h3>
+<p>团队初期沿用了亚马逊的素材逻辑——产品白底图加关键词字幕。在TikTok的信息流里，这类素材3秒内就会被划走。用户期待的是“真实生活场景+情绪共鸣”，而不是“产品说明书”。</p>
+<h3>第二道坎：点击率(CTR)虚假繁荣</h3>
+<p>部分素材CTR达到3.5%，但加购率仅0.8%，转化率更是低至0.3%。这说明素材吸引了点击，却没有建立购买欲望。用户被封面骗进来，却发现内容和产品关联度低。</p>
+<h3>第三道坎：素材生命周期管理混乱</h3>
+<p>没有建立素材标签体系，20组素材混在一起跑，谁好谁坏看不出来。优质素材没有被及时放量，劣质素材持续消耗预算。</p>
+<hr />
+<h2>判断：素材池需要结构性重建</h2>
+<p>经过数据分析，团队得出三个核心判断：</p>
+<ol>
+<li>
+<p><strong>TikTok Shop冷启动需要“素材池”而非“素材堆”</strong>——不是增加素材数量，而是建立分层分类的内容体系。</p>
+</li>
+<li>
+<p><strong>前3秒决定素材生死</strong>——必须用钩子画面+场景化表达替代产品特写。</p>
+</li>
+<li>
+<p><strong>素材需要“养成”思维</strong>——不是测一批丢一批，而是通过数据反馈持续迭代优化。</p>
+</li>
+</ol>
+<hr />
+<h2>处理动作：四周素材池搭建SOP</h2>
+<h3>第一周：素材分层框架搭建</h3>
+<p>团队将素材分为四层：</p>
+<table>
+<thead>
+<tr>
+<th>素材层级</th>
+<th>内容类型</th>
+<th>占比</th>
+<th>测试预算</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>钩子层</td>
+<td>痛点场景/对比冲击</td>
+<td>20%</td>
+<td>高出价抢量</td>
+</tr>
+<tr>
+<td>种草层</td>
+<td>真实使用场景</td>
+<td>40%</td>
+<td>中等出价</td>
+</tr>
+<tr>
+<td>信任层</td>
+<td>开箱/测评/用户反馈</td>
+<td>25%</td>
+<td>常规出价</td>
+</tr>
+<tr>
+<td>转化层</td>
+<td>促销信息/限时福利</td>
+<td>15%</td>
+<td>放量阶段启用</td>
+</tr>
+</tbody>
+</table>
+<h3>第二周：钩子素材专项测试</h3>
+<p>针对“收纳盒”这个品类，团队测试了三种钩子形式：</p>
+<ul>
+<li><strong>痛点型</strong>："我家柜子乱了一整年，用了这个方法三天全解决"</li>
+<li><strong>对比型</strong>：收纳前vs收纳后的视觉冲击</li>
+<li><strong>好奇型</strong>："这个小盒子居然能装下整个厨房"</li>
+</ul>
+<p>测试结果：痛点型CTR最高(4.2%)，但转化率最低；种草型CTR中等(3.1%)，但加购率最高(3.2%)。</p>
+<h3>第三周：素材组合打法</h3>
+<p>单一素材很难同时完成“拉新-种草-转化”三个任务。团队采用素材组合策略：</p>
+<p><strong>钩子素材(3-5秒)</strong> → <strong>产品特写(10-15秒)</strong> → <strong>场景种草(15-20秒)</strong> → <strong>行动号召(5秒)</strong></p>
+<p>通过剪辑拼接，1个钩子素材可以衍生出3-5个不同组合版本，素材利用率提升300%。</p>
+<h3>第四周：数据回收与素材迭代</h3>
+<p>建立每日素材健康度看板，追踪指标：</p>
+<ul>
+<li>CTR &lt; 2%：立即暂停，优化封面或替换钩子</li>
+<li>加购率 &lt; 1.5%：分析用户流失环节，调整内容节奏</li>
+<li>转化率 &lt; 0.8%：检查落地页匹配度和价格锚点</li>
+</ul>
+<hr />
+<h2>结果：四周数据对比</h2>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>第一周</th>
+<th>第四周</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>素材组数</td>
+<td>23组</td>
+<td>8组核心组</td>
+<td>减少65%</td>
+</tr>
+<tr>
+<td>平均CTR</td>
+<td>2.1%</td>
+<td>3.8%</td>
+<td>+81%</td>
+</tr>
+<tr>
+<td>加购率</td>
+<td>0.8%</td>
+<td>2.9%</td>
+<td>+263%</td>
+</tr>
+<tr>
+<td>ACOS</td>
+<td>58%</td>
+<td>31%</td>
+<td>-27pp</td>
+</tr>
+<tr>
+<td>周GMV</td>
+<td>$892</td>
+<td>$2674</td>
+<td>+200%</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>复盘：冷启动素材池的三个关键认知</h2>
+<ol>
+<li>
+<p><strong>量不在多，在于结构</strong>：与其跑20组杂乱的素材，不如专注5组分层清晰的素材跑透。</p>
+</li>
+<li>
+<p><strong>TikTok是情绪经济</strong>：用户买的是“变好的感觉”，不是产品参数。素材要贩卖场景和情绪，而非功能和卖点。</p>
+</li>
+<li>
+<p><strong>素材需要新陈代谢</strong>：建立素材生命周期管理机制，每周淘汰低效素材，每月更新素材池20%内容，保持内容新鲜度。</p>
+</li>
+</ol>
+<p>冷启动期最怕的不是素材效果差，而是一直用错误的方法重复测试。如果你也在TikTok Shop新品冷启动中挣扎，不妨先从建立素材分层框架开始。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>The 2 AM Creative Review Meeting</h2>
+<p>Lao Zhou is the performance marketing lead at a cross-border home goods team. Last month, they launched a creative storage box priced at $19.99 with an initial inventory of 5,000 units.</p>
+<p>During the first week, they ran over 20 ad groups consuming nearly $3,000 but only converted 47 orders, resulting in an ACOS of 58%. What worried him more was the system alerts indicating declining ad quality scores—if this continued, account权重 would suffer.</p>
+<p>"All our creatives were factory-provided white-background product shots with tagline overlays. We treated different colored backgrounds as 'new' creatives. This approach simply doesn't work on TikTok," Lao Zhou admitted during their post-mortem. They had seriously underestimated TikTok Shop's content-driven nature.</p>
+<hr />
+<h2>Problem Diagnosis: Three Hurdles in Cold Launch</h2>
+<h3>Hurdle 1: Severe Creative Homogenization</h3>
+<p>The team initially applied their Amazon creative logic—product white shots with keyword subtitles. In TikTok's feed, such creatives get swiped away within 3 seconds. Users expect "real-life scenarios + emotional resonance," not "product brochures."</p>
+<h3>Hurdle 2: Deceptive CTR Numbers</h3>
+<p>Some creatives achieved a 3.5% CTR, but the add-to-cart rate was only 0.8%, with conversion rates as low as 0.3%. This indicates the creatives attracted clicks but failed to build purchase intent. Users were drawn in by the thumbnail but found the content barely relevant to the product.</p>
+<h3>Hurdle 3: Chaotic Creative Lifecycle Management</h3>
+<p>Without a creative tagging system, all 20 groups ran together with no clarity on performance. High-performing creatives weren't scaled, while poor performers continued draining the budget.</p>
+<hr />
+<h2>Assessment: Creative Pool Needs Structural Rebuild</h2>
+<p>After data analysis, the team reached three core assessments:</p>
+<ol>
+<li>
+<p><strong>TikTok Shop cold launch requires a "creative pool" not a "creative pile"</strong>—not more creatives, but a layered, categorized content system.</p>
+</li>
+<li>
+<p><strong>The first 3 seconds determine creative fate</strong>—hook footage + scenario-based expression must replace product close-ups.</p>
+</li>
+<li>
+<p><strong>Creatives need a "cultivation" mindset</strong>—not testing a batch and discarding it, but continuous iteration based on data feedback.</p>
+</li>
+</ol>
+<hr />
+<h2>Actions: A 4-Week Creative Pool Building SOP</h2>
+<h3>Week 1: Establish Creative Layering Framework</h3>
+<p>The team categorized creatives into four tiers:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Content Type</th>
+<th>Allocation</th>
+<th>Test Budget</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hook Tier</td>
+<td>Pain point scenarios / Contrast impact</td>
+<td>20%</td>
+<td>High bid for volume</td>
+</tr>
+<tr>
+<td>Seed Tier</td>
+<td>Real usage scenarios</td>
+<td>40%</td>
+<td>Medium bid</td>
+</tr>
+<tr>
+<td>Trust Tier</td>
+<td>Unboxing / Reviews / User feedback</td>
+<td>25%</td>
+<td>Standard bid</td>
+</tr>
+<tr>
+<td>Conversion Tier</td>
+<td>Promo info / Limited-time offers</td>
+<td>15%</td>
+<td>Scale-up phase</td>
+</tr>
+</tbody>
+</table>
+<h3>Week 2: Hook Creative Specialized Testing</h3>
+<p>For the "storage box" category, the team tested three hook formats:</p>
+<ul>
+<li><strong>Pain Point Type</strong>: "My cabinets were a mess for a whole year. This method fixed it in 3 days"</li>
+<li><strong>Contrast Type</strong>: Before vs. after visual impact</li>
+<li><strong>Curiosity Type</strong>: "This small box can actually hold an entire kitchen"</li>
+</ul>
+<p>Test Results: Pain point type had the highest CTR (4.2%) but lowest conversion; Seed type had medium CTR (3.1%) but highest add-to-cart rate (3.2%).</p>
+<h3>Week 3: Creative Combination Strategy</h3>
+<p>A single creative struggles to accomplish "attract-clicks → seed-interest → convert" all three tasks. The team adopted a creative combination approach:</p>
+<p><strong>Hook (3-5s)</strong> → <strong>Product Close-up (10-15s)</strong> → <strong>Scenario Seeding (15-20s)</strong> → <strong>Call to Action (5s)</strong></p>
+<p>Through editing combinations, 1 hook creative can generate 3-5 different version combinations, improving creative utilization by 300%.</p>
+<h3>Week 4: Data Recovery and Creative Iteration</h3>
+<p>Established a daily creative health dashboard tracking:</p>
+<ul>
+<li>CTR &lt; 2%: Pause immediately, optimize thumbnail or replace hook</li>
+<li>Add-to-cart rate &lt; 1.5%: Analyze user drop-off points, adjust content pacing</li>
+<li>Conversion rate &lt; 0.8%: Check landing page match and price anchoring</li>
+</ul>
+<hr />
+<h2>Results: 4-Week Data Comparison</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Week 1</th>
+<th>Week 4</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Creative Groups</td>
+<td>23</td>
+<td>8 core groups</td>
+<td>-65%</td>
+</tr>
+<tr>
+<td>Average CTR</td>
+<td>2.1%</td>
+<td>3.8%</td>
+<td>+81%</td>
+</tr>
+<tr>
+<td>Add-to-Cart Rate</td>
+<td>0.8%</td>
+<td>2.9%</td>
+<td>+263%</td>
+</tr>
+<tr>
+<td>ACOS</td>
+<td>58%</td>
+<td>31%</td>
+<td>-27pp</td>
+</tr>
+<tr>
+<td>Weekly GMV</td>
+<td>$892</td>
+<td>$2,674</td>
+<td>+200%</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Key Takeaways: Three Critical Insights for Cold Launch Creative Pools</h2>
+<ol>
+<li>
+<p><strong>Quality over quantity through structure</strong>: Instead of running 20 scattered creatives, focus on 5 well-structured ones and test them thoroughly.</p>
+</li>
+<li>
+<p><strong>TikTok is an emotions economy</strong>: Users buy "the feeling of improvement," not product specifications. Creatives should sell scenarios and emotions, not features and benefits.</p>
+</li>
+<li>
+<p><strong>Creatives need metabolism</strong>: Establish a creative lifecycle management mechanism—phase out low performers weekly, refresh 20% of the pool monthly to maintain content freshness.</p>
+</li>
+</ol>
+<p>The biggest danger during cold launch isn't poor creative performance—it's repeatedly using the wrong methods. If you're struggling with TikTok Shop product cold launch, start by building your creative layering framework.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
