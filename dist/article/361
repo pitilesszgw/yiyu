@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">周报观察：代理开户效率低的团队，输在哪里？</span>
+                    <span x-show="lang === 'en'" x-cloak>Weekly Watch: Why Teams with Inefficient Agency Account Management Are Falling Behind</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-13</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="361" data-base-views="87">87</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu6918/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>本周观察：账户管理乱象集中暴露</h2>
+<p>本周与多支出海营销团队沟通后发现，代理开户环节的问题正在集中爆发。一位投放负责人吐槽：“我们同时跑着 Meta、Google、TikTok 三个平台，每个平台又对接了不同的代理商，光是对齐账户状态就要在七八个群里来回翻记录。”</p>
+<p>这并非个例。以渔数媒观察到，许多跨境电商和出海应用团队在代理开户管理上仍依赖“表格+群聊”的原始方式——用 Excel 记录账户信息，在微信群或飞书群传递截图确认充值到账、下户通知。这种模式在账户数量少时勉强运转，一旦业务扩张到多平台、多代理、多账户的阶段，效率瓶颈立刻显现。</p>
+<h2>透明化追踪：从“人肉盯梢”到“一目了然”</h2>
+<p>传统模式最大的问题在于<strong>信息不透明</strong>。当一个代理开户流程涉及客户方运营、代理方销售、平台方审核、财务侧充值等多个角色时，信息传递的每一环都可能产生延迟或断层。</p>
+<p>某工具类 App 的投放团队曾经历过这样的场景：代理方通知账户已下户，但运营团队三天后才发现充值未到账，导致当周投放计划被迫推迟。问题根源不是哪家公司的失职，而是整个流程缺乏可视化的节点追踪。</p>
+<p>系统化看板的核心价值正是<strong>让流程透明化</strong>。通过看板视图，团队可以清晰地看到每个账户从提交申请、资质审核、代理对接、下户确认到充值到账的完整链路。每个节点标注责任人、预计完成时间、实际状态，所有参与者都能实时同步。</p>
+<blockquote>
+<p>减少重复确认，就是节省运营团队的精力。</p>
+</blockquote>
+<h2>风控前置：避免“临时停投”的被动局面</h2>
+<p>代理开户不仅是效率问题，更是<strong>风险管理的前哨站</strong>。</p>
+<p>本周我们注意到，有团队因为某个代理商账户异常、充值延迟，导致当日投放计划被迫中断。这种被动局面往往源于缺乏系统化的预警机制——问题发生后才知道，而不是发生前就预警。</p>
+<p>系统化看板可以预设关键节点的提醒规则：</p>
+<ul>
+<li>充值发起后超过 48 小时未确认到账 → 自动标记预警</li>
+<li>下户流程超过 5 个工作日无进展 → 触发升级通知</li>
+<li>单账户余额低于预设阈值 → 提醒优先充值</li>
+</ul>
+<p>这些规则看似简单，却是将风控从“事后救火”转向“事前预防”的关键动作。</p>
+<h2>对账效率：统一视图减少“人肉汇总”</h2>
+<p>财务对账是代理开户管理中另一个高频痛点。</p>
+<p>某跨境电商团队每月对账时，都要花 2-3 天整理各代理账户的消费账单、充值记录和余额数据。不同平台的账单格式不统一，人工汇总容易出错，月末对账时“哪里对不上”成了运营和财务最头疼的问题。</p>
+<p>看板的多维度视图功能可以将分散的消费数据、充值记录、账户余额汇总到统一界面。运营团队在看板上就能快速定位异常数据，财务对账周期从原来的 3 天缩短到半天左右。</p>
+<h2>实操建议：三步建立你的开户管理看板</h2>
+<p>如果你所在团队目前仍用表格管理代理开户，建议从以下三步开始系统化改造：</p>
+<ol>
+<li>
+<p><strong>梳理全流程节点</strong><br />
+   从账户申请提交到充值到账，列出所有必经环节，明确每个环节的责任人和标准时效。这是看板搭建的基础。</p>
+</li>
+<li>
+<p><strong>设定关键里程碑与预警规则</strong><br />
+   确定哪些节点需要自动提醒，如充值确认、下户通知、余额预警等。看板工具（如飞书多维表格、Notion、Trello）均可实现这些功能。</p>
+</li>
+<li>
+<p><strong>定期复盘与优化</strong><br />
+   看板上线后，每周固定时间复盘：哪些节点经常卡壳？哪些规则需要调整？用数据驱动流程持续改进。</p>
+</li>
+</ol>
+<hr />
+<h2>总结：每一步可视化，都是效率的积累</h2>
+<p>代理开户的效率差距，往往藏在那些“不被看见”的沟通成本和等待时间里。系统化看板的价值，不是引入一个工具那么简单，而是让团队从“人盯人”的被动管理模式，切换到“数据驱动”的主动管理模式。</p>
+<p>对出海营销团队而言，代理开户效率直接影响投放启动速度和资金周转效率。在竞争激烈的市场中，每一天的延迟可能意味着更高的获客成本和更低的竞争优势。</p>
+<p>让隐性工作显性化、分散信息集中化、模糊责任明确化——这是以渔数媒在服务众多出海团队后，总结出的精细化运营三原则。系统化看板，正是这三原则在代理开户场景的具体落地。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>This Week's Observation: Account Management Issues Are Surfacing</h2>
+<p>This week, while communicating with several overseas marketing teams, we noticed that agency account setup problems are coming to a head. One performance marketing lead complained: "We're running Meta, Google, and TikTok simultaneously, each with different agencies. Just keeping track of account statuses means flipping through seven or eight group chats."</p>
+<p>This isn't an isolated case. Yiyu Digital Media observed that many cross-border e-commerce and app teams still rely on "spreadsheets + group chats" for agency account management—recording account info in Excel, confirming deposits and approvals via WeChat or Lark groups. This works when managing a handful of accounts but breaks down as operations scale to multi-platform, multi-agency, multi-account complexity.</p>
+<h2>Transparent Tracking: From "Manual Monitoring" to "At a Glance"</h2>
+<p>The biggest problem with traditional approaches is <strong>information opacity</strong>. When an agency account setup involves client operations, agency sales, platform review, and finance teams, every information handoff risks delays or gaps.</p>
+<p>One tool app's performance team experienced this scenario: the agency confirmed the account was live, but the operations team discovered three days later that the deposit never arrived, delaying that week's campaign. The issue wasn't anyone's fault—it's that the entire process lacked visual milestone tracking.</p>
+<p>The core value of systematic kanban boards is <strong>making processes transparent</strong>. Through kanban views, teams can clearly see the complete chain for each account: application submission, credential review, agency coordination, approval confirmation, and deposit arrival. Each milestone marks the responsible party, expected completion time, and current status—all participants can sync in real-time.</p>
+<blockquote>
+<p>Reducing repetitive confirmations means conserving your operations team's energy.</p>
+</blockquote>
+<h2>Proactive Risk Control: Avoiding "Emergency Pauses"</h2>
+<p>Agency account setup isn't just an efficiency issue—it's <strong>the front line of risk management</strong>.</p>
+<p>This week we noticed teams forced to interrupt campaigns because an agency account became anomalous or deposits were delayed. These passive situations usually stem from lacking systematic early-warning mechanisms—problems are discovered after they happen rather than anticipated before.</p>
+<p>Systematic kanban boards can preset milestone reminder rules:</p>
+<ul>
+<li>Deposit initiated but not confirmed within 48 hours → auto-flag warning</li>
+<li>Approval process stalled beyond 5 business days → trigger escalation</li>
+<li>Single account balance below preset threshold → prioritize deposit reminder</li>
+</ul>
+<p>These rules seem simple, but they shift risk control from "firefighting after the fact" to "prevention beforehand."</p>
+<h2>Reconciliation Efficiency: Unified Views Reduce "Manual Aggregation"</h2>
+<p>Financial reconciliation is another frequent pain point in agency account management.</p>
+<p>One cross-border e-commerce team spent 2-3 days monthly organizing consumption reports, deposit records, and balance data across agency accounts. Different platforms have inconsistent statement formats, manual aggregation invites errors, and "what doesn't match up" becomes the biggest headache for operations and finance.</p>
+<p>Kanban board multi-dimensional views aggregate scattered consumption data, deposit records, and account balances into a unified interface. Operations teams can quickly locate anomalous data on the kanban; finance reconciliation cycles shrink from three days to half a day.</p>
+<h2>Practical Recommendations: Three Steps to Build Your Account Setup Kanban</h2>
+<p>If your team currently uses spreadsheets for agency account management, start systematic transformation with these three steps:</p>
+<ol>
+<li>
+<p><strong>Map All Process Milestones</strong><br />
+   List every required step from account application submission to deposit confirmation, clarifying responsible parties and standard timelines for each. This is the foundation for kanban setup.</p>
+</li>
+<li>
+<p><strong>Set Key Milestones and Alert Rules</strong><br />
+   Determine which milestones need automatic reminders—deposit confirmations, approval notifications, balance alerts. Kanban tools (Lark Multidimensional Tables, Notion, Trello) can all implement these features.</p>
+</li>
+<li>
+<p><strong>Regular Reviews and Optimization</strong><br />
+   After launching the kanban, hold weekly reviews: Which milestones frequently bottleneck? Which rules need adjustment? Use data to drive continuous process improvement.</p>
+</li>
+</ol>
+<hr />
+<h2>Conclusion: Every Visualization Step Accumulates into Efficiency</h2>
+<p>Efficiency gaps in agency account setup often hide in "unseen" communication costs and waiting times. The value of systematic kanban boards isn't simply introducing a tool—it's switching teams from "person-to-person" passive management to "data-driven" proactive management.</p>
+<p>For overseas marketing teams, agency account setup efficiency directly impacts campaign launch speed and capital turnover efficiency. In competitive markets, every day's delay may mean higher customer acquisition costs and lower competitive advantage.</p>
+<p>Making invisible work visible, centralizing scattered information, clarifying ambiguous responsibilities—these are the three principles of refined operations Yiyu Digital Media distilled from serving numerous overseas teams. Systematic kanban boards are the concrete implementation of these three principles in the agency account setup scenario.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
