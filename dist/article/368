@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">广告账户余额预警设置完整清单 | 避免放量中断的7个关键步骤</span>
+                    <span x-show="lang === 'en'" x-cloak>Ad Account Balance Alert Setup Checklist: 7 Steps to Prevent Campaign Disruption</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-15</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="368" data-base-views="19">19</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu210/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <p>账户余额归零导致投放中断，这类事故在投放团队中并不少见。尤其在放量期，一旦广告突然暂停，模型积累的转化数据可能打乱，ROI恢复周期往往需要3-5天。与其事后补救，不如建立前置的余额预警机制。</p>
+<h2>一、预警规则配置步骤</h2>
+<h3>步骤1：确定预警触发阈值</h3>
+<ul>
+<li><strong>单账户单日预算 × 3</strong> 作为一级预警线（例如日预算500美元，低于1500美元触发提醒）</li>
+<li><strong>单账户单日预算 × 1.5</strong> 作为二级预警线（需立即响应）</li>
+<li><strong>单账户余额低于500美元</strong> 作为紧急预警（无论预算高低）</li>
+</ul>
+<blockquote>
+<p>注意：多账户管理时，建议为每个账户单独设置阈值，而非统一按最高账户标准。</p>
+</blockquote>
+<h3>步骤2：开启平台原生通知</h3>
+<p>不同广告平台的余额预警设置路径：</p>
+<table>
+<thead>
+<tr>
+<th>平台</th>
+<th>设置路径</th>
+<th>通知类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Meta (Facebook)</strong></td>
+<td>Business Settings → Payments → Alerts</td>
+<td>邮件 + 应用内通知</td>
+</tr>
+<tr>
+<td><strong>Google Ads</strong></td>
+<td>Tools → Billing → Alert preferences</td>
+<td>邮件 + 短信</td>
+</tr>
+<tr>
+<td><strong>TikTok Ads</strong></td>
+<td>Assets → Budget &amp; Schedule → Low balance alert</td>
+<td>应用内通知</td>
+</tr>
+<tr>
+<td><strong>Pinterest</strong></td>
+<td>Ads → Billing → Spending limit alerts</td>
+<td>邮件</td>
+</tr>
+</tbody>
+</table>
+<h3>步骤3：配置第三方监控工具</h3>
+<p>平台原生通知存在延迟风险，建议叠加外部监控：</p>
+<ul>
+<li><strong>SpreadJS / Google Sheets</strong>：定时拉取API数据，设置公式自动判断阈值</li>
+<li><strong>飞书/钉钉机器人</strong>：配置自定义Webhook，余额达标时自动推送群消息</li>
+<li><strong>邮件分级提醒</strong>：设置单独文件夹+手机客户端推送规则，避免被工作邮件淹没</li>
+</ul>
+<h2>二、避免放量中断的检查清单</h2>
+<p>每次投放前或每周固定时间，执行以下检查项：</p>
+<ul>
+<li>[ ] 确认今日各账户余额状态</li>
+<li>[ ] 检查正在跑量的Campaign对应的账户余额是否充足</li>
+<li>[ ] 验证预警通知是否正常送达（测试发送）</li>
+<li>[ ] 确认充值渠道畅通（信用卡/对公转账/代理商预付）</li>
+<li>[ ] 了解各平台充值到账时间（信用卡通常即时，对公转账可能需要1-3个工作日）</li>
+<li>[ ] 备用账户是否已预置足够余额</li>
+<li>[ ] 团队值班表是否包含余额监控职责</li>
+</ul>
+<h2>三、充值应急预案</h2>
+<p>即使预警机制完善，仍可能遇到紧急情况。提前准备以下预案：</p>
+<h3>情况A：夜间/节假日余额不足</h3>
+<ul>
+<li>提前预置备用金于低余额账户</li>
+<li>设置24小时内生效的自动充值规则（需平台支持）</li>
+<li>值班人员手机端登录广告后台，收到预警后快速响应</li>
+</ul>
+<h3>情况B：充值渠道故障</h3>
+<ul>
+<li>备用付款方式是否已验证（多张信用卡、不同支付账户）</li>
+<li>代理商代充模式的联系人是否保持在线</li>
+<li>紧急情况下能否临时调整单账户预算争取缓冲时间</li>
+</ul>
+<h3>情况C：多账户同时告警</h3>
+<ul>
+<li>优先保障ROI最高的2-3个账户</li>
+<li>次要账户先暂停，待主账户补充后恢复</li>
+<li>使用批量操作工具（如以渔数媒的多账户管理后台）统一处理</li>
+</ul>
+<h2>四、常见误区</h2>
+<ul>
+<li><strong>只看日消耗不看余额总量</strong>：日消耗低但总余额不足，同样会导致中断</li>
+<li><strong>只设一级预警</strong>：错过黄金补充窗口，只能被动应对</li>
+<li><strong>预警设置后不测试</strong>：通知被拦截或进入垃圾箱，预警形同虚设</li>
+<li><strong>依赖单一人工检查</strong>：节假日无人值班时风险最高</li>
+</ul>
+<p>建立完善的余额预警机制，本质上是将风险控制从「救火式响应」转变为「预防式管理」。定期复盘余额消耗规律、优化充值节奏，能让投放团队把更多精力放在素材优化和ROI提升上。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <p>Running out of ad account balance and causing campaign interruptions is more common than you might think. Especially during scaling periods, a sudden ad pause can disrupt your conversion model, often requiring 3-5 days for recovery. Prevention is always better than remediation.</p>
+<h2>Step 1: Define Alert Thresholds</h2>
+<ul>
+<li><strong>Primary Alert</strong>: Account Balance &lt; (Daily Budget × 3)</li>
+<li><strong>Secondary Alert</strong>: Account Balance &lt; (Daily Budget × 1.5)</li>
+<li><strong>Emergency Alert</strong>: Account Balance &lt; $500 (regardless of budget size)</li>
+</ul>
+<blockquote>
+<p>For multi-account management, set individual thresholds per account rather than applying a uniform standard.</p>
+</blockquote>
+<h2>Step 2: Enable Native Platform Notifications</h2>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Path</th>
+<th>Notification Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Meta (Facebook)</strong></td>
+<td>Business Settings → Payments → Alerts</td>
+<td>Email + In-app</td>
+</tr>
+<tr>
+<td><strong>Google Ads</strong></td>
+<td>Tools → Billing → Alert preferences</td>
+<td>Email + SMS</td>
+</tr>
+<tr>
+<td><strong>TikTok Ads</strong></td>
+<td>Assets → Budget &amp; Schedule → Low balance alert</td>
+<td>In-app notification</td>
+</tr>
+<tr>
+<td><strong>Pinterest</strong></td>
+<td>Ads → Billing → Spending limit alerts</td>
+<td>Email only</td>
+</tr>
+</tbody>
+</table>
+<h2>Step 3: Configure Third-Party Monitoring</h2>
+<ul>
+<li><strong>Spreadsheets with API integration</strong>: Pull data automatically and set threshold formulas</li>
+<li><strong>Slack/Teams/Lark bots</strong>: Custom webhook alerts sent directly to your team channel</li>
+<li><strong>Email routing</strong>: Create dedicated folders with mobile push notifications</li>
+</ul>
+<h2>Pre-Launch / Weekly Checklist</h2>
+<ul>
+<li>[ ] Check all account balances</li>
+<li>[ ] Verify balance for active campaigns specifically</li>
+<li>[ ] Test alert delivery (send a test notification)</li>
+<li>[ ] Confirm payment methods are active</li>
+<li>[ ] Know platform processing times (credit card vs. wire transfer)</li>
+<li>[ ] Backup accounts pre-funded if possible</li>
+<li>[ ] Assign balance monitoring to team on-call schedule</li>
+</ul>
+<h2>Emergency Protocols</h2>
+<h3>Scenario A: Balance drops at night or during holidays</h3>
+<ul>
+<li>Pre-fund low-balance accounts before off-hours</li>
+<li>Set up auto-recharge rules where available</li>
+<li>Ensure team member can access ad dashboard via mobile</li>
+</ul>
+<h3>Scenario B: Payment method fails</h3>
+<ul>
+<li>Verify backup payment methods are validated</li>
+<li>Maintain contact with agency/agent for emergency top-ups</li>
+<li>Temporarily reduce budgets on secondary campaigns for buffer time</li>
+</ul>
+<h3>Scenario C: Multiple accounts alert simultaneously</h3>
+<ul>
+<li>Prioritize 2-3 highest-ROI accounts</li>
+<li>Pause lower-priority accounts until main accounts are funded</li>
+<li>Use batch management tools for unified handling</li>
+</ul>
+<h2>Common Pitfalls</h2>
+<ul>
+<li><strong>Focusing on daily spend rate instead of total balance</strong>: Low daily spend doesn't mean sufficient total balance</li>
+<li><strong>Setting only one alert level</strong>: Miss the optimal replenishment window</li>
+<li><strong>No alert testing</strong>: Notifications blocked or filtered to spam</li>
+<li><strong>Relying solely on manual checks</strong>: Highest risk during holidays and off-hours</li>
+</ul>
+<p>A solid balance alert system transforms your risk management from reactive firefighting to proactive prevention. Regular reviews of spending patterns and optimized top-up schedules free your team to focus on creative optimization and ROI improvement.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
