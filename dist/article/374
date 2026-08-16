@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">TikTok Shop 新品冷启动素材池搭建 SOP | 7 天跑出首批转化</span>
+                    <span x-show="lang === 'en'" x-cloak>TikTok Shop New Product Cold Launch: Building Your Creative Asset Pool in 7 Days</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-17</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="374" data-base-views="43">43</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu3657/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>背景说明</h2>
+<p>新品在 TikTok Shop 冷启动阶段，最大的风险不是产品本身，而是素材方向不清晰导致预算浪费。大多数团队的问题是：先投再说，素材不够了再补，结果账户在测试期因数据积累不足被算法降权。</p>
+<p>本文解决这个问题——用 SOP 方式，在正式投放前建好一个“可用素材池”，让你在账户启动后有足够的弹药做 A/B 测试。</p>
+<hr />
+<h2>Step 1：确定素材方向（Day 1）</h2>
+<h3>1.1 整理产品卖点清单</h3>
+<p>在动手拍素材之前，先回答这个问题：<strong>用户为什么会在 TikTok 上买这个产品？</strong></p>
+<p>按以下维度列出 3-5 个核心卖点：</p>
+<ul>
+<li><strong>功能性卖点</strong>：解决什么具体问题？</li>
+<li><strong>情绪价值</strong>：使用场景带来的情感体验</li>
+<li><strong>价格锚点</strong>：对比同类产品的优势</li>
+<li><strong>差异化特征</strong>：外观、材质、专利、认证</li>
+</ul>
+<blockquote>
+<p><strong>实操工具</strong>：用一张 Excel 表，左列写卖点，右列标注对应的素材形式。某工具类 App 团队用这个方法，把 12 个卖点压缩到 4 个高频方向，大幅提升素材制作效率。</p>
+</blockquote>
+<h3>1.2 分析同类竞品素材</h3>
+<p>在 TikTok Creative Center 或 Polypolish 输入产品关键词，导出近 30 天高播放量视频。关注：</p>
+<ul>
+<li>爆款视频的时长（前 3 秒内容）</li>
+<li>常见的展示方式（开箱 vs 场景 vs 对比）</li>
+<li>评论区用户关注的点（可作为素材脚本参考）</li>
+</ul>
+<hr />
+<h2>Step 2：规划素材类型（Day 2）</h2>
+<p>素材池不需要每条都是“大片”，但需要覆盖不同类型以验证用户偏好。推荐以下 5 种基础类型：</p>
+<table>
+<thead>
+<tr>
+<th>素材类型</th>
+<th>时长建议</th>
+<th>适用场景</th>
+<th>制作成本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>产品开箱</strong></td>
+<td>15-30s</td>
+<td>建立信任感，展示真实外观</td>
+<td>低</td>
+</tr>
+<tr>
+<td><strong>使用场景</strong></td>
+<td>15-20s</td>
+<td>激发代入感，促进冲动消费</td>
+<td>中</td>
+</tr>
+<tr>
+<td><strong>前后对比</strong></td>
+<td>20-30s</td>
+<td>强调效果，适合美妆/工具类</td>
+<td>中</td>
+</tr>
+<tr>
+<td><strong>UGC 风格口播</strong></td>
+<td>10-20s</td>
+<td>增强真实感，适合素人出镜</td>
+<td>低</td>
+</tr>
+<tr>
+<td><strong>产品特写+字幕</strong></td>
+<td>10-15s</td>
+<td>信息密集，适合功能型产品</td>
+<td>低</td>
+</tr>
+</tbody>
+</table>
+<p><strong>最小素材池配置</strong>：每种类型至少 2 条，即 <strong>10 条起</strong>，覆盖 3 个以上核心卖点。</p>
+<hr />
+<h2>Step 3：制作标准与规范（Day 3-4）</h2>
+<h3>3.1 画面要求</h3>
+<ul>
+<li><strong>竖版 9:16</strong>，分辨率 1080×1920</li>
+<li><strong>光线充足</strong>，避免逆光或过暗场景</li>
+<li>产品占画面 60% 以上，避免过多无关元素</li>
+<li>文字信息放在画面中央 2/3 区域（避开 TikTok 底部 UI 遮挡）</li>
+</ul>
+<h3>3.2 开头黄金 3 秒法则</h3>
+<p>用户在滑动时停留时间极短，前 3 秒必须出现：</p>
+<ul>
+<li><strong>钩子问题</strong>："你知道 XXX 的正确用法吗？"</li>
+<li><strong>视觉冲击</strong>：产品特写、对比反差</li>
+<li><strong>数字/数据</strong>："3 天见效""省下 80% 时间"</li>
+</ul>
+<h3>3.3 脚本模板（可直接套用）</h3>
+<pre><code>[0-3s] 钩子：制造悬念或提出问题
+[3-8s] 痛点：描述用户遇到的真实困扰
+[8-20s] 方案：展示产品如何解决
+[20-25s] 信任：真人出镜或展示资质
+[25-30s] 行动：引导点击购买/评论
+</code></pre>
+<hr />
+<h2>Step 4：素材测试与数据回收（Day 5-6）</h2>
+<h3>4.1 测试设置</h3>
+<ul>
+<li>每个素材单独建<strong>一个广告组</strong>，避免素材之间互相抢量</li>
+<li>预算设置：<strong>单广告组每日预算 = 预期 CPA × 20</strong>，确保有足够转化数据</li>
+<li>投放时长：<strong>至少 48 小时</strong>，避免因首日数据波动误判</li>
+</ul>
+<h3>4.2 核心数据指标</h3>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>合格线</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3 秒播放率</td>
+<td>&gt;45%</td>
+<td>开头是否吸引人</td>
+</tr>
+<tr>
+<td>完播率</td>
+<td>&gt;25%</td>
+<td>内容是否留住用户</td>
+</tr>
+<tr>
+<td>CTR</td>
+<td>&gt;1.5%</td>
+<td>点击是否高于行业均值</td>
+</tr>
+<tr>
+<td>CVR</td>
+<td>&gt;3%</td>
+<td>落地页转化效率</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>重点</strong>：冷启动阶段优先看 <strong>3 秒播放率</strong> 和 <strong>CVR</strong>，这两个指标决定素材是否有续投价值。</p>
+</blockquote>
+<h3>4.3 素材分级标准</h3>
+<ul>
+<li><strong>A级素材</strong>：CVR &gt; 5%，进入主力投放组</li>
+<li><strong>B级素材</strong>：CVR 3-5%，继续观察或微调</li>
+<li><strong>C级素材</strong>：CVR &lt; 3%，暂停或重新剪辑</li>
+</ul>
+<hr />
+<h2>Step 5：素材迭代与扩展（Day 7+）</h2>
+<h3>5.1 迭代逻辑</h3>
+<p>拿到测试数据后，按以下优先级调整：</p>
+<ol>
+<li><strong>优先扩展 A 级素材的变体</strong>：换场景、配乐、字幕样式</li>
+<li><strong>修复 B 级素材的弱点</strong>：如果 CTR 低，替换开头；如果 CVR 低，优化落地页</li>
+<li><strong>淘汰 C 级素材</strong>：节省制作资源</li>
+</ol>
+<h3>5.2 素材池维护</h3>
+<ul>
+<li>每周补充 <strong>3-5 条新素材</strong>，保持池子活性</li>
+<li>爆款素材 <strong>生命周期约 2-3 周</strong>，需提前准备替代品</li>
+<li>建立素材标签系统（按产品、功能、风格分类），方便快速调用</li>
+</ul>
+<hr />
+<h2>常见问题</h2>
+<p><strong>Q：预算有限，10 条素材太多了怎么办？</strong></p>
+<p>A：优先保证<strong>开箱 + 使用场景 + 口播</strong>三种类型各 2 条，共 6 条。优先验证最有可能爆的方向。</p>
+<p><strong>Q：测试数据不好，是素材问题还是产品问题？</strong></p>
+<p>A：先检查 CTR——如果点击率低，大概率是素材问题；如果点击率高但 CVR 低，则优先优化落地页或重新评估产品力。</p>
+<p><strong>Q：UGC 风格素材需要真实用户出镜吗？</strong></p>
+<p>A：冷启动阶段可用员工或外籍演员替代，不必等真实买家秀。关键是内容风格真实，而非必须素人。</p>
+<hr />
+<h2>结语</h2>
+<p>素材池不是一次性建完就结束，而是一个持续补充、测试、淘汰的循环。冷启动阶段的核心目标是用最小成本快速验证方向，一旦找到跑得动的素材，立即扩量。希望这篇 SOP 能帮助你的团队把“边投边想”的被动状态，变成“胸有成竹”的主动节奏。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Background</h2>
+<p>During the cold launch phase of a new product on TikTok Shop, the biggest risk isn't the product itself—it's unclear creative direction leading to budget waste. Most teams' problem: they start advertising first and create assets as they go, resulting in insufficient data accumulation for the algorithm to optimize.</p>
+<p>This article solves that problem—with an SOP approach to build a "ready-to-use creative pool" before launching ads, giving you sufficient ammunition for A/B testing once the account goes live.</p>
+<hr />
+<h2>Step 1: Define Creative Direction (Day 1)</h2>
+<h3>1.1 List Product Selling Points</h3>
+<p>Before filming anything, answer this question: <strong>Why would users buy this product on TikTok?</strong></p>
+<p>List 3-5 core selling points across these dimensions:</p>
+<ul>
+<li><strong>Functional benefits</strong>: What specific problem does it solve?</li>
+<li><strong>Emotional value</strong>: The emotional experience from the use case</li>
+<li><strong>Price anchor</strong>: Advantages compared to similar products</li>
+<li><strong>Differentiating features</strong>: Appearance, materials, patents, certifications</li>
+</ul>
+<blockquote>
+<p><strong>Practical tip</strong>: Use an Excel sheet with selling points on the left and corresponding creative formats on the right. One utility app team used this method to narrow 12 selling points to 4 high-frequency directions, significantly improving production efficiency.</p>
+</blockquote>
+<h3>1.2 Analyze Competitor Creatives</h3>
+<p>Enter product keywords in TikTok Creative Center or similar tools to export top-performing videos from the past 30 days. Focus on:</p>
+<ul>
+<li>Video length of viral content (first 3 seconds)</li>
+<li>Common presentation styles (unboxing vs.场景 vs. comparison)</li>
+<li>User concerns in comments (use as creative script reference)</li>
+</ul>
+<hr />
+<h2>Step 2: Plan Creative Types (Day 2)</h2>
+<p>A creative pool doesn't need every piece to be a "blockbuster"—but it needs diverse formats to validate user preferences. Here are 5 recommended basic types:</p>
+<table>
+<thead>
+<tr>
+<th>Creative Type</th>
+<th>Duration</th>
+<th>Best For</th>
+<th>Production Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Product Unboxing</strong></td>
+<td>15-30s</td>
+<td>Building trust, showing real appearance</td>
+<td>Low</td>
+</tr>
+<tr>
+<td><strong>Use Case Scenario</strong></td>
+<td>15-20s</td>
+<td>Creating empathy, driving impulse buys</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td><strong>Before/After</strong></td>
+<td>20-30s</td>
+<td>Highlighting effects (beauty/tools)</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td><strong>UGC-style Talking</strong></td>
+<td>10-20s</td>
+<td>Enhancing authenticity, casual presenter</td>
+<td>Low</td>
+</tr>
+<tr>
+<td><strong>Product Close-up + Text</strong></td>
+<td>10-15s</td>
+<td>Information-dense, functional products</td>
+<td>Low</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Minimum Pool Configuration</strong>: At least 2 pieces per type, totaling <strong>10 pieces minimum</strong>, covering 3+ core selling points.</p>
+<hr />
+<h2>Step 3: Production Standards (Day 3-4)</h2>
+<h3>3.1 Visual Requirements</h3>
+<ul>
+<li><strong>Vertical 9:16 format</strong>, resolution 1080×1920</li>
+<li><strong>Adequate lighting</strong>, avoid backlight or dark scenes</li>
+<li>Product occupies 60%+ of the frame, minimize irrelevant elements</li>
+<li>Text information centered in the middle 2/3 of the frame (avoid TikTok's bottom UI overlap)</li>
+</ul>
+<h3>3.2 The 3-Second Hook Rule</h3>
+<p>Users swipe quickly. The first 3 seconds must include:</p>
+<ul>
+<li><strong>Hook question</strong>: "Do you know the correct way to use XXX?"</li>
+<li><strong>Visual impact</strong>: Product close-up, comparison contrast</li>
+<li><strong>Numbers/data</strong>: "Works in 3 days" "Save 80% time"</li>
+</ul>
+<h3>3.3 Script Template (Ready to Use)</h3>
+<pre><code>[0-3s] Hook: Create suspense or pose a question
+[3-8s] Pain point: Describe real user frustrations
+[8-20s] Solution: Show how the product solves it
+[20-25s] Trust: Real person or credentials
+[25-30s] CTA: Guide to click buy/comment
+</code></pre>
+<hr />
+<h2>Step 4: Testing &amp; Data Collection (Day 5-6)</h2>
+<h3>4.1 Test Setup</h3>
+<ul>
+<li>Create <strong>one ad group per creative</strong> to avoid internal competition</li>
+<li>Budget: <strong>Daily budget per ad group = Expected CPA × 20</strong> to ensure sufficient conversion data</li>
+<li>Duration: <strong>Minimum 48 hours</strong> to avoid misjudging from first-day fluctuations</li>
+</ul>
+<h3>4.2 Key Metrics</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Pass Threshold</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3s View Rate</td>
+<td>&gt;45%</td>
+<td>Is the opening engaging?</td>
+</tr>
+<tr>
+<td>Completion Rate</td>
+<td>&gt;25%</td>
+<td>Does content retain users?</td>
+</tr>
+<tr>
+<td>CTR</td>
+<td>&gt;1.5%</td>
+<td>Are clicks above industry average?</td>
+</tr>
+<tr>
+<td>CVR</td>
+<td>&gt;3%</td>
+<td>Is landing page converting?</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Focus</strong>: During cold launch, prioritize <strong>3s View Rate</strong> and <strong>CVR</strong>—these determine if a creative deserves continued investment.</p>
+</blockquote>
+<h3>4.3 Creative Grading</h3>
+<ul>
+<li><strong>Grade A</strong>: CVR &gt; 5% → Enter main campaign rotation</li>
+<li><strong>Grade B</strong>: CVR 3-5% → Continue observing or minor adjustments</li>
+<li><strong>Grade C</strong>: CVR &lt; 3% → Pause or re-edit</li>
+</ul>
+<hr />
+<h2>Step 5: Iteration &amp; Expansion (Day 7+)</h2>
+<h3>5.1 Iteration Logic</h3>
+<p>After collecting test data, adjust in this priority order:</p>
+<ol>
+<li><strong>Expand variants of Grade A creatives</strong>: Change scenery, music, text styles</li>
+<li><strong>Fix weaknesses in Grade B creatives</strong>: If CTR is low, replace the opening; if CVR is low, optimize landing page</li>
+<li><strong>Retire Grade C creatives</strong>: Save production resources</li>
+</ol>
+<h3>5.2 Pool Maintenance</h3>
+<ul>
+<li>Add <strong>3-5 new creatives weekly</strong> to keep the pool fresh</li>
+<li>Top-performing creatives have a <strong>2-3 week lifecycle</strong>—prepare replacements in advance</li>
+<li>Build a creative tagging system (by product, function, style) for quick retrieval</li>
+</ul>
+<hr />
+<h2>FAQ</h2>
+<p><strong>Q: Limited budget—10 creatives is too many?</strong></p>
+<p>A: Prioritize 2 pieces each for <strong>Unboxing + Use Case + Talking Head</strong>—just 6 total. Test the most likely winning direction first.</p>
+<p><strong>Q: Poor test data—is it a creative or product issue?</strong></p>
+<p>A: Check CTR first—if click rate is low, it's likely a creative problem. If clicks are good but CVR is low, optimize the landing page or re-evaluate product-market fit.</p>
+<p><strong>Q: Does UGC content need real users on camera?</strong></p>
+<p>A: During cold launch, employees or foreign actors work fine—you don't need authentic buyers yet. The key is authentic-feeling content style, not necessarily casual presenters.</p>
+<hr />
+<h2>Closing</h2>
+<p>A creative pool isn't built once and forgotten—it's a continuous cycle of addition, testing, and retirement. The core goal during cold launch is validating direction at minimum cost. Once you find creatives that work, scale immediately. We hope this SOP helps your team shift from a reactive "figure it out while running ads" mindset to a proactive "confident execution" approach.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
