@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">出海广告合规周报：Meta/TikTok/Google 三平台本周政策收紧，这些雷区千万别踩</span>
+                    <span x-show="lang === 'en'" x-cloak>Weekly Ad Compliance Watch: Meta, TikTok &amp; Google Tighten Policies — Here&#39;s What You Must Avoid</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-18</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="375" data-base-views="83">83</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu9632/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>本周合规热点速览</h2>
+<p>进入 Q4 冲刺阶段，三大主流投放平台不约而同收紧了合规政策。本周观察到三个显著变化：</p>
+<p><strong>Meta</strong> 将加密货币、外汇及数字资产类广告的事前审核范围扩大至二级页面跳转；<strong>TikTok</strong> 在社区准则中新增了对“商标侵权素材”的具体界定，覆盖短视频封面文字和语音商标；<strong>Google Ads</strong> 则要求所有面向欧盟用户的广告必须明确标注数据处理主体。</p>
+<p>这意味着，上周还能正常跑量的部分素材，本周可能触发审核延误甚至账户限流。以渔合规团队本周已完成对 23 个重点账户的巡检，发现问题集中在以下三个环节。</p>
+<h2>高风险环节一：账户资质与授权链条</h2>
+<p>本周账户被封的案例中，约 40% 并非素材违规，而是资质文件过期或授权链断裂。常见问题包括：</p>
+<ul>
+<li>营业执照经营范围与广告主推广产品不匹配</li>
+<li>授权书缺少法人签字或公章</li>
+<li>已过期的行业资质证书仍在使用</li>
+</ul>
+<p><strong>建议操作</strong>：登录各平台广告后台，检查“账户信息-认证”模块中的文件有效期标识，建立到期前 30 天的预警机制。以渔后台已上线资质到期提醒功能，可在余额预警通知中同步推送。</p>
+<h2>高风险环节二：素材文案与视觉元素</h2>
+<p>本周审核驳回率环比上升 15%，高频触发点如下：</p>
+<table>
+<thead>
+<tr>
+<th>违规类型</th>
+<th>典型案例</th>
+<th>平台处理方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>夸大收益承诺</td>
+<td>“保证月收益 30%”</td>
+<td>直接封素材</td>
+</tr>
+<tr>
+<td>缺失风险提示</td>
+<td>金融类产品无“投资有风险”声明</td>
+<td>限制投放地区</td>
+</tr>
+<tr>
+<td>品牌元素滥用</td>
+<td>未经授权使用竞品 Logo 做对比</td>
+<td>账户警告</td>
+</tr>
+<tr>
+<td>误导性倒计时</td>
+<td>虚假库存紧迫感</td>
+<td>降权处理</td>
+</tr>
+</tbody>
+</table>
+<p><strong>建议操作</strong>：建立素材上线前的合规 Checklist，包含风险提示完整性、品牌授权证明、对比广告法规模板三个必检项。对 UGC 素材尤其要增加人工复核环节。</p>
+<h2>高风险环节三：落地页与数据声明</h2>
+<p>本周 Google 审核团队对数据隐私声明的检查颗粒度明显提升。问题主要集中在：</p>
+<ul>
+<li>隐私政策页面无法正常加载或内容缺失</li>
+<li>Cookie 弹窗缺少“拒绝”选项</li>
+<li>落地页与广告承诺不一致（如宣传低价但实际无此优惠）</li>
+</ul>
+<p>以渔技术团队本周已完成对合作客户落地页的自动化巡检工具升级，可识别 12 种常见合规缺失场景，建议各团队尽快完成自检。</p>
+<h2>本周影响评估</h2>
+<ol>
+<li><strong>投放节奏延迟</strong>：素材审核周期从平均 24 小时延长至 48-72 小时，Q4 大促素材需提前 5 个工作日提交预审。</li>
+<li><strong>账户稳定性风险</strong>：多账户运营团队需特别注意，避免同一主体下多个账户同时触发审核，导致批量限流。</li>
+<li><strong>合规成本上升</strong>：部分客户反馈需要临时补充资质文件，建议提前与法务或供应商确认文件清单。</li>
+</ol>
+<h2>以渔本周 SOP 更新要点</h2>
+<ul>
+<li>账户巡检周期从月度调整为双周巡检</li>
+<li>素材合规清单新增“本周政策敏感词”板块</li>
+<li>落地页自动化巡检工具正式开放给合作客户使用</li>
+<li>紧急合规事件响应 SLA 压缩至 2 小时内</li>
+</ul>
+<p>如需协助完成本周账户合规自检，欢迎联系以渔投放顾问获取专项巡检报告。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Weekly Compliance Highlights</h2>
+<p>As Q4 enters its critical phase, all three major advertising platforms have simultaneously tightened their compliance policies. Three significant changes have been observed this week:</p>
+<p><strong>Meta</strong> expanded pre-approval requirements for cryptocurrency, forex, and digital asset ads to cover secondary page redirects; <strong>TikTok</strong> added specific definitions for "trademark-infringing content" in its community guidelines, covering video thumbnail text and audio trademarks; <strong>Google Ads</strong> now requires all ads targeting EU users to clearly identify the data processing entity.</p>
+<p>This means ads that were running normally last week may now trigger review delays or account restrictions. YiyuMedia's compliance team completed inspections of 23 key accounts this week, identifying issues concentrated in three main areas.</p>
+<h2>High-Risk Area 1: Account Credentials and Authorization Chain</h2>
+<p>Approximately 40% of account suspensions this week were not due to creative violations but rather expired credentials or broken authorization chains. Common issues include:</p>
+<ul>
+<li>Business license scope doesn't match the advertised products</li>
+<li>Authorization letters missing legal representative signature or official seal</li>
+<li>Expired industry certification documents still in use</li>
+</ul>
+<p><strong>Recommended Action</strong>: Log into each platform's ad dashboard to check expiration indicators in "Account Information - Verification." Establish a 30-day advance warning mechanism. YiyuMedia's backend now includes credential expiration alerts, pushed alongside balance warnings.</p>
+<h2>High-Risk Area 2: Creative Copy and Visual Elements</h2>
+<p>Review rejection rates increased 15% week-over-week this week. High-frequency triggers include:</p>
+<table>
+<thead>
+<tr>
+<th>Violation Type</th>
+<th>Typical Example</th>
+<th>Platform Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exaggerated return promises</td>
+<td>"Guaranteed 30% monthly returns"</td>
+<td>Immediate creative ban</td>
+</tr>
+<tr>
+<td>Missing risk disclosures</td>
+<td>Financial products without "Investment involves risk" statement</td>
+<td>Geographic restrictions</td>
+</tr>
+<tr>
+<td>Brand element misuse</td>
+<td>Unauthorized use of competitor logos for comparison</td>
+<td>Account warning</td>
+</tr>
+<tr>
+<td>Misleading countdowns</td>
+<td>Fake inventory urgency</td>
+<td>Ranking demotion</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommended Action</strong>: Establish a pre-launch creative compliance checklist with three mandatory checks: risk disclosure completeness, brand authorization proof, and comparative advertising compliance templates. Increase manual review for UGC content.</p>
+<h2>High-Risk Area 3: Landing Pages and Data Statements</h2>
+<p>Google's review team significantly improved granularity for data privacy statement checks this week. Key issues include:</p>
+<ul>
+<li>Privacy policy pages failing to load or missing content</li>
+<li>Cookie popups lacking a "Reject" option</li>
+<li>Landing page inconsistencies with ad promises (e.g., advertising low prices without actual availability)</li>
+</ul>
+<p>YiyuMedia's technical team has upgraded automated landing page inspection tools this week, capable of identifying 12 common compliance gaps. All partner teams are advised to complete self-inspections promptly.</p>
+<h2>Impact Assessment</h2>
+<ol>
+<li><strong>Delivery Timeline Delays</strong>: Average creative review cycles extended from 24 hours to 48-72 hours. Q4 promotional creatives need submission 5 business days in advance for pre-review.</li>
+<li><strong>Account Stability Risks</strong>: Multi-account teams should avoid triggering reviews across multiple accounts under the same主体 simultaneously, which could cause batch restrictions.</li>
+<li><strong>Rising Compliance Costs</strong>: Some clients report needing to supplement credential documents on short notice. Confirm document checklists with legal or suppliers in advance.</li>
+</ol>
+<h2>YiyuMedia SOP Updates This Week</h2>
+<ul>
+<li>Account inspection cycle adjusted from monthly to bi-weekly</li>
+<li>Creative compliance checklist now includes "Weekly Policy Sensitive Terms" section</li>
+<li>Automated landing page inspection tool officially available to partner clients</li>
+<li>Emergency compliance response SLA compressed to within 2 hours</li>
+</ul>
+<p>For assistance with this week's account compliance self-inspection, contact your YiyuMedia投放顾问 for a dedicated inspection report.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
