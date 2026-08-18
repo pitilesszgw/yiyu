@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            官方公告
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Official News
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">本周观察：Google Ads账户封停潮来袭，申诉材料准备避坑指南</span>
+                    <span x-show="lang === 'en'" x-cloak>Weekly Watch: Google Ads Account Suspensions Surge — Your Appeal Preparation Checklist</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-19</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="378" data-base-views="28">28</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu7980/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>本周发生了什么</h2>
+<p>进入Q3末期，我们观察到Google Ads账户封停案例显著增加。根据以渔数媒收到的咨询数据，本周关于“账户被封”的提问量环比上涨约40%，主要集中在三类场景：</p>
+<ul>
+<li><strong>新账户首次充值后即被封</strong>：未完成品牌验证或付款信息与注册信息不匹配</li>
+<li><strong>历史正常账户突然受限</strong>：系统检测到异常流量模式或跨时区操作</li>
+<li><strong>跨账户资金调配引发的连锁封停</strong>：主账户封禁导致子账户同步受限</li>
+</ul>
+<p>这波封停潮与Google近期收紧无效流量政策直接相关。对于出海团队而言，账户被封不仅是投放中断的问题，更意味着历史积累的投放数据、Pixel像素、分账记录可能同步丢失。</p>
+<h2>三个申诉材料准备的常见误区</h2>
+<p>在我们接触的申诉案例中，超过60%的首次申诉失败源于材料准备不充分。以下是本周观察到的高频问题：</p>
+<h3>误区一：只提交“账户无违规”的声明</h3>
+<p>这是最常见的申诉失败原因。Google的审核团队需要的是<strong>证据链</strong>，而非情感诉求。单纯声明“我没有违规”会被系统标记为低优先级处理。</p>
+<p>正确的做法是：针对封停通知中提到的具体问题，逐条附上对应的证明材料。例如，若被判定为“可疑付款行为”，需提供营业执照、银行对账单、公司章程等能够证实企业合法性的文件。</p>
+<h3>误区二：忽略UI后台的隐藏信息</h3>
+<p>很多团队在申诉时只截图广告系列界面，遗漏了两个关键信息：</p>
+<ul>
+<li><strong>账户评级页面</strong>：显示历史违规记录和信用评分</li>
+<li><strong>结算交易页面</strong>：完整的充值记录和退款历史</li>
+</ul>
+<p>这两部分信息能帮助审核人员快速核实账户运营状态，缩短审核周期。</p>
+<h3>误区三：多账户申诉时信息不统一</h3>
+<p>对于管理多个Google Ads账户的团队，申诉材料中的公司名称、地址、联系方式必须完全一致。近期有团队因主账户和子账户注册信息存在细微差异（如“Building”与“Building，”多了逗号），导致子账户申诉被连带拒绝。</p>
+<h2>申诉材料准备清单</h2>
+<p>针对本周高发的封停类型，以下是建议准备的材料清单：</p>
+<table>
+<thead>
+<tr>
+<th>封停原因</th>
+<th>必需材料</th>
+<th>加分材料</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>付款问题</td>
+<td>近3个月银行流水、企业对公账户证明</td>
+<td>第三方支付平台账单</td>
+</tr>
+<tr>
+<td>无效流量</td>
+<td>流量来源分析报告、第三方监测数据</td>
+<td>归因模型说明</td>
+</tr>
+<tr>
+<td>政策违规</td>
+<td>违规内容截图、整改说明</td>
+<td>历史投放资质证明</td>
+</tr>
+<tr>
+<td>身份验证</td>
+<td>法人身份证、公司注册文件</td>
+<td>品牌商标注册证</td>
+</tr>
+</tbody>
+</table>
+<p><strong>实操建议</strong>：所有文件尽量提供英文版本或带英文翻译件。上传前检查PDF清晰度，分辨率建议不低于300dpi。</p>
+<h2>下周建议</h2>
+<ol>
+<li>
+<p><strong>立即行动</strong>：如果你的账户正在申诉中，本周是补交材料的窗口期。审核团队通常在收到补充材料后48小时内重新评估。</p>
+</li>
+<li>
+<p><strong>预防优先</strong>：尚未遇到封停的团队，建议本周完成品牌验证（Brand Verification）和两步验证（2SV）绑定，降低触发风控的概率。</p>
+</li>
+<li>
+<p><strong>备选方案</strong>：对于高价值账户，可以考虑同步准备备用账户，确保主力账户出现状况时投放不中断。</p>
+</li>
+</ol>
+<p>账户封停虽然棘手，但大部分情况都有解封路径。关键是申诉材料要“有理有据”，而非“有情有义”。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>What Happened This Week</h2>
+<p>Entering late Q3, we observed a significant increase in Google Ads account suspension cases. According to data from Yiyu Digital Media's consulting services, inquiries about "account suspensions" rose approximately 40% week-over-week, concentrated in three main scenarios:</p>
+<ul>
+<li><strong>New accounts suspended immediately after first top-up</strong>: Missing brand verification or mismatched payment and registration information</li>
+<li><strong>Previously normal accounts suddenly restricted</strong>: System detected abnormal traffic patterns or cross-timezone operations</li>
+<li><strong>Chain suspensions from cross-account fund transfers</strong>: Parent account bans triggering sub-account restrictions</li>
+</ul>
+<p>This wave of suspensions directly correlates with Google's recent tightening of invalid traffic policies. For overseas teams, account suspension means not just interrupted campaigns but potentially losing historical campaign data, Pixel tracking, and billing records.</p>
+<h2>Three Common Appeal Mistakes</h2>
+<p>Among the appeal cases we've handled, over 60% of first-time rejections stem from inadequate material preparation. Here are the high-frequency issues observed this week:</p>
+<h3>Mistake 1: Submitting Only "No Violation" Statements</h3>
+<p>This is the most common appeal failure reason. Google's review team needs an <strong>evidence chain</strong>, not emotional appeals. Simply stating "I didn't violate any rules" gets flagged as low-priority processing.</p>
+<p>The correct approach: Address each specific issue mentioned in the suspension notice with corresponding supporting materials. For example, if flagged for "suspicious payment activity," provide business licenses, bank statements, and company charters that confirm your business legitimacy.</p>
+<h3>Mistake 2: Ignoring Hidden Information in the UI</h3>
+<p>Many teams only screenshot the campaigns interface when appealing, missing two critical pieces of information:</p>
+<ul>
+<li><strong>Account Rating page</strong>: Displays historical violation records and credit scores</li>
+<li><strong>Billing transactions page</strong>: Complete top-up records and refund history</li>
+</ul>
+<p>This information helps reviewers quickly verify account operational status and shortens review cycles.</p>
+<h3>Mistake 3: Inconsistent Information Across Multi-Account Appeals</h3>
+<p>For teams managing multiple Google Ads accounts, company names, addresses, and contact information in appeal materials must be completely consistent. Recently, a team had their sub-account appeal rejected because the parent and sub-account registration details had minor discrepancies (e.g., "Building" vs. "Building," with an extra comma).</p>
+<h2>Appeal Material Checklist</h2>
+<p>For the suspension types observed this week, here's the recommended material checklist:</p>
+<table>
+<thead>
+<tr>
+<th>Suspension Reason</th>
+<th>Required Materials</th>
+<th>Bonus Materials</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Payment Issues</td>
+<td>3-month bank statements, corporate account verification</td>
+<td>Third-party payment platform statements</td>
+</tr>
+<tr>
+<td>Invalid Traffic</td>
+<td>Traffic source analysis report, third-party monitoring data</td>
+<td>Attribution model documentation</td>
+</tr>
+<tr>
+<td>Policy Violations</td>
+<td>Screenshots of flagged content, remediation explanation</td>
+<td>Historical campaign qualification proof</td>
+</tr>
+<tr>
+<td>Identity Verification</td>
+<td>Legal representative ID, company registration documents</td>
+<td>Brand trademark certificate</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Practical tip</strong>: Submit all documents in English or with English translations. Check PDF clarity before uploading — resolution should be at least 300dpi.</p>
+<h2>Recommendations for Next Week</h2>
+<ol>
+<li>
+<p><strong>Act immediately</strong>: If your account is under appeal, this week is the window for supplementary materials. Review teams typically reassess within 48 hours of receiving additional information.</p>
+</li>
+<li>
+<p><strong>Prevention first</strong>: Teams not yet affected should complete Brand Verification and 2SV (Two-Step Verification) binding this week to reduce triggering risk controls.</p>
+</li>
+<li>
+<p><strong>Backup plan</strong>: For high-value accounts, consider preparing standby accounts to ensure campaign continuity if the primary account encounters issues.</p>
+</li>
+</ol>
+<p>Account suspensions are challenging but most cases have resolution paths. The key is appeal materials that are "factual and evidenced" rather than "emotional and plea-based."</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
