@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">代理开户服务的系统化看板为何成为本周出海圈的热门话题</span>
+                    <span x-show="lang === 'en'" x-cloak>Why Systematic Kanban for Agency Account Opening Became the Hot Topic This Week</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-22</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="387" data-base-views="51">51</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu3916/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>本周观察：代理开户服务的“隐形瓶颈”浮出水面</h2>
+<p>本周以渔技术团队在处理客户对账时发现一个有趣现象：超过 40% 的充值延迟案例，根源并不在支付环节，而在于<strong>代理开户进度不透明</strong>——运营团队不知道账户批下来没有，财务团队不知道该给哪个账户充值，投放团队不知道账户状态能否支持新素材上线。</p>
+<p>这种信息断层在出海企业中并不罕见。随着 TikTok Shop、Meta、Google Ads 等平台的政策频繁调整，代理开户服务的响应周期从原来的 3-5 个工作日拉长到 7-14 个工作日甚至更长。某工具类 App 的投放负责人向我们反馈：“我们同时开了 12 个户，分别对接不同的代理商和 AM，邮件来回二十几封，到头来还是搞不清楚哪个先下来。”</p>
+<p>当业务规模从 3-5 个账户扩展到 20+ 个账户时，依赖表格、邮件、微信群进行管理的方式已经触及天花板。系统化看板，本质上是在解决这个问题。</p>
+<h2>看板把“不确定性”变成“可追踪节点”</h2>
+<p>代理开户是一个典型的多角色协同流程：客户提交资质 → 代理商初审 → 平台提交 → 等待审核 → 账户激活 → 财务关联充值。每个环节都可能出现延迟，但传统管理方式让这些节点“消失在邮件里”。</p>
+<p>系统化看板的核心价值，是把这些节点<strong>显性化、可视化、可预警化</strong>。具体来说：</p>
+<ul>
+<li><strong>全量账户状态一目了然</strong>：每个账户属于哪个平台、当前处于哪个审核阶段、距离预计完成还有多久，在看板上一眼可见；</li>
+<li><strong>异常自动触发预警</strong>：当某个账户在某一状态停留超过预期时长，系统自动标记并通知负责人，避免“等到发现时已经延误两周”的情况；</li>
+<li><strong>多角色协同透明</strong>：代理商的 AM、财务对账人员、投放运营都能看到同一张看板，减少因为信息不对称导致的重复沟通；</li>
+<li><strong>历史记录可追溯</strong>：每个账户的开户时间、补充材料记录、充值历史完整留存，方便后续审计和复盘。</li>
+</ul>
+<p>以渔后台数据显示，接入看板管理的客户，其账户状态查询响应时间从平均 4.2 小时缩短至 0.5 小时以内，充值延误率下降约 60%。</p>
+<h2>本周给出海团队的落地建议</h2>
+<p>如果你所在的团队正在经历代理开户管理的混乱，以下是本周观察后整理的行动清单：</p>
+<p><strong>短期（1-2 周内可落地）</strong></p>
+<ol>
+<li><strong>梳理现有账户台账</strong>：把分布在邮件、微信、表格里的账户信息汇总到一个文档，标注每个账户的平台、代理商、提交时间、当前状态；</li>
+<li><strong>建立状态分级标准</strong>：建议分为“资料待补充”“审核中”“已通过待激活”“已激活”四个状态，让团队成员对状态判断一致；</li>
+<li><strong>指定账户状态负责人</strong>：每个账户有人跟进，有人负责，减少“大家都在等但没人管”的真空地带。</li>
+</ol>
+<p><strong>中期（1 个月内优化）</strong></p>
+<ol>
+<li><strong>引入看板工具</strong>：如果团队规模在 10+ 账户以上，建议使用项目管理工具（如飞书多维表格、Notion）建立看板，核心字段包括账户名称、平台、代理商、提交日期、预计完成日期、当前状态、预警标记；</li>
+<li><strong>与代理商建立状态同步机制</strong>：在合作初期就约定好状态更新频率（比如每周一、每周四各更新一次），避免被动等待；</li>
+<li><strong>设置充值预留窗口</strong>：基于看板预测账户激活时间，提前 3-5 天发起充值流程，避免账户下来了但余额不足导致投放中断。</li>
+</ol>
+<p><strong>长期（季度视角）</strong></p>
+<ol>
+<li><strong>数据复盘开户周期</strong>：分析哪些平台的审核周期最长、哪些代理商响应最快，作为后续渠道优化的依据；</li>
+<li><strong>与代理商系统打通</strong>：如果业务规模足够大，可以考虑与以渔这类代理商合作，实现 API 级账户状态同步，进一步减少人工追踪成本。</li>
+</ol>
+<h2>本周小结</h2>
+<p>代理开户服务的系统化看板，本质上是一套<strong>信息可见性管理方案</strong>。它解决的不是代理商响应快不快的问题，而是团队内部信息能不能及时、准确地流转的问题。当出海企业的广告投放规模持续增长，账户数量的增加不是线性问题，而是复杂度指数级上升的问题。</p>
+<p>看板不一定能加速代理商的审核速度，但能确保你知道<strong>什么在发生、谁在处理、什么时候该跟进</strong>。这种确定性，恰恰是出海团队在多平台、多账户运营中最稀缺的资源。</p>
+<p>如果你正在被开户进度不透明困扰，不妨先从本周行动清单的短期部分开始——先让信息可见，再谈优化效率。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>This Week's Observation: The 'Hidden Bottleneck' in Agency Account Opening Surfaces</h2>
+<p>This week, the Yiyu technical team discovered an interesting pattern while processing client reconciliations: over 40% of recharge delay cases didn't originate from payment issues, but from <strong>opaque agency account opening progress</strong>—operations teams didn't know if accounts were approved, finance teams didn't know which account to recharge, and ad teams didn't know if accounts could support new creatives.</p>
+<p>This information gap is not uncommon among overseas companies. With frequent policy adjustments on platforms like TikTok Shop, Meta, and Google Ads, agency account opening response cycles have extended from the original 3-5 business days to 7-14 business days or even longer. A投放负责人 from a utility app told us: "We opened 12 accounts simultaneously, dealing with different agencies and AMs, exchanged over 20 emails, and still couldn't figure out which would be approved first."</p>
+<p>When business scale expands from 3-5 accounts to 20+, management relying on spreadsheets, emails, and WeChat groups hits its ceiling. Systematic kanban fundamentally solves this problem.</p>
+<h2>Kanban Transforms 'Uncertainty' into 'Trackable Nodes'</h2>
+<p>Agency account opening is a typical multi-party collaboration process: client submits qualifications → agency initial review → platform submission → awaiting review → account activation → finance links recharge. Delays can occur at each stage, but traditional management methods make these nodes "disappear into emails."</p>
+<p>The core value of systematic kanban is making these nodes <strong>visible, visualizable, and alertable</strong>. Specifically:</p>
+<ul>
+<li><strong>All account statuses at a glance</strong>: which platform each account belongs to, current review stage, estimated completion time—all visible on the kanban;</li>
+<li><strong>Automatic anomaly alerts</strong>: when an account stays at one stage longer than expected, the system automatically marks and notifies the responsible person, avoiding "delays discovered two weeks later";</li>
+<li><strong>Multi-party collaboration transparency</strong>: agency AMs, finance reconcilers, and ad operations can all see the same kanban, reducing miscommunication from information asymmetry;</li>
+<li><strong>Traceable historical records</strong>: complete records of each account's opening date, supplementary materials, and recharge history for subsequent audits and reviews.</li>
+</ul>
+<p>Yiyu backend data shows that clients adopting kanban management saw account status query response times drop from an average of 4.2 hours to within 0.5 hours, with recharge delay rates decreasing by approximately 60%.</p>
+<h2>Actionable Recommendations for Overseas Teams This Week</h2>
+<p>If your team is struggling with agency account opening management chaos, here are action items based on this week's observations:</p>
+<p><strong>Short-term (achievable within 1-2 weeks)</strong></p>
+<ol>
+<li><strong>Catalog existing accounts</strong>: consolidate account information scattered across emails, WeChat, and spreadsheets into one document, noting each account's platform, agency, submission date, and current status;</li>
+<li><strong>Establish status classification standards</strong>: recommend dividing into "materials pending supplement," "under review," "approved pending activation," and "activated"—ensuring consistent status understanding across team members;</li>
+<li><strong>Assign account status responsibility</strong>: designate someone to follow up and be responsible for each account, reducing vacuum zones where "everyone is waiting but no one is managing."</li>
+</ol>
+<p><strong>Medium-term (optimizable within one month)</strong></p>
+<ol>
+<li><strong>Introduce kanban tools</strong>: if your team manages 10+ accounts, consider using project management tools (like Feishu Multi-dimensional Tables, Notion) to build kanbans with core fields including account name, platform, agency, submission date, estimated completion date, current status, and alert flags;</li>
+<li><strong>Establish status synchronization mechanisms with agencies</strong>: agree on status update frequency early in cooperation (e.g., every Monday and Thursday), avoiding passive waiting;</li>
+<li><strong>Set recharge预留 windows</strong>: based on kanban predictions for account activation times, initiate recharge processes 3-5 days in advance to avoid ad interruption due to insufficient balance when accounts are ready.</li>
+</ol>
+<p><strong>Long-term (quarterly perspective)</strong></p>
+<ol>
+<li><strong>Review opening cycle data</strong>: analyze which platforms have the longest review cycles and which agencies respond fastest, using this as a basis for future channel optimization;</li>
+<li><strong>Integrate with agency systems</strong>: if business scale is sufficient, consider partnering with agencies like Yiyu to achieve API-level account status synchronization, further reducing manual tracking costs.</li>
+</ol>
+<h2>This Week's Summary</h2>
+<p>The systematic kanban for agency account opening services is essentially a <strong>visibility management solution</strong>. It doesn't solve whether agencies respond quickly, but whether information can flow timely and accurately within your team. As overseas companies continue scaling ad investment, account growth isn't a linear problem but an exponentially complex one.</p>
+<p>Kanban may not speed up agency review times, but it ensures you know <strong>what's happening, who's handling it, and when to follow up</strong>. This certainty is precisely the most scarce resource for overseas teams managing multi-platform, multi-account operations.</p>
+<p>If you're troubled by opaque account opening progress, start with the short-term actions from this week's checklist—make information visible first, then optimize efficiency.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
