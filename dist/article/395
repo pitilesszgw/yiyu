@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">Google Ads账户申诉材料准备指南：运营老手总结的4条避坑经验</span>
+                    <span x-show="lang === 'en'" x-cloak>Google Ads Account Suspension Appeal: 4 Hard-Won Lessons from Experienced Optimizers</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-24</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="395" data-base-views="15">15</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu1863/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>结论先行：材料准备质量决定申诉成败</h2>
+<p>在Google Ads账户申诉这件事上，很多运营人员花了大量时间写申诉邮件，却忽略了材料准备的系统性。一个不争的事实是：<strong>首次申诉的通过率远高于二次申诉</strong>，因为Google审核系统会将重复申诉视为“已给过机会”的案件处理。所以第一次提交的材料质量，几乎决定了这场“翻身仗”的最终走向。</p>
+<hr />
+<h2>坑一：申诉前没有做根因分析</h2>
+<p>大多数运营在收到账户暂停通知后，第一反应是写申诉邮件“求情”。但Google审核团队明确表示，他们需要看到你<strong>理解违规原因并采取了纠正措施</strong>，而不是单纯的解释。</p>
+<p>以某工具类App为例，该产品因“诱导点击”被封。运营人员第一次申诉时只是解释“用户是自愿点击”，结果被秒拒。第二次申诉前，团队做了三件事：</p>
+<ol>
+<li>导出被标记的素材，对照Google政策逐条核对</li>
+<li>发现广告中存在“点击领取奖励”的按钮设计</li>
+<li>重新设计素材后，附上修改前后的对比截图</li>
+</ol>
+<p>结果：7个工作日后账户解封。</p>
+<p><strong>核心原则</strong>：申诉邮件里要有“我知道错哪儿了+我已经改了什么”的完整闭环。</p>
+<hr />
+<h2>坑二：附证材料只有营业执照</h2>
+<p>很多初次接触账户申诉的团队会认为“上传营业执照就够了”。实际上，Google的审核团队会根据违规类型要求不同的资质文件。以下是常见违规类型与对应材料清单：</p>
+<table>
+<thead>
+<tr>
+<th>违规类型</th>
+<th>必需材料</th>
+<th>可选但有用的材料</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>商标或版权投诉</td>
+<td>授权证明、版权登记证书</td>
+<td>品牌官网截图、与投诉方的沟通记录</td>
+</tr>
+<tr>
+<td>诱导点击/虚假宣传</td>
+<td>修改后的落地页URL</td>
+<td>A/B测试数据、用户反馈截图</td>
+</tr>
+<tr>
+<td>敏感类别（金融、医疗）</td>
+<td>行业资质许可、产品合规声明</td>
+<td>第三方认证证书、用户协议</td>
+</tr>
+<tr>
+<td>落地页无法访问</td>
+<td>更新后的URL清单</td>
+<td>服务器访问日志</td>
+</tr>
+</tbody>
+</table>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Lead with the Conclusion: Material Quality Determines Appeal Outcome</h2>
+<p>When it comes to Google Ads account appeals, most performance marketers jump straight into writing emails without a systematic preparation plan. Here's an uncomfortable truth: <strong>first-time appeal approval rates are significantly higher than repeat appeals</strong>. Google's review system treats resubmissions as cases where "one chance has already been given." Therefore, the quality of your initial submission essentially determines whether you win this battle.</p>
+<hr />
+<h2>Mistake 1: Skipping Root-Cause Analysis</h2>
+<p>Most marketers' first reaction to a suspension notice is to write an appeal email "pleading their case." But Google's review team explicitly states they need to see that you <strong>understand the violation and have taken corrective action</strong>, not just explanations.</p>
+<p>Take a utility app as an example. It was suspended for "encouraging clicks." The operator's first appeal simply explained that "users clicked voluntarily" — and was instantly rejected. Before the second appeal, the team did three things:</p>
+<ol>
+<li>Exported flagged creatives and cross-referenced them against Google policies</li>
+<li>Discovered the ad featured a "Click to claim rewards" button design</li>
+<li>Redesigned the creative and attached before/after screenshots</li>
+</ol>
+<p>Result: Account reinstated after 7 business days.</p>
+<p><strong>Core principle</strong>: Your appeal email must present a complete "I know what went wrong + here's what I've changed" loop.</p>
+<hr />
+<h2>Mistake 2: Only Submitting Business Licenses as Supporting Documents</h2>
+<p>Many teams new to account appeals assume "uploading a business license is enough." In reality, Google's review team requests different credential documents based on violation types. Here's a checklist for common violation types:</p>
+<table>
+<thead>
+<tr>
+<th>Violation Type</th>
+<th>Required Documents</th>
+<th>Optional but Helpful</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trademark/Copyright complaints</td>
+<td>Authorization proof, copyright registration</td>
+<td>Brand website screenshots, communication records with complainant</td>
+</tr>
+<tr>
+<td>Click baiting/misleading claims</td>
+<td>Revised landing page URLs</td>
+<td>A/B test data, user feedback screenshots</td>
+</tr>
+<tr>
+<td>Sensitive categories (finance, healthcare)</td>
+<td>Industry licenses, product compliance statements</td>
+<td>Third-party certifications, user agreements</td>
+</tr>
+<tr>
+<td>Inaccessible landing pages</td>
+<td>Updated URL list</td>
+<td>Server access logs</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Mistake 3: Generic Appeal Email Templates</h2>
+<p>A well-known cross-border e-commerce team shared their approach: they maintain a template library for different violation types, but each appeal is customized. The key is embedding specific details:</p>
+<ul>
+<li><strong>Case ID and account number</strong> at the email opening</li>
+<li><strong>Which specific policy was violated</strong> (quote the exact clause)</li>
+<li><strong>Evidence of corrective measures</strong> with concrete attachments</li>
+<li><strong>Commitment to future compliance</strong> with a brief monitoring plan</li>
+</ul>
+<p>Vague appeals like "We will comply better going forward" get generic responses. Specific references to policy clauses and attached proof documents receive actual review.</p>
+<hr />
+<h2>Mistake 4: Ignoring the "Account-Level" Review Request</h2>
+<p>When Google rejects an appeal, they sometimes offer an "Account-level review" option at no additional cost. Many teams miss this because it appears in a follow-up email rather than the initial rejection. This is a critical second chance: you can submit supplementary documents and receive a fresh review by a different reviewer.</p>
+<p><strong>Practical tip</strong>: After receiving rejection, immediately search for "request another review" in your email inbox. Set a calendar reminder to check this option within 48 hours before the review queue resets.</p>
+<hr />
+<h2>Summary: Three Steps Before You Click "Submit"</h2>
+<ol>
+<li><strong>Diagnose before drafting</strong>: Identify the exact policy clause and prepare evidence showing corrections</li>
+<li><strong>Customize your materials</strong>: Each appeal should reference specific case IDs and attach tailored proof</li>
+<li><strong>Verify completeness</strong>: Double-check required documents against the violation type before submitting</li>
+</ol>
+<p>Account suspension is stressful, but systematic preparation dramatically improves your odds. Bookmark this guide and use it as a checklist before your next appeal submission.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
