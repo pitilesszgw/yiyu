@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">SOP手册：Google Ads 账户封户后的申诉材料准备全流程</span>
+                    <span x-show="lang === 'en'" x-cloak>SOP Guide: Preparing Google Ads Account Suspension Appeal Materials</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-25</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="397" data-base-views="43">43</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu828/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>一、先别慌：确认封户原因</h2>
+<p>正式准备材料之前，优先搞清楚<strong>封户类型</strong>。Google Ads 封户通常分两种情况：</p>
+<ul>
+<li><strong>软性封户</strong>：广告拒登、支付问题、违规内容警告。这类情况一般不会封死账户主体，解封成功率较高。</li>
+<li><strong>硬性封户</strong>：严重违规、规避系统、欺骗性行为。账户可能被永久封禁，申诉难度大，但仍有争取空间。</li>
+</ul>
+<p><strong>诊断步骤</strong>：</p>
+<ol>
+<li>登录 Google Ads 界面，查看「账户状态」栏的提示信息</li>
+<li>检查注册邮箱，查收来自 Google 的封户通知邮件</li>
+<li>如无明确原因，访问 Google Ads 政策页面逐一排查</li>
+</ol>
+<blockquote>
+<p>💡 <strong>提示</strong>：如果收到的是自动邮件模板，先不要急于申诉。很多时候账户会因为付款失败触发临时封禁，解决支付问题即可自动恢复。</p>
+</blockquote>
+<hr />
+<h2>二、申诉材料清单：这些文件一个不能少</h2>
+<p>根据封户原因，准备对应的证明材料。运营同事可以按以下清单逐项核查：</p>
+<table>
+<thead>
+<tr>
+<th>材料类型</th>
+<th>适用场景</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>营业执照 / 公司注册证明</td>
+<td>账户主体验证</td>
+<td>需与账户注册信息一致，清晰可读</td>
+</tr>
+<tr>
+<td>网站所有权证明</td>
+<td>网站违规类封户</td>
+<td>域名证书、ICP 备案截图或 GA 验证截图</td>
+</tr>
+<tr>
+<td>广告落地页截图</td>
+<td>素材或页面违规</td>
+<td>标注问题页面 URL，截图要完整</td>
+</tr>
+<tr>
+<td>近期投放报告</td>
+<td>证明账户无恶意行为</td>
+<td>后台截图即可，体现正常消耗</td>
+</tr>
+<tr>
+<td>整改说明文档</td>
+<td>已修正违规内容</td>
+<td>列出具体修改点和修改时间</td>
+</tr>
+<tr>
+<td>第三方合规认证</td>
+<td>特殊行业（金融、医疗）</td>
+<td>相关资质证书或认证文件</td>
+</tr>
+</tbody>
+</table>
+<p><strong>实操建议</strong>：所有文件建议转换为 PDF 格式，单个文件控制在 10MB 以内，方便邮件传输和审核人员查阅。</p>
+<hr />
+<h2>三、撰写申诉邮件：结构决定成败</h2>
+<p>材料准备好了，接下来写邮件。申诉邮件不是诉苦信，审核人员每天处理大量案件，结构清晰、重点突出的邮件才能快速通过。</p>
+<p><strong>推荐邮件结构</strong>：</p>
+<h3>1. 开门见山说身份</h3>
+<pre><code>Google Ads 账户 ID：xxx-xxx-xxxx
+账户注册邮箱：your@email.com
+公司名称：XXX Co., Ltd.
+</code></pre>
+<h3>2. 说明收件原因</h3>
+<blockquote>
+<p>我们于 [日期] 收到账户封户通知（Reference ID: xxxxx），现提交申诉材料，请求复查。</p>
+</blockquote>
+<h3>3. 简述违规原因认知</h3>
+<p>用 1-2 句话承认问题，不要辩解太多：</p>
+<blockquote>
+<p>经内部核查，我们理解此次封户是因为 [落地页/广告素材/行业资质] 存在 [具体问题]。</p>
+</blockquote>
+<h3>4. 重点：说明整改措施</h3>
+<p>这是审核人员最关心的部分，要具体、可验证：</p>
+<blockquote>
+<ul>
+<li>已于 [日期] 删除违规广告组 [xxx]</li>
+<li>已修改落地页 [URL]，移除了 [具体违规内容]</li>
+<li>已补充 [资质文件] 并在页面底部展示</li>
+</ul>
+</blockquote>
+<h3>5. 附上材料清单并致谢</h3>
+<blockquote>
+<p>附件包含：营业执照、网站截图、整改说明。请查阅。<br />
+如有进一步问题，请联系 xxx@email.com。</p>
+</blockquote>
+<p><strong>发送地址</strong>：使用 Google 支持页面提交的表单，或直接回复封户通知邮件。</p>
+<hr />
+<h2>四、提交申诉后：跟进比等待更重要</h2>
+<p>很多运营同事提交完就干等，结果石沉大海。以下是跟进节奏：</p>
+<ul>
+<li><strong>1-3 个工作日</strong>：首次回复通常在此时段内</li>
+<li><strong>第 5 个工作日</strong>：如无回复，发送一封跟进邮件，简短询问进度</li>
+<li><strong>超过 10 个工作日</strong>：通过 Google Ads 支持页面提交「催促复查」请求</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>警告</strong>：不要短时间内重复提交申诉。重复提交会被系统标记为垃圾邮件，反而拉长处理时间。</p>
+</blockquote>
+<hr />
+<h2>五、常见问题速查</h2>
+<p><strong>Q：账户封了，余额还能退吗？</strong></p>
+<p>可以。申诉成功后或在明确无法解封的情况下，通过 Google Ads 后台申请余额退款，一般 15-30 个工作日到账。</p>
+<p><strong>Q：申诉被拒了，还能再试吗？</strong></p>
+<p>可以。但建议间隔 2 周以上，并补充新的证明材料或更详细的整改说明，重复提交内容完全相同的邮件意义不大。</p>
+<p><strong>Q：公司有多个人在操作账户，会不会影响申诉？</strong></p>
+<p>不会影响申诉结果，但建议统一申诉入口，避免多人重复提交。建议指定一人负责对外沟通。</p>
+<hr />
+<h2>结语</h2>
+<p>账户封户虽然烦人，但并非无解。核心原则是：<strong>先诊断、再准备、说清楚、能验证</strong>。按照这份 SOP 操作，大部分因政策理解偏差或材料不全导致的封户都能在 1-2 周内解决。如遇复杂的硬性封户，建议同时准备备用账户，确保业务不中断。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Step 1: Don't Panic — Diagnose the Suspension Type First</h2>
+<p>Before preparing materials, identify the <strong>type of suspension</strong>. Google Ads typically has two categories:</p>
+<ul>
+<li><strong>Soft Suspension</strong>: Ad disapprovals, payment issues, or policy warnings. These usually don't permanently close the account and have higher reinstatement rates.</li>
+<li><strong>Hard Suspension</strong>: Severe violations, circumvention, or deceptive behavior. The account may be permanently disabled, but appeals are still worth attempting.</li>
+</ul>
+<p><strong>Diagnostic Steps:</strong></p>
+<ol>
+<li>Log into Google Ads and check the "Account Status" section for specific alerts</li>
+<li>Review your registered email for the official suspension notification from Google</li>
+<li>If the reason is unclear, cross-check against the Google Ads Policy page</li>
+</ol>
+<blockquote>
+<p>💡 <strong>Tip</strong>: If you receive an automated template email, don't rush to appeal. Many suspensions are triggered by payment failures and automatically lift once the payment issue is resolved.</p>
+</blockquote>
+<hr />
+<h2>Step 2: Appeal Materials Checklist — Every Document Matters</h2>
+<p>Prepare supporting documents based on the suspension reason. Use this checklist to verify completeness:</p>
+<table>
+<thead>
+<tr>
+<th>Document Type</th>
+<th>When Needed</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Business License / Registration Certificate</td>
+<td>Identity verification</td>
+<td>Must match account registration details, clearly readable</td>
+</tr>
+<tr>
+<td>Website Ownership Proof</td>
+<td>Website policy violations</td>
+<td>Domain certificate, ICP filing screenshot, or GA verification</td>
+</tr>
+<tr>
+<td>Ad Landing Page Screenshots</td>
+<td>Creative or page violations</td>
+<td>Mark the problematic page URL, ensure full capture</td>
+</tr>
+<tr>
+<td>Recent Campaign Reports</td>
+<td>Demonstrating good-faith activity</td>
+<td>Backend screenshots showing normal spending</td>
+</tr>
+<tr>
+<td>Remediation Documentation</td>
+<td>Already fixed violations</td>
+<td>List specific changes and dates</td>
+</tr>
+<tr>
+<td>Third-Party Compliance Certifications</td>
+<td>Regulated industries (finance, healthcare)</td>
+<td>Relevant licenses or certifications</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Practical Tip</strong>: Convert all documents to PDF format, keeping each file under 10MB for easy email transmission and reviewer access.</p>
+<hr />
+<h2>Step 3: Writing the Appeal Email — Structure Determines Success</h2>
+<p>With materials ready, focus on the email. Appeals are not complaint letters — reviewers process dozens daily. A clear, well-organized email gets faster approval.</p>
+<p><strong>Recommended Email Structure:</strong></p>
+<h3>1. Open with Account Details</h3>
+<pre><code>Google Ads Account ID: xxx-xxx-xxxx
+Account Email: your@email.com
+Company Name: XXX Co., Ltd.
+</code></pre>
+<h3>2. State the Purpose</h3>
+<blockquote>
+<p>We received an account suspension notice on [date] (Reference ID: xxxxx) and are submitting appeal materials for review.</p>
+</blockquote>
+<h3>3. Briefly Acknowledge the Issue</h3>
+<p>Use 1-2 sentences to take responsibility without over-explaining:</p>
+<blockquote>
+<p>Upon internal review, we understand this suspension is related to [landing page/ad creative/industry qualification] containing [specific issue].</p>
+</blockquote>
+<h3>4. The Key Section: Remediation Actions</h3>
+<p>This is what reviewers care about most — be specific and verifiable:</p>
+<blockquote>
+<ul>
+<li>Removed non-compliant ad groups [xxx] on [date]</li>
+<li>Modified landing page [URL] and removed [specific violating content]</li>
+<li>Added [qualification document] displayed at the page footer</li>
+</ul>
+</blockquote>
+<h3>5. Attach the Checklist and Close Politely</h3>
+<blockquote>
+<p>Attached: Business license, website screenshots, remediation documentation. Please review.<br />
+For questions, contact xxx@email.com.</p>
+</blockquote>
+<p><strong>Submission</strong>: Use the form on the Google Ads support page or reply directly to the suspension notification email.</p>
+<hr />
+<h2>Step 4: After Submission — Follow-Up Matters</h2>
+<p>Many advertisers submit and wait indefinitely. Here's the recommended follow-up cadence:</p>
+<ul>
+<li><strong>Days 1-3</strong>: First response usually arrives in this window</li>
+<li><strong>Day 5</strong>: If no response, send a brief follow-up inquiry</li>
+<li><strong>Beyond 10 Days</strong>: Submit a "request for escalated review" through the Google Ads support page</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>Warning</strong>: Do not submit duplicate appeals in rapid succession. Repeated submissions are flagged as spam, which extends processing time.</p>
+</blockquote>
+<hr />
+<h2>Step 5: Quick FAQ</h2>
+<p><strong>Q: Can I get my remaining balance refunded?</strong></p>
+<p>Yes. After successful appeal or if reinstatement is impossible, request a balance refund through the Google Ads backend. Expect 15-30 business days for processing.</p>
+<p><strong>Q: If my appeal is denied, can I try again?</strong></p>
+<p>Yes, but wait at least 2 weeks. Supplement with new supporting documents or more detailed remediation notes. Repeating the exact same email is rarely effective.</p>
+<p><strong>Q: Multiple team members have been managing the account — will this affect my appeal?</strong></p>
+<p>It won't affect the outcome, but consolidate appeals through a single contact point to avoid duplicate submissions. Designate one person as the primary correspondent.</p>
+<hr />
+<h2>Closing</h2>
+<p>Account suspension is frustrating but rarely final. The core principle is: <strong>Diagnose First, Prepare Thoroughly, Explain Clearly, Prove It Works</strong>. Following this SOP, most suspensions caused by policy misunderstanding or missing documentation can be resolved within 1-2 weeks. For complex hard suspensions, prepare a backup account to keep operations running while appealing.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>

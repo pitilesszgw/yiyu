@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">海外广告代理开户看板管理：6步搭建高效运营流程</span>
+                    <span x-show="lang === 'en'" x-cloak>Streamlining Ad Agency Account Opening: A 6-Step Kanban System</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-25</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="396" data-base-views="12">12</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu2095/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>代理开户服务为什么需要看板管理</h2>
+<p>在海外广告代理开户服务中，运营团队常遇到这些困境：客户资料散落在微信、邮件、网盘各处；某个开户流程卡在某个环节超过一周找不到原因；月底对账时发现充值金额和账户余额对不上。看板管理能把这些混乱的流程变成清晰可见的节点，让每个环节都有负责人、有时限、有预警。</p>
+<h2>看板搭建6步骤</h2>
+<h3>第一步：拆解开户流程</h3>
+<p>不要一开始就追求完美，先把开户过程拆成5-7个明确阶段：</p>
+<ul>
+<li>启动确认：客户资质初筛、确认账户类型</li>
+<li>资料收集：营业执照、域名验证、BM创建等</li>
+<li>资质审核：平台规则核查、账户权限申请</li>
+<li>充值入账：确认金额、提交充值、到账核实</li>
+<li>账户启用：像素安装、域名验证、投放授权</li>
+<li>投放风控：首日投放监控、预算调整确认</li>
+</ul>
+<h3>第二步：设计看板列和流转规则</h3>
+<p>每个阶段对应一列，列内设置流转规则：</p>
+<ul>
+<li>什么条件可以移到下一列</li>
+<li>什么情况下标记为“异常”</li>
+<li>什么情况下可以“暂时搁置”</li>
+</ul>
+<blockquote>
+<p>建议：用颜色区分平台（Meta蓝色、Google绿色、TikTok紫色），方便按业务线筛选。</p>
+</blockquote>
+<h3>第三步：卡片信息设计</h3>
+<p>每张开户卡片需要包含这些关键信息：</p>
+<ul>
+<li>客户名称和联系方式</li>
+<li>开户平台和账户类型</li>
+<li>提交时间和预计完成时间</li>
+<li>所需资料清单和当前缺失项</li>
+<li>责任人</li>
+</ul>
+<h3>第四步：设定WIP限制</h3>
+<p>WIP（Work In Progress）限制是看板的核心机制。每个环节同时进行的开户任务不宜超过5-8个，超过就要预警或者暂停新任务进入。</p>
+<h3>第五步：建立异常预警规则</h3>
+<p>根据历史数据设定各环节的合理时长：</p>
+<table>
+<thead>
+<tr>
+<th>环节</th>
+<th>正常时长</th>
+<th>预警阈值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资料收集</td>
+<td>1-2天</td>
+<td>超过3天</td>
+</tr>
+<tr>
+<td>资质审核</td>
+<td>1-3天</td>
+<td>超过5天</td>
+</tr>
+<tr>
+<td>充值到账</td>
+<td>1-2天</td>
+<td>超过24小时未确认</td>
+</tr>
+<tr>
+<td>账户启用</td>
+<td>1天</td>
+<td>超过2天</td>
+</tr>
+</tbody>
+</table>
+<h3>第六步：定期复盘优化</h3>
+<p>每周检查看板数据：哪些列积压最多？哪些异常是重复出现的？哪些步骤可以合并或省略？</p>
+<h2>开户流程检查清单</h2>
+<h3>启动阶段检查项</h3>
+<ul>
+<li>[ ] 客户资质是否满足平台最低要求</li>
+<li>[ ] 确认是开通个人户还是企业户</li>
+<li>[ ] 资料清单已发送给客户并确认收到</li>
+</ul>
+<h3>资料审核阶段检查项</h3>
+<ul>
+<li>[ ] 营业执照法人与网站ICP备案一致</li>
+<li>[ ] 网站内容与开户类目匹配</li>
+<li>[ ] 社媒主页链接真实可访问</li>
+<li>[ ] 域名所有权验证已完成</li>
+</ul>
+<h3>充值确认阶段检查项</h3>
+<ul>
+<li>[ ] 充值金额与客户预付金额一致</li>
+<li>[ ] 截图存档并登记账户ID</li>
+<li>[ ] 确认账户余额已更新</li>
+<li>[ ] 已向客户发送充值凭证</li>
+</ul>
+<h3>风控监控阶段检查项</h3>
+<ul>
+<li>[ ] 投放内容符合平台政策</li>
+<li>[ ] 首日账户无异常封禁</li>
+<li>[ ] 预算消耗与预期一致</li>
+<li>[ ] 客户已确认广告系列配置</li>
+</ul>
+<h2>常见问题</h2>
+<p><strong>Q：多平台开户并行时如何管理？</strong></p>
+<p>建议按平台分组看板，每组单独设置WIP限制。或者使用泳道（Swimlane）模式，横轴是平台，纵轴是流程阶段。</p>
+<p><strong>Q：客户更换联系人导致信息断层怎么办？</strong></p>
+<p>卡片备注区记录关键沟通节点，最好在企业微信或邮件中留存文字记录，不要依赖口头承诺。</p>
+<p><strong>Q：充值后发现金额有误如何处理？</strong></p>
+<p>立即截图当前账户余额作为证据，联系平台客服确认充值记录，同时安抚客户并告知处理时限。</p>
+<h2>小结</h2>
+<p>看板管理的价值在于把“不知道卡在哪里”变成“一眼看到卡在哪里”。对于日开户量超过5个的团队，看板系统可以将平均开户周期缩短40%以上，投诉率下降30%。关键是先跑起来，不要追求一步到位，用简单的表格工具先实践，再逐步升级到专业看板软件。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Why Ad Agency Account Opening Needs Kanban Management</h2>
+<p>In overseas ad agency account opening services, operations teams frequently encounter these challenges: client documents scattered across WeChat, emails, and cloud storage; account opening processes stuck at certain stages for over a week with no clear reason; discrepancies between top-up amounts and account balances during month-end reconciliation. Kanban management transforms these chaotic processes into clearly visible nodes, giving every stage a responsible person, time limits, and alerts.</p>
+<h2>6 Steps to Build Your Kanban System</h2>
+<h3>Step 1: Break Down the Opening Process</h3>
+<p>Don't pursue perfection from the start. First, split the opening process into 5-7 clear stages:</p>
+<ul>
+<li><strong>Initiation</strong>: Initial client qualification screening, account type confirmation</li>
+<li><strong>Documentation</strong>: Business license, domain verification, BM creation, etc.</li>
+<li><strong>Qualification Review</strong>: Platform policy check, account permission application</li>
+<li><strong>Top-up &amp; Deposit</strong>: Amount confirmation, top-up submission, receipt verification</li>
+<li><strong>Account Activation</strong>: Pixel installation, domain verification, ad authorization</li>
+<li><strong>Delivery Risk Control</strong>: First-day delivery monitoring, budget adjustment confirmation</li>
+</ul>
+<h3>Step 2: Design Columns and Flow Rules</h3>
+<p>Each stage corresponds to one column, with flow rules defined within columns:</p>
+<ul>
+<li>What conditions allow moving to the next column</li>
+<li>What situations should be marked as "exception"</li>
+<li>What situations can be "temporarily paused"</li>
+</ul>
+<blockquote>
+<p><strong>Tip</strong>: Use colors to distinguish platforms (Meta in blue, Google in green, TikTok in purple) for easy filtering by business line.</p>
+</blockquote>
+<h3>Step 3: Design Card Information</h3>
+<p>Each account opening card should contain these key details:</p>
+<ul>
+<li>Client name and contact information</li>
+<li>Platform and account type</li>
+<li>Submission time and estimated completion time</li>
+<li>Required documents checklist and current missing items</li>
+<li>Responsible person</li>
+</ul>
+<h3>Step 4: Set WIP Limits</h3>
+<p>WIP (Work In Progress) limits are the core mechanism of Kanban. No more than 5-8 account opening tasks should run simultaneously per stage. When exceeded, implement alerts or pause new task entry.</p>
+<h3>Step 5: Establish Exception Alert Rules</h3>
+<p>Set reasonable durations for each stage based on historical data:</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Normal Duration</th>
+<th>Alert Threshold</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Documentation</td>
+<td>1-2 days</td>
+<td>Over 3 days</td>
+</tr>
+<tr>
+<td>Qualification Review</td>
+<td>1-3 days</td>
+<td>Over 5 days</td>
+</tr>
+<tr>
+<td>Top-up Receipt</td>
+<td>1-2 days</td>
+<td>Over 24 hours unconfirmed</td>
+</tr>
+<tr>
+<td>Account Activation</td>
+<td>1 day</td>
+<td>Over 2 days</td>
+</tr>
+</tbody>
+</table>
+<h3>Step 6: Regular Review and Optimization</h3>
+<p>Weekly Kanban data review: Which columns have the most backlog? Which exceptions recur? Which steps can be merged or removed?</p>
+<h2>Account Opening Process Checklist</h2>
+<h3>Initiation Stage Checklist</h3>
+<ul>
+<li>[ ] Client qualification meets platform minimum requirements</li>
+<li>[ ] Confirmed whether opening personal or business account</li>
+<li>[ ] Document checklist sent to client and receipt confirmed</li>
+</ul>
+<h3>Documentation Review Stage Checklist</h3>
+<ul>
+<li>[ ] Business license legal person matches website ICP filing</li>
+<li>[ ] Website content matches account opening category</li>
+<li>[ ] Social media page links are authentic and accessible</li>
+<li>[ ] Domain ownership verification completed</li>
+</ul>
+<h3>Top-up Confirmation Stage Checklist</h3>
+<ul>
+<li>[ ] Top-up amount matches client prepayment amount</li>
+<li>[ ] Screenshot archived and account ID registered</li>
+<li>[ ] Account balance confirmed updated</li>
+<li>[ ] Top-up receipt sent to client</li>
+</ul>
+<h3>Risk Control Monitoring Stage Checklist</h3>
+<ul>
+<li>[ ] Ad content complies with platform policies</li>
+<li>[ ] No account suspension on first day</li>
+<li>[ ] Budget consumption matches expectations</li>
+<li>[ ] Client confirmed ad campaign configuration</li>
+</ul>
+<h2>FAQ</h2>
+<p><strong>Q: How to manage multi-platform account openings in parallel?</strong></p>
+<p>Recommend grouping Kanban by platform, with separate WIP limits for each group. Alternatively, use Swimlane mode with platforms on the horizontal axis and process stages on the vertical axis.</p>
+<p><strong>Q: What to do when client contact changes cause information gaps?</strong></p>
+<p>Record key communication milestones in card notes. Preferably keep written records in WeChat Work or email rather than relying on verbal commitments.</p>
+<p><strong>Q: How to handle discrepancies found after top-up?</strong></p>
+<p>Immediately screenshot current account balance as evidence, contact platform customer service to confirm top-up records, and reassure the client while informing them of the handling timeline.</p>
+<h2>Summary</h2>
+<p>The value of Kanban management lies in transforming "not knowing where it's stuck" into "seeing where it's stuck at a glance." For teams handling more than 5 account openings daily, a Kanban system can reduce average opening cycle time by over 40% and complaints by 30%. The key is to start running first without pursuing perfection from the start. Use simple spreadsheet tools to practice initially, then gradually upgrade to professional Kanban software.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
