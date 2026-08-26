@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">本周投放观察：余额预警失效了吗？放量中断的真实原因与应急方案</span>
+                    <span x-show="lang === 'en'" x-cloak>Weekly Insight: Why Did Your Campaign Stop Scaling? Account Balance Alerts Under Review</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-27</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="404" data-base-views="14">14</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu8150/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>本周观察：放量季，余额预警为何成了摆设？</h2>
+<p>年末最后一个月，本该是出海团队冲刺业绩的关键期。然而，本周我们收到多个团队的反馈：在 Meta、TikTok、Google 等平台投放时，账户余额明明显示充足，广告却突然暂停——一问原因，余额归零。</p>
+<p>这不是个案。本周行业社群里，至少有三个团队报告了类似的“余额充足却中断投放”问题。表面看是预警机制失效，深挖下去，是平台扣款规则、账户风控与团队内部流程之间的错位。</p>
+<hr />
+<h2>问题一：平台扣款滞后，余额显示“虚高”</h2>
+<p>很多团队习惯用平台后台的余额数字判断投放空间，但这个数字往往存在 30 分钟到 2 小时的滞后。</p>
+<p>以 Meta 广告账户为例，广告点击产生的费用并非实时扣除，而是批量结算。如果你的日预算设置为 500 美元，在流量高峰时段，一小时内消耗可能超过 800 美元，但后台余额更新滞后这段时间，你看到的数据是“还有余额”，实际上已经透支。</p>
+<p><strong>TikTok 情况更特殊</strong>：部分广告账户的余额更新频率与充值到账时间存在时间差，尤其是在年末审核趋严的背景下，充值金额到账延迟 10-30 分钟是常见现象。</p>
+<p><strong>建议</strong>：不要依赖平台后台的实时余额作为唯一指标。建议团队在每日投放高峰前（通常是北京时间下午 2 点到 4 点）手动确认余额，并设置 30% 的安全边际——比如日预算 1000 美元，账户余额低于 1300 美元时就触发充值提醒。</p>
+<hr />
+<h2>问题二：多账户管理中，余额分散导致“被忽视”</h2>
+<p>本周一个典型案例：某电商团队同时运营 8 个 Meta 广告账户，分别对应不同的产品线和投放地区。投放经理习惯性关注主力账户（A 账户月消耗 8 万美元），而其他 7 个账户日消耗 2000-5000 美元的小账户，充值频率较低。</p>
+<p>结果：其中一个东南亚市场的账户在周五晚间余额耗尽，由于该账户对应的 Campaign 刚进入放量期，错过最佳流量窗口，ROI 下降了约 25%。</p>
+<p><strong>问题根源</strong>：多账户管理时，小账户的余额监控容易被忽视。尤其在年末预算调整阶段，团队往往优先保障主力账户的消耗，对小账户的补款响应滞后。</p>
+<p><strong>建议</strong>：建立多账户余额看板，将所有账户的余额状态、可投放时长（按当前消耗速度计算）集中在同一视图。推荐做法是设定“余额可支撑投放时长低于 24 小时”的强制提醒阈值，低于这个时间必须完成充值。</p>
+<hr />
+<h2>问题三：账户风控冻结余额，投放突然中断</h2>
+<p>这是本周最容易被忽视的问题。部分团队在年末投放时会遇到平台风控触发，导致账户余额被临时冻结。这种情况往往没有明确提示，只显示“账户余额不足”或“广告暂停”。</p>
+<p>常见触发原因包括：</p>
+<ul>
+<li>短期内消耗增幅过大（单账户日消耗增长超过 200%）</li>
+<li>支付方式触发验证（如新绑卡、短时间内更换支付方式）</li>
+<li>投放内容涉及高审核品类（金融、游戏、减肥等）</li>
+</ul>
+<p><strong>本周某工具类 App 团队</strong>就遇到了这种情况：该团队在冲刺年末下载量时，将日预算从 1000 美元提升到 4000 美元，三小时后账户余额被风控冻结，投放中断 6 小时后才解封，损失约 1500 美元的潜在流量。</p>
+<p><strong>建议</strong>：预算调整不要一步到位，尤其是年末敏感期。建议分 48 小时逐步放量，每日增幅控制在 30%-50% 以内。同时，确保支付方式长期稳定，避免在放量期更换信用卡或支付账户。</p>
+<hr />
+<h2>本周操作清单：防止放量中断的 5 步检查</h2>
+<ol>
+<li>
+<p><strong>检查账户余额可支撑时长</strong>：打开后台，确认当前余额按过去 24 小时消耗速度还能支撑多久。低于 24 小时，立即处理。</p>
+</li>
+<li>
+<p><strong>核对充值到账时间</strong>：如果刚完成充值但还未到账，不要假设余额已更新。等待平台确认邮件或后台状态变更为准。</p>
+</li>
+<li>
+<p><strong>确认所有账户状态</strong>：在多账户管理后台快速扫一遍所有账户的余额和投放状态，不只是主力账户。</p>
+</li>
+<li>
+<p><strong>暂停非核心 Campaign</strong>：如果余额紧张，优先暂停 ROI 预期较低的 Campaign，保住主力投放的放量窗口。</p>
+</li>
+<li>
+<p><strong>设置备用充值渠道</strong>：确保至少有 2 种以上的充值方式可用，紧急情况下可以快速响应。</p>
+</li>
+</ol>
+<hr />
+<h2>本周小结</h2>
+<p>年末放量期，余额预警不是小事。它影响的不仅是当天的投放数据，更可能打断整个放量节奏，错失流量窗口期。本周观察表明，大多数中断问题并非预警机制不存在，而是团队没有形成稳定的检查节奏。</p>
+<p><strong>一句话建议</strong>：把余额管理纳入每日投放 SOP，而不是“想起来再查”。</p>
+<p>如果你在多账户管理中遇到余额预警困难，或需要了解更多平台扣款规则差异，欢迎持续关注我们的周报观察。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Weekly Observation: Why Did Your Balance Alert Fail?</h2>
+<p>At this critical year-end performance sprint, multiple overseas teams reported a common issue: ads suddenly paused despite sufficient account balance showing in the platform. The reason was simple—balance hit zero. </p>
+<p>This isn't an isolated case. This week, at least three teams in industry groups reported similar "sufficient balance but campaign paused" issues. On the surface, it appears to be an early warning system failure, but deeper investigation reveals a mismatch between platform payment rules, account risk controls, and internal team processes.</p>
+<hr />
+<h2>Issue 1: Platform Deductions Lag, Balance Shows "Falsely High"</h2>
+<p>Many teams rely on platform backend balance numbers to determine ad spending capacity, but this figure often has a 30-minute to 2-hour delay.</p>
+<p>Take Meta ad accounts as an example: advertising click charges aren't deducted in real-time but batch-processed. If your daily budget is set to $500, during peak traffic hours, consumption might exceed $800 in one hour, but the backend balance updates with a delay. During this window, you're seeing "balance available" when you've actually overdrawn.</p>
+<p><strong>TikTok is more special</strong>: Some ad accounts have a discrepancy between balance update frequency and recharge arrival time. Especially during year-end tightened reviews, recharge delays of 10-30 minutes are common.</p>
+<p><strong>Recommendation</strong>: Don't rely on platform backend real-time balance as the sole indicator. Teams should manually confirm balance before daily peak ad hours (typically 2 PM to 4 PM Beijing time) and set a 30% safety margin—for example, if daily budget is $1,000, trigger a recharge reminder when account balance falls below $1,300.</p>
+<hr />
+<h2>Issue 2: Multi-Account Management Scatters Balance Attention</h2>
+<p>This week saw a typical case: an e-commerce team operating 8 Meta ad accounts simultaneously, each corresponding to different product lines and targeting regions. The media buyer habitually focused on the main account (monthly spend $80,000), while the other 7 smaller accounts with daily spend of $2,000-$5,000 were less frequently topped up.</p>
+<p>Result: One Southeast Asian market account ran out of balance on Friday evening. Since that account's campaign had just entered the scaling phase, the optimal traffic window was missed, and ROI dropped by approximately 25%.</p>
+<p><strong>Root cause</strong>: In multi-account management, smaller accounts' balance monitoring is easily overlooked. Especially during year-end budget adjustments, teams tend to prioritize ensuring main accounts' spend, with delayed responses to smaller account recharge needs.</p>
+<p><strong>Recommendation</strong>: Establish a multi-account balance dashboard, consolidating all accounts' balance status and estimated running time (calculated by current spend velocity) in one view. Set a mandatory reminder threshold of "balance can support less than 24 hours of spend."</p>
+<hr />
+<h2>Issue 3: Account Risk Control Freezes Balance, Campaign Suddenly Interrupted</h2>
+<p>This is the most easily overlooked issue this week. Some teams encounter platform risk control triggers during year-end advertising, causing account balance to be temporarily frozen. This often comes without clear notification, only displaying "insufficient account balance" or "ads paused."</p>
+<p>Common triggers include:</p>
+<ul>
+<li>Excessive consumption growth in short term (daily spend increase exceeding 200% for single account)</li>
+<li>Payment method triggering verification (newly绑卡, payment method changed in short period)</li>
+<li>Ad content involving high-audit categories (finance, gaming, weight loss, etc.)</li>
+</ul>
+<p><strong>This week, a utility app team</strong> encountered exactly this situation: while pushing for year-end downloads, they raised daily budget from $1,000 to $4,000. Three hours later, account balance was frozen by risk control, ad delivery interrupted for 6 hours before release, losing approximately $1,500 in potential traffic.</p>
+<p><strong>Recommendation</strong>: Don't adjust budgets in one big step, especially during the sensitive year-end period. Recommend gradual scaling over 48 hours, with daily increase controlled within 30%-50%. Ensure payment methods are long-term stable, avoid changing credit cards or payment accounts during scaling periods.</p>
+<hr />
+<h2>This Week's Action Checklist: 5 Steps to Prevent Campaign Interruptions</h2>
+<ol>
+<li>
+<p><strong>Check account balance duration</strong>: Open backend, confirm how long current balance can sustain based on past 24-hour spend velocity. If below 24 hours, handle immediately.</p>
+</li>
+<li>
+<p><strong>Verify recharge arrival time</strong>: If just completed recharge but not yet arrived, don't assume balance is updated. Wait for platform confirmation email or backend status change as standard.</p>
+</li>
+<li>
+<p><strong>Confirm all account statuses</strong>: Quickly scan all accounts' balance and delivery status in multi-account management backend—not just main accounts.</p>
+</li>
+<li>
+<p><strong>Pause non-core Campaigns</strong>: If balance is tight, prioritize pausing Campaigns with lower expected ROI, protecting main delivery scaling windows.</p>
+</li>
+<li>
+<p><strong>Set backup recharge channels</strong>: Ensure at least 2+ recharge methods are available for rapid emergency response.</p>
+</li>
+</ol>
+<hr />
+<h2>Weekly Summary</h2>
+<p>During year-end scaling, balance alerts matter. They don't just affect daily delivery data—they can interrupt entire scaling momentum and miss traffic windows. This week's observations show most interruption issues stem not from non-existent alert mechanisms, but from teams lacking stable checking routines.</p>
+<p><strong>One-sentence recommendation</strong>: Incorporate balance management into your daily delivery SOP, rather than "checking when you remember."</p>
+<p>If you're facing balance alert difficulties in multi-account management or want to learn more about platform payment rule differences, stay tuned to our weekly observations.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
