@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">代理开户服务为什么需要系统化看板？</span>
+                    <span x-show="lang === 'en'" x-cloak>Why Does Agency Account Opening Service Need a Systematic Kanban System?</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-30</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="413" data-base-views="85">85</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu5433/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>一个周五下午的“连环踩雷”</h2>
+<p>某中型出海营销代理商的运营主管老张，在周五下午4点接到客户电话：“我的Meta广告账户还没开好，周末促销怎么投？”</p>
+<p>老张打开自己的Excel表格，发现这位客户的资料在第23行，状态栏写着“已提交”。他转头问负责开户的小王，小王一脸懵：“我上周五就提交了啊，怎么还没过？”</p>
+<p>老张翻出和渠道商务的聊天记录，发现对方的回复是“资料有问题，已打回”，但没有@任何人，他自己也没看到。客户那边更是一头雾水——没人通知他补充材料。</p>
+<p>就这样，一个本该3个工作日完成的开户，拖了整整两周。</p>
+<hr />
+<h2>问题到底出在哪？</h2>
+<h3>1. 状态不透明</h3>
+<p>“已提交”是一个模糊状态。渠道侧收到没有？审核到哪一步了？被打回的原因是什么？这些问题在Excel里找不到答案。</p>
+<h3>2. 信息不同步</h3>
+<p>开户涉及多个角色：客户提供资料、客户经理初审、渠道商务复审、财务确认充值。每个节点的进度只存在于个人的聊天记录里，团队成员之间严重信息差。</p>
+<h3>3. 没有预警机制</h3>
+<p>开户超时了没有人知道要催。客户不问，就默认一切正常。等到客户主动来问，已经耽误了投放计划。</p>
+<hr />
+<h2>判断：为什么人工跟踪注定低效？</h2>
+<p>当开户量在5个以内时，Excel确实够用。但当代理商同时服务20个客户，每个客户有2-3个平台账户需要开，人工跟踪就会进入“救火模式”——</p>
+<ul>
+<li>状态靠问，不靠看</li>
+<li>问题靠记，不靠提醒</li>
+<li>责任靠人，不靠流程</li>
+</ul>
+<p>更危险的是，当人员变动时，交接文档往往不完整，新人只能从头摸索，服务质量直接下滑。</p>
+<hr />
+<h2>处理动作：看板系统如何重构开户流程</h2>
+<p>针对上述问题，我们为代理合作伙伴设计了一套系统化看板，开户状态分为5个标准列：</p>
+<table>
+<thead>
+<tr>
+<th>看板列</th>
+<th>触发条件</th>
+<th>负责人</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>资料待提交</td>
+<td>客户有意向，尚未提供资质</td>
+<td>客户经理</td>
+</tr>
+<tr>
+<td>初审中</td>
+<td>资料已提交，等待内部审核</td>
+<td>运营专员</td>
+</tr>
+<tr>
+<td>渠道审核中</td>
+<td>初审通过，提交至平台/代理渠道</td>
+<td>渠道商务</td>
+</tr>
+<tr>
+<td>账户开通</td>
+<td>审核通过，账户已创建</td>
+<td>技术/财务</td>
+</tr>
+<tr>
+<td>已完成/异常</td>
+<td>账户可用或需要重提</td>
+<td>归档/重新发起</td>
+</tr>
+</tbody>
+</table>
+<p>每个卡片上记录：客户名称、平台类型、提交时间、预计完成时间、异常备注、最近更新人。</p>
+<p>关键机制包括：</p>
+<p><strong>超时自动预警</strong>：初审超过24小时、渠道审核超过48小时，系统自动标记并推送提醒。</p>
+<p><strong>异常一目了然</strong>：所有“非正常”状态（打回、补充材料、审核拒绝）统一用红色标签突出显示。</p>
+<p><strong>历史记录可查</strong>：每次状态变更都有时间戳和操作人，新人接手也能快速了解全貌。</p>
+<hr />
+<h2>结果：两周的改善数据</h2>
+<p>老张的团队在引入看板系统后，第一个月的开户表现数据：</p>
+<ul>
+<li>平均开户周期：从9.2个工作日缩短至4.5个工作日</li>
+<li>超时未处理任务：从单周15起降至2起</li>
+<li>客户主动催单次数：减少70%</li>
+<li>新人独立上手时间：从2周缩短至3天</li>
+</ul>
+<p>这不是魔法，而是每个环节都有人负责、每个状态都清晰可见带来的必然结果。</p>
+<hr />
+<h2>小结</h2>
+<p>代理开户服务的核心瓶颈不是“流程复杂”，而是“状态不可见”。看板系统解决的不是执行问题，而是协作问题。当你的团队还在用Excel手动更新“已提交”“进行中”“已完成”这几个字，是时候考虑升级你的账户管理工具了。</p>
+<p>如果你正在管理多账户、多客户的广告投放业务，可以联系我们评估看板系统的适配方案。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>A "Chain of Mishaps" on a Friday Afternoon</h2>
+<p>Zhang, an operations supervisor at a mid-sized overseas marketing agency, received a client call at 4 PM on Friday: "My Meta ad account still isn't set up. How am I supposed to run my weekend promotions?"</p>
+<p>Zhang opened his Excel spreadsheet and found this client's info on row 23, with the status showing "Submitted." He turned to Xiao Wang, who was responsible for account opening: "Didn't you submit this last Friday? Why hasn't it gone through?"</p>
+<p>Xiao Wang looked confused: "I submitted it last Friday. What happened?"</p>
+<p>Zhang scrolled through chat records with the channel manager and found a message: "Issues with materials, sent back for revision." But nobody was tagged, and nobody followed up. The client had no idea he needed to supply additional documents.</p>
+<p>A process that should have taken 3 business days dragged on for two full weeks.</p>
+<hr />
+<h2>What Went Wrong?</h2>
+<h3>1. Status Transparency Gap</h3>
+<p>"Submitted" is too vague. Did the channel receive it? Where is it in review? What were the issues? Excel provides no answers.</p>
+<h3>2. Information Silos</h3>
+<p>Account opening involves multiple stakeholders: clients supply materials, account managers do initial review, channel reps verify, finance confirms充值. Progress exists only in individual chat histories—team members operate in the dark.</p>
+<h3>3. No Alert Mechanisms</h3>
+<p>Nobody knew when an account opening was overdue. If clients didn't ask, everyone assumed things were fine. By the time issues surfaced, campaign schedules were already disrupted.</p>
+<hr />
+<h2>Diagnosis: Why Manual Tracking Is Inherently Inefficient</h2>
+<p>Excel works fine when handling 5 accounts. But when an agency serves 20 clients simultaneously, each needing 2-3 platform accounts, manual tracking devolves into firefighting:</p>
+<ul>
+<li>Status is "asked about," not "visible"</li>
+<li>Issues are "remembered," not "alerted"</li>
+<li>Accountability is "person-dependent," not "system-driven"</li>
+</ul>
+<p>Worse, personnel changes leave gaps—handoff documentation is often incomplete, and new hires start from scratch, directly impacting service quality.</p>
+<hr />
+<h2>Solution: How a Kanban System Reconstructs the Opening Process</h2>
+<p>For agency partners, we've designed a systematic Kanban board with 5 standard columns:</p>
+<table>
+<thead>
+<tr>
+<th>Kanban Column</th>
+<th>Trigger Condition</th>
+<th>Owner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Awaiting Submission</td>
+<td>Client intent confirmed, materials pending</td>
+<td>Account Manager</td>
+</tr>
+<tr>
+<td>Initial Review</td>
+<td>Materials submitted, internal review in progress</td>
+<td>Operations Specialist</td>
+</tr>
+<tr>
+<td>Channel Review</td>
+<td>Internal approval granted, submitted to platform/channel</td>
+<td>Channel Rep</td>
+</tr>
+<tr>
+<td>Account Created</td>
+<td>Review passed, account established</td>
+<td>Tech/Finance</td>
+</tr>
+<tr>
+<td>Completed/Exception</td>
+<td>Account active or needs re-submission</td>
+<td>Archive/Raise New</td>
+</tr>
+</tbody>
+</table>
+<p>Each card contains: client name, platform type, submission date, expected completion date, exception notes, last updater.</p>
+<p>Key mechanisms include:</p>
+<p><strong>Automatic Overdue Alerts</strong>: Tasks exceeding 24 hours in initial review or 48 hours in channel review are automatically flagged with reminders.</p>
+<p><strong>Exceptions at a Glance</strong>: All "abnormal" statuses (returned, materials needed, rejected) are highlighted in red for immediate visibility.</p>
+<p><strong>Complete Audit Trail</strong>: Every status change is timestamped with the operator, enabling seamless onboarding for new team members.</p>
+<hr />
+<h2>Results: Two Weeks of Improvement Data</h2>
+<p>After implementing the Kanban system, Zhang's team saw these results in the first month:</p>
+<ul>
+<li>Average account opening cycle: reduced from 9.2 to 4.5 business days</li>
+<li>Overdue unhandled tasks: dropped from 15 to 2 per week</li>
+<li>Client-initiated follow-ups: decreased by 70%</li>
+<li>New hire independent ramp-up: shortened from 2 weeks to 3 days</li>
+</ul>
+<p>This isn't magic—it's the natural outcome of clear ownership at every stage and visible status across the board.</p>
+<hr />
+<h2>Takeaway</h2>
+<p>The core bottleneck in agency account services isn't "complex processes"—it's "invisible status." Kanban systems don't solve execution problems; they solve collaboration problems. If your team is still manually updating "Submitted," "In Progress," or "Completed" in Excel, it's time to upgrade your account management approach.</p>
+<p>If you're managing multi-account, multi-client ad campaigns, contact us to evaluate a Kanban system tailored to your operations.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
