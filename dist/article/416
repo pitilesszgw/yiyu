@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">多账户投放团队账户分层管理清单：5步建立规范的账户矩阵</span>
+                    <span x-show="lang === 'en'" x-cloak>Account Tiering Checklist for Multi-Account Advertising Teams: 5 Steps to Build a Structured Account Matrix</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-08-31</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="416" data-base-views="88">88</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu9062/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>问题：账户越多，管理越乱？</h2>
+<p>投放团队从单账户扩展到多账户后，往往会遇到这些情况：</p>
+<ul>
+<li>预算不知道该往哪个账户倾斜</li>
+<li>不同账户素材重复，Internal Traffic 占比飙升</li>
+<li>某个账户违规被封，连带影响其他账户</li>
+<li>出了问题找不到负责人</li>
+</ul>
+<p>分层管理是解决这些问题的起点。以下是可直接落地的操作清单。</p>
+<hr />
+<h2>步骤一：确定你的分层维度</h2>
+<p>分层没有唯一标准，关键是贴合业务实际。常见维度包括：</p>
+<table>
+<thead>
+<tr>
+<th>分层维度</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>按业务线</strong></td>
+<td>多产品线独立核算成本</td>
+</tr>
+<tr>
+<td><strong>按投放渠道</strong></td>
+<td>Meta、Google、TikTok 分开管理</td>
+</tr>
+<tr>
+<td><strong>按投放目标</strong></td>
+<td>品牌、转化、ROI 不同策略隔离</td>
+</tr>
+<tr>
+<td><strong>按账户规模</strong></td>
+<td>大账户重点盯，小账户批量管</td>
+</tr>
+</tbody>
+</table>
+<p><strong>检查项：</strong><br />
+- [ ] 团队已确认主要分层维度（建议优先选1-2个核心维度）<br />
+- [ ] 各维度对应的业务负责人已明确</p>
+<hr />
+<h2>步骤二：制定账户分级标准</h2>
+<p>在分层基础上，再按账户重要性划分等级，便于分配管理资源：</p>
+<table>
+<thead>
+<tr>
+<th>等级</th>
+<th>日均消耗</th>
+<th>巡检频率</th>
+<th>审批层级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>核心账户</strong></td>
+<td>&gt;$3000</td>
+<td>每日实时</td>
+<td>主管</td>
+</tr>
+<tr>
+<td><strong>重点账户</strong></td>
+<td>$500-$3000</td>
+<td>每2日</td>
+<td>组长</td>
+</tr>
+<tr>
+<td><strong>常规账户</strong></td>
+<td>&lt;$500</td>
+<td>每周</td>
+<td>优化师</td>
+</tr>
+</tbody>
+</table>
+<p><strong>检查项：</strong><br />
+- [ ] 各等级账户数量统计完成<br />
+- [ ] 每个账户已标注所属等级<br />
+- [ ] 不同等级对应的巡检频率已确定</p>
+<hr />
+<h2>步骤三：建立账户档案</h2>
+<p>每个账户需要有完整档案，包含以下信息：</p>
+<ul>
+<li>账户 ID、名称、广告主名称</li>
+<li>所属业务线、渠道、等级</li>
+<li>开户时间、当前余额、消耗趋势</li>
+<li>政策合规记录（是否有违规历史）</li>
+<li>绑定的主页、像素、BM</li>
+<li>负责人及紧急联系人</li>
+</ul>
+<p><strong>检查项：</strong><br />
+- [ ] 账户档案表格已建立<br />
+- [ ] 每月更新一次关键数据<br />
+- [ ] 档案存储在团队共享位置</p>
+<hr />
+<h2>步骤四：分配权限与职责</h2>
+<p>分层清晰后，权限边界也要明确：</p>
+<p><strong>建议配置：</strong><br />
+- <strong>账户 Owner</strong>：主要操作人，对投放效果负责<br />
+- <strong>财务审核</strong>：充值、预算调整需二次确认<br />
+- <strong>风控监察</strong>：定期检查违规风险，可由组长或专员兼任</p>
+<p><strong>检查项：</strong><br />
+- [ ] 所有账户已指定 Owner<br />
+- [ ] 充值操作流程已文档化<br />
+- [ ] 权限矩阵图已绘制</p>
+<hr />
+<h2>步骤五：建立预警与复盘机制</h2>
+<p>分层管理的价值在于差异化监控，而不是“一刀切”：</p>
+<p><strong>核心账户：</strong><br />
+- 余额低于 $500 时触发预警<br />
+- 消耗速度异常（超出预期 30%）立即排查<br />
+- 违规通知 24 小时内响应</p>
+<p><strong>常规账户：</strong><br />
+- 余额低于 $200 时提醒<br />
+- 每周汇总消耗数据<br />
+- 月度复盘一次</p>
+<p><strong>检查项：</strong><br />
+- [ ] 预警规则已在广告平台设置<br />
+- [ ] 预警通知渠道已确认（邮件/飞书/Slack）<br />
+- [ ] 周报模板已准备好<br />
+- [ ] 月度复盘会议已排期</p>
+<hr />
+<h2>快速执行清单</h2>
+<p>完成分层体系建设，建议按以下顺序推进：</p>
+<ol>
+<li><strong>本周</strong>：梳理现有所有账户，填写基本信息</li>
+<li><strong>第2周</strong>：确定分层维度和分级标准</li>
+<li><strong>第3周</strong>：建立账户档案，分配 Owner</li>
+<li><strong>第4周</strong>：设置预警规则，试运行</li>
+<li><strong>每月</strong>：复盘优化，持续迭代</li>
+</ol>
+<hr />
+<h2>小结</h2>
+<p>分层管理不是“画表格”，而是让团队对每个账户的优先级、资源投入、风险控制有统一认知。分层的颗粒度可根据团队规模灵活调整——10个账户可以简单分两层，50个账户则需要更细致的维度设计。核心原则是：<strong>重要的账户重点盯，常规账户不失控</strong>。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>The Problem: More Accounts, More Chaos?</h2>
+<p>When an advertising team expands from single to multi-account management, common issues emerge:</p>
+<ul>
+<li>Unclear budget allocation across accounts</li>
+<li>Creative overlap leading to internal traffic issues</li>
+<li>One account violation affecting others</li>
+<li>No clear accountability when problems arise</li>
+</ul>
+<p>Account tiering is the starting point to solve these problems. Here's an actionable checklist you can implement immediately.</p>
+<hr />
+<h2>Step 1: Define Your Tiering Dimensions</h2>
+<p>There's no one-size-fits-all approach. Choose dimensions that match your business reality:</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>By Business Line</strong></td>
+<td>Independent cost tracking for multiple products</td>
+</tr>
+<tr>
+<td><strong>By Channel</strong></td>
+<td>Separate management for Meta, Google, TikTok</td>
+</tr>
+<tr>
+<td><strong>By Objective</strong></td>
+<td>Isolating brand, conversion, and ROI strategies</td>
+</tr>
+<tr>
+<td><strong>By Scale</strong></td>
+<td>Focus on high-spend accounts, batch manage small ones</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Checklist:</strong><br />
+- [ ] Primary tiering dimension confirmed (1-2 dimensions recommended)<br />
+- [ ] Business owners for each dimension identified</p>
+<hr />
+<h2>Step 2: Establish Account Classification Standards</h2>
+<p>Further divide accounts by importance to allocate management resources:</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Daily Spend</th>
+<th>Inspection Frequency</th>
+<th>Approval Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Core</strong></td>
+<td>&gt;$3000</td>
+<td>Daily real-time</td>
+<td>Manager</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>$500-$3000</td>
+<td>Every 2 days</td>
+<td>Team Lead</td>
+</tr>
+<tr>
+<td><strong>Standard</strong></td>
+<td>&lt;$500</td>
+<td>Weekly</td>
+<td>Optimizer</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Checklist:</strong><br />
+- [ ] Account count per level completed<br />
+- [ ] Each account labeled with its level<br />
+- [ ] Inspection frequencies confirmed</p>
+<hr />
+<h2>Step 3: Build Account Profiles</h2>
+<p>Every account needs a complete profile with:</p>
+<ul>
+<li>Account ID, name, advertiser name</li>
+<li>Business line, channel, tier level</li>
+<li>Account creation date, current balance, spend trends</li>
+<li>Compliance history (any violations)</li>
+<li>Associated Pages, Pixels, Business Managers</li>
+<li>Owner and emergency contact</li>
+</ul>
+<p><strong>Checklist:</strong><br />
+- [ ] Account profile spreadsheet established<br />
+- [ ] Key data updated monthly<br />
+- [ ] Profiles stored in shared team location</p>
+<hr />
+<h2>Step 4: Assign Permissions and Responsibilities</h2>
+<p>Clear boundaries prevent confusion:</p>
+<p><strong>Recommended Structure:</strong><br />
+- <strong>Account Owner</strong>: Primary operator, responsible for performance<br />
+- <strong>Finance Approver</strong>: Required for top-ups and budget changes<br />
+- <strong>Risk Controller</strong>: Regular compliance checks (can be shared by team lead)</p>
+<p><strong>Checklist:</strong><br />
+- [ ] Owner assigned to all accounts<br />
+- [ ] Top-up procedures documented<br />
+- [ ] Permission matrix diagram created</p>
+<hr />
+<h2>Step 5: Establish Alert and Review Systems</h2>
+<p>Tiering enables differentiated monitoring—not one-size-fits-all:</p>
+<p><strong>Core Accounts:</strong><br />
+- Alert when balance drops below $500<br />
+- Investigate immediately if spend exceeds forecast by 30%<br />
+- Respond to policy violations within 24 hours</p>
+<p><strong>Standard Accounts:</strong><br />
+- Remind when balance drops below $200<br />
+- Weekly spend summary<br />
+- Monthly review only</p>
+<p><strong>Checklist:</strong><br />
+- [ ] Alert rules configured in ad platforms<br />
+- [ ] Alert channels confirmed (email/Feishu/Slack)<br />
+- [ ] Weekly report template ready<br />
+- [ ] Monthly review meetings scheduled</p>
+<hr />
+<h2>Quick Execution Timeline</h2>
+<p>Implement your tiering system in this order:</p>
+<ol>
+<li><strong>This week</strong>: Inventory all existing accounts, fill in basic info</li>
+<li><strong>Week 2</strong>: Confirm tiering dimensions and classification standards</li>
+<li><strong>Week 3</strong>: Build account profiles, assign owners</li>
+<li><strong>Week 4</strong>: Configure alert rules, start trial run</li>
+<li><strong>Monthly</strong>: Review and iterate</li>
+</ol>
+<hr />
+<h2>Key Takeaway</h2>
+<p>Account tiering isn't about creating spreadsheets—it's about building team consensus on priority, resource allocation, and risk control for each account. Adjust granularity based on team size: 10 accounts need only two tiers, while 50 accounts require more detailed dimension design. Core principle: <strong>Focus on what matters, but don't lose control of the rest.</strong></p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
