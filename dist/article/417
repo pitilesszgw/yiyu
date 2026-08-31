@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">TikTok Shop 新品冷启动：素材池决定生死，不是玄学</span>
+                    <span x-show="lang === 'en'" x-cloak>TikTok Shop Cold Launch: Creative Pool Determines Success</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-09-01</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="417" data-base-views="13">13</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu652/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>结论先行：素材池决定冷启动成败，不是玄学</h2>
+<p>我们见过太多团队把冷启动失败归咎于产品不行、定价太高、TikTok 流量池太卷。但以渔数媒在服务数十个跨境团队的过程中发现一个规律：<strong>新品在 14 天内没有跑出正向 ROI，80% 的问题出在素材，不在产品本身。</strong></p>
+<p>这不是情绪化的判断，而是基于账户数据的观察。某工具类 App 团队在东南亚市场冷启动时，首周跑了 23 组素材，只有 3 组 CTR 超过 1.2%，全部是高还原度使用场景的原生内容。剩下 20 组大多是品牌宣传片、产品功能动画，CTR 集中在 0.3%-0.6%，直接导致首周消耗 3000 美元但 ROI 为负。</p>
+<p><strong>素材池的本质是一个概率游戏。</strong>你的素材池越大、维度越丰富，命中平台流量池偏好的概率就越高。但大多数团队犯的错误是：先用一套素材猛砸，发现数据差才慌乱换方向，浪费了最宝贵的冷启动窗口期。</p>
+<hr />
+<h2>冷启动素材池搭建的三个核心阶段</h2>
+<h3>第一阶段：方向验证期（第 1-5 天）</h3>
+<p>这个阶段的目标不是投产，而是<strong>验证方向</strong>。你需要同时跑 3-5 个不同维度的素材方向，每个方向至少 2-3 条素材。</p>
+<p>以渔数媒建议的素材方向维度：<br />
+- 真人出镜使用场景（高还原度）<br />
+- 前后对比类（Before/After）<br />
+- 痛点解决演示<br />
+- KOC 种草风格<br />
+- 工厂/仓库源头场景</p>
+<p><strong>每天观察的核心指标是 CTR 和 3 秒完播率。</strong> CTR 低于 0.8% 或 3 秒完播率低于 40% 的素材，直接暂停，把预算转移到数据较好的方向。</p>
+<p>某家居品类团队在英国市场冷启动时，用这个方法在第 4 天就锁定了「真人使用场景」方向，CTR 稳定在 1.5% 左右，单条素材日消耗从 50 美元快速放大到 500 美元。</p>
+<h3>第二阶段：素材放大期（第 6-10 天）</h3>
+<p>方向验证完成后，进入放大期。这个阶段的核心任务是<strong>找到高效素材的变体</strong>，而不是开发全新方向。</p>
+<p>高转化素材的变体思路：<br />
+- 更换场景（同样的使用流程，换一个居家场景）<br />
+- 更换人物（换肤色、换年龄段、换口音）<br />
+- 调整开头钩子（前 3 秒换一个新角度切入）<br />
+- 调整时长（把 15 秒素材压缩到 9 秒测试）</p>
+<p><strong>冷启动期最忌讳的是推翻重来。</strong> 你已经验证了方向，接下来要做的就是在这个方向上做迭代，而不是看到数据好就换赛道。</p>
+<h3>第三阶段：素材池固化期（第 11-14 天）</h3>
+<p>到这个阶段，你应该已经有 5-8 条数据稳定的素材，形成初步的素材池。此时的运营重点从「测试」转向「维护」：</p>
+<ul>
+<li>设置素材衰退预警（单条素材 CTR 连续 3 天下降 15% 以上）</li>
+<li>保持每周 1-2 条新素材补充到池子里</li>
+<li>预留 20% 的预算持续测试新方向，避免素材池老化</li>
+</ul>
+<hr />
+<h2>以渔数媒的实战提醒</h2>
+<p>冷启动阶段最常见的错误不是素材质量差，而是<strong>测试维度太窄</strong>。很多团队只准备 3-5 条看起来差不多的素材，没有方向差异，测试了一圈发现全部数据差，最后得出「这个产品不适合 TikTok」的结论。</p>
+<p>实际上，以渔数媒服务的一个饰品独立站团队，在中东市场冷启动时准备了 6 个方向的素材，首周就发现「手工制作过程展示」这个方向 CTR 是其他方向的 3 倍。后来这个方向延伸出 12 条变体，单条素材最高日消耗超过 2000 美元，新品在第 10 天就跑通了正向 ROI。</p>
+<p><strong>素材池不是一次性建成的，而是通过数据筛选出来的。</strong> 你的任务是搭建足够大的候选池，让数据帮你做选择，而不是凭感觉押注一条素材赌全部。</p>
+<p>如果你正在筹备 TikTok Shop 新品冷启动，欢迎与以渔数媒顾问团队沟通，我们可以帮你梳理素材方向、制定测试节奏、监控数据表现，让冷启动不再靠运气。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Conclusion First: Creative Pool Determines Cold Launch Success</h2>
+<p>We've seen too many teams blaming cold launch failures on bad products, high pricing, or saturated TikTok traffic pools. However, through serving dozens of cross-border teams, Yiyu Digital Media has discovered a pattern: <strong>when new products fail to achieve positive ROI within 14 days, 80% of the problem lies in creatives, not the product itself.</strong></p>
+<p>This isn't emotional judgment—it's based on account data observation. A utility app team cold launching in Southeast Asia ran 23 creative sets in the first week, with only 3 achieving CTR above 1.2%, all of which were native content with high-fidelity usage scenarios. The remaining 20 sets were mostly brand promotional videos and product feature animations with CTR concentrated between 0.3%-0.6%, directly causing $3,000 in spend with negative ROI.</p>
+<p><strong>The essence of a creative pool is a probability game.</strong> The larger and more diverse your creative pool, the higher the probability of hitting the platform's traffic pool preferences. But most teams make the mistake of aggressively pushing one set of creatives, panicking when data is poor, and wasting the most valuable cold launch window.</p>
+<hr />
+<h2>Three Core Stages of Cold Launch Creative Pool Building</h2>
+<h3>Stage 1: Direction Verification (Days 1-5)</h3>
+<p>The goal at this stage isn't ROI—it's <strong>verifying direction</strong>. You need to run 3-5 creative directions simultaneously, with at least 2-3 creatives per direction.</p>
+<p>Yiyu Digital Media's recommended creative direction dimensions:<br />
+- Real-person usage scenarios (high fidelity)<br />
+- Before/After comparisons<br />
+- Pain point solution demonstrations<br />
+- KOC seeding style<br />
+- Factory/warehouse origin scenes</p>
+<p><strong>Core metrics to observe daily are CTR and 3-second completion rate.</strong> Creatives with CTR below 0.8% or 3-second completion rate below 40% should be immediately paused, with budget transferred to better-performing directions.</p>
+<p>A home goods category team cold launching in the UK locked in the "real-person usage scenario" direction by day 4 using this method, with CTR stable around 1.5%. Single creative daily spend scaled quickly from $50 to $500.</p>
+<h3>Stage 2: Creative Scaling (Days 6-10)</h3>
+<p>After direction verification, enter the scaling phase. The core task here is <strong>finding variants of high-performing creatives</strong>, not developing entirely new directions.</p>
+<p>Variant strategies for high-converting creatives:<br />
+- Change scenarios (same usage flow, different home environment)<br />
+- Change characters (different skin tones, age groups, accents)<br />
+- Adjust opening hooks (different angle in first 3 seconds)<br />
+- Adjust duration (compress 15-second creative to 9 seconds for testing)</p>
+<p><strong>The biggest mistake during cold launch is starting over.</strong> You've verified the direction—now iterate on it rather than switching tracks when you see good data.</p>
+<h3>Stage 3: Creative Pool Solidification (Days 11-14)</h3>
+<p>By this stage, you should have 5-8 data-stable creatives forming an initial pool. Operational focus shifts from "testing" to "maintenance":</p>
+<ul>
+<li>Set creative decay alerts (CTR declining 15%+ for 3 consecutive days)</li>
+<li>Maintain 1-2 new creatives weekly into the pool</li>
+<li>Reserve 20% budget for continuous new direction testing to avoid pool aging</li>
+</ul>
+<hr />
+<h2>Practical Reminders from Yiyu Digital Media</h2>
+<p>The most common mistake during cold launch isn't poor creative quality—it's <strong>too narrow testing dimensions</strong>. Many teams prepare only 3-5 similar-looking creatives without directional differences, test everything and find all data poor, then conclude "this product isn't suitable for TikTok."</p>
+<p>In reality, a jewelry store team Yiyu Digital Media served preparing 6 directional creatives for cold launch in the Middle East discovered in the first week that "handmade production process display" had CTR 3 times higher than other directions. This direction later spawned 12 variants, with single creative highest daily spend exceeding $2,000, and the new product achieved positive ROI by day 10.</p>
+<p><strong>A creative pool isn't built at once—it's selected through data.</strong> Your task is to build a sufficiently large candidate pool, letting data make the choice rather than betting everything on one creative based on intuition.</p>
+<p>If you're preparing for TikTok Shop new product cold launch, welcome to communicate with Yiyu Digital Media's consultant team. We can help you structure creative directions, develop testing rhythms, and monitor data performance, making cold launch less about luck.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
