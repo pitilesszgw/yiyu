@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">多账户投放团队如何做账户分层管理</span>
+                    <span x-show="lang === 'en'" x-cloak>How Multi-Account Advertising Teams Can Implement Account Tier Management</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-09-02</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="421" data-base-views="95">95</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu8871/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>什么时候需要做账户分层</h2>
+<p>当团队管理的广告账户超过5个时，单纯靠表格或记忆管理已经开始出现混乱。具体信号包括：某个账户突然余额耗尽但无人知晓、素材在多个账户重复上传导致无法追踪效果、或者月初预算分配到月末已经完全走样。</p>
+<p>多账户投放的常见场景有三类：一是同一产品在不同平台（Meta、TikTok、Google）各开账户；二是同一平台测试多个Campaign需要隔离变量；三是甲乙双方或多团队共用账户资源。无论哪种场景，分层管理都应该在账户数量增长前提前规划，而不是等出了问题再补救。</p>
+<h2>分层标准怎么定</h2>
+<p>账户分层通常按两个维度划分：业务重要性和财务风险等级。</p>
+<p>业务维度分为核心账户和新测试账户。核心账户是指稳定跑量、ROI可衡量的主力投放账户，团队会投入更多精力优化；新测试账户则用于验证新素材、新定向或新市场，预算有限且接受更高波动。</p>
+<p>财务维度分为高消耗账户和低消耗账户。高消耗账户单日预算可能达到数千美元，一旦误操作或异常流量影响，损失会快速累积；低消耗账户即使出现问题，止损成本也相对可控。</p>
+<p>一个简单的分层参考：</p>
+<ul>
+<li>A层（核心高消耗）：日预算$2000+，主力产品，稳定ROI</li>
+<li>B层（核心低消耗）：日预算$500-2000，成熟Campaign</li>
+<li>C层（测试高风险）：新素材、新市场，预算$500以内</li>
+<li>D层（备用或沉淀账户）：暂停投放但保留数据，或长期未活跃</li>
+</ul>
+<h2>账户权限怎么分配</h2>
+<p>权限设置的核心原则是“最小必要权限”。投放人员不需要知道充值密码，财务人员不需要操作素材。</p>
+<p>常见权限结构分为三级：</p>
+<ul>
+<li>管理员权限：账户开通、充值、权限分配，通常归属团队负责人或财务</li>
+<li>操作权限：投放设置、素材上传、Campaign开关，由执行投放的人员持有</li>
+<li>只读权限：数据查看、报表导出，适合需要数据但不需要操作的其他部门</li>
+</ul>
+<p>使用Meta Business Manager、TikTok Business Center等平台工具管理多人权限时，建议为每个投放人员创建独立的工作账户，而不是多人共用登录信息。这样在人员变动时可以快速回收权限，同时保留操作日志便于追溯。</p>
+<h2>预算和充值怎么分配</h2>
+<p>分层后，预算分配策略也需要分层。A层账户采用固定预算+实时监控，确保主力投放不中断；C层账户采用测试预算上限，达到预设消耗后自动暂停或提醒。</p>
+<p>充值节奏建议与账户层级挂钩：A层账户保持余额不低于7天预算量，设置余额预警；C层账户按需充值，避免资金沉淀。多个账户的充值记录需要统一管理，避免出现某个账户充了双份、另一个账户却被遗忘的情况。</p>
+<h2>多账户财务对账怎么做</h2>
+<p>财务对账是账户分层管理的落地环节。对账频率根据账户层级调整：A层账户每日核对消耗与消耗记录，B层账户每周核对，C层账户按需核对。</p>
+<p>对账的核心是三个一致：平台后台显示的消耗与账户余额变动一致；充值金额与充值记录一致；投放消耗与转化数据对应。对于管理超过10个账户的团队，建议使用统一的财务表格模板，包含账户名称、所属平台、充值日期、充值金额、消耗金额、余额等字段。</p>
+<p>特别提醒：如果团队使用代理商或第三方平台充值，需要额外核对充值到账时间（有时存在延迟），以及汇率换算是否准确。</p>
+<h2>账户异常如何快速响应</h2>
+<p>分层管理的一个隐性价值是快速定位问题账户。当某个账户出现异常消耗或流量波动时，团队可以立即判断它属于哪个层级、调取对应的操作记录和责任人。</p>
+<p>建议为每个层级制定响应预案：A层账户出现异常时，第一时间暂停Campaign并通知负责人；C层账户出现异常时，先评估是否值得排查，优先保证A层账户的稳定。</p>
+<p>建立账户健康度周报，内容包括各层账户的消耗趋势、ROI波动、素材更替记录。这份报告既是复盘工具，也是人员变动时的交接文档。</p>
+<h2>写在最后</h2>
+<p>账户分层管理不是大团队的专利。即使只有3-5个账户，提前定义好分层标准、权限边界和财务对账流程，也能在团队扩张时避免大量返工。多账户投放的效率差距，往往不在于优化技巧，而在于管理颗粒度。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>When Do You Need Account Tier Management</h2>
+<p>When your team manages more than 5 advertising accounts, managing them through spreadsheets or memory alone starts to become chaotic. Specific warning signs include: an account suddenly runs out of balance with nobody noticing, materials are repeatedly uploaded across accounts making performance tracking impossible, or monthly budget allocation has completely deviated from plan by month-end.</p>
+<p>Common multi-account scenarios fall into three categories: separate accounts for the same product across different platforms (Meta, TikTok, Google); multiple campaigns on the same platform requiring isolated testing; or agency-client or multi-team shared account resources. Regardless of the scenario, tier management should be planned before account numbers grow, not after problems arise.</p>
+<h2>How to Define Tier Standards</h2>
+<p>Account tiers are typically divided by two dimensions: business importance and financial risk level.</p>
+<p>Business dimension separates core accounts from new test accounts. Core accounts are stable performers with measurable ROI where teams invest more optimization effort; new test accounts validate new creatives, targeting, or markets with limited budgets and higher volatility acceptance.</p>
+<p>Financial dimension separates high-spend from low-spend accounts. High-spend accounts may consume thousands of dollars daily, so misoperations or abnormal traffic can quickly accumulate losses; low-spend accounts have more manageable止损 costs even when issues occur.</p>
+<p>A simple tiering reference:</p>
+<ul>
+<li>Tier A (Core High-Spend): $2000+ daily budget, flagship products, stable ROI</li>
+<li>Tier B (Core Low-Spend): $500-2000 daily budget, mature campaigns</li>
+<li>Tier C (Test High-Risk): New creatives, new markets, under $500 budget</li>
+<li>Tier D (Backup or Dormant): Paused campaigns preserving data, or long-inactive</li>
+</ul>
+<h2>How to Allocate Account Permissions</h2>
+<p>The core principle for permission settings is "minimum necessary permissions." Media buyers don't need recharge passwords; finance staff don't need to operate creatives.</p>
+<p>A common three-level permission structure:</p>
+<ul>
+<li>Admin permissions: account setup, recharge, permission allocation, typically held by team leads or finance</li>
+<li>Operation permissions: campaign settings, material uploads, campaign on/off, held by executing media buyers</li>
+<li>Read-only permissions: data viewing, report export, for other departments needing data without operation access</li>
+</ul>
+<p>When using platform tools like Meta Business Manager or TikTok Business Center for multi-person permission management, create individual work accounts for each media buyer rather than sharing login credentials. This enables quick permission revocation during personnel changes while preserving operation logs for audit trails.</p>
+<h2>How to Allocate Budget and Recharge</h2>
+<p>After tier implementation, budget allocation strategies should also be tiered. Tier A accounts use fixed budgets with real-time monitoring to ensure uninterrupted core delivery; Tier C accounts use test budget caps with automatic pausing or alerts upon reaching preset spend thresholds.</p>
+<p>Recharge cycles should align with account tiers: Tier A accounts maintain balance no lower than 7-day budget, with balance alerts configured; Tier C accounts recharge on-demand to avoid capital stagnation. Recharge records across multiple accounts need unified management to avoid double-charging one account while another is forgotten.</p>
+<h2>How to Handle Multi-Account Financial Reconciliation</h2>
+<p>Financial reconciliation is the implementation ground for account tier management. Reconciliation frequency adjusts by account tier: daily for Tier A, weekly for Tier B, and on-demand for Tier C.</p>
+<p>Reconciliation focuses on three consistencies: platform backend spend matches account balance changes; recharge amounts match recharge records; campaign spend matches conversion data. For teams managing over 10 accounts, a unified financial spreadsheet template is recommended, including fields for account name, platform, recharge date, recharge amount, spend amount, and balance.</p>
+<p>Special reminder: If your team uses agents or third-party platforms for recharges, additional verification is needed for recharge arrival timing (delays sometimes occur) and whether exchange rate conversions are accurate.</p>
+<h2>How to Respond Quickly to Account Anomalies</h2>
+<p>A hidden value of tier management is rapid problem account identification. When an account shows abnormal spend or traffic fluctuations, the team can immediately determine which tier it belongs to, retrieve corresponding operation records, and identify responsible personnel.</p>
+<p>Response protocols for each tier are recommended: Tier A account anomalies trigger immediate Campaign pause and leader notification; Tier C account anomalies require evaluation of whether investigation is worthwhile, prioritizing Tier A account stability.</p>
+<p>Establish weekly account health reports covering spend trends, ROI fluctuations, and creative replacement records across all tiers. This report serves both as a review tool and handover documentation during personnel changes.</p>
+<h2>Final Thoughts</h2>
+<p>Account tier management isn't exclusive to large teams. Even with only 3-5 accounts, defining tier standards, permission boundaries, and financial reconciliation processes in advance prevents significant rework during team expansion. Efficiency gaps in multi-account delivery often depend less on optimization skills and more on management granularity.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
