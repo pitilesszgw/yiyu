@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">东南亚与拉美市场投放本地化常见误区（运营必读SOP）</span>
+                    <span x-show="lang === 'en'" x-cloak>Common Localization Mistakes in Southeast Asia &amp; LATAM: An Operational SOP</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-09-03</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="424" data-base-views="46">46</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu7507/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>前言</h2>
+<p>出海投放本地化不是“翻译一遍就完事”。同一套素材在东南亚和拉美市场的表现可能相差 30%-50%，问题往往不在产品本身，而出在本地化执行的细节上。以下整理五个高频误区，配合可操作的检查清单，方便运营同事在执行时逐项核对。</p>
+<hr />
+<h2>误区一：语言翻译替代文化适配</h2>
+<p><strong>错误做法</strong>：把英文素材直接机翻成泰语、越南语或葡萄牙语，上线后发现语法生硬、词汇不当、甚至产生歧义。</p>
+<p><strong>正确做法</strong>：</p>
+<ol>
+<li>母语审校优先。找目标市场的本地用户或代理校对，而非仅依赖翻译工具。</li>
+<li>确认口语化表达。东南亚用户偏好简短直接的文案，拉美葡语区用户习惯更热情的语调。</li>
+<li>检查俚语与流行语。产品卖点文案应贴合当地社交媒体的自然表达风格。</li>
+</ol>
+<hr />
+<h2>误区二：支付方式适配缺失</h2>
+<p><strong>错误做法</strong>：投放页面只挂信用卡或 PayPal，忽视东南亚的电子钱包（GrabPay、GoPay、OVO）和拉美的本地支付（Boleto Bancário、Pix）。</p>
+<p><strong>正确做法</strong>：</p>
+<ol>
+<li>列出各目标市场的支付偏好清单，按占比排序。</li>
+<li>落地页至少支持前三位的本地支付方式。</li>
+<li>A/B 测试不同支付图标的转化率，及时调整。</li>
+</ol>
+<blockquote>
+<p><strong>提示</strong>：支付方式缺失导致的弃单率，在东南亚市场平均高于欧美市场 15%-20%。</p>
+</blockquote>
+<hr />
+<h2>误区三：忽视宗教与文化禁忌</h2>
+<p><strong>错误做法</strong>：素材中出现猪肉元素、佛教寺庙背景配不当人物形象，或在斋月期间推送娱乐类促销广告。</p>
+<p><strong>正确做法</strong>：</p>
+<ol>
+<li>建立目标市场的文化禁忌清单（印尼、马来西亚忌讳猪元素；泰国头部不可指）。</li>
+<li>投放前让本地代理或用户过审素材。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>目标市场</th>
+<th>常见禁忌</th>
+<th>应对策略</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>印尼/马来西亚</td>
+<td>猪、酒精、赌博暗示</td>
+<td>替换为清真认证标识或家庭场景</td>
+</tr>
+<tr>
+<td>泰国</td>
+<td>头部指向、佛像出镜</td>
+<td>人物居中，避免俯拍角度</td>
+</tr>
+<tr>
+<td>巴西</td>
+<td>数字手势误解（如 OK 手势在当地有冒犯含义）</td>
+<td>素材人物减少手势或替换动作</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>误区四：投放时段照搬经验</h2>
+<p><strong>错误做法</strong>：直接套用欧美时区设置，导致东南亚用户在深夜收到推送，或拉美用户在工作日高峰期刷不到广告。</p>
+<p><strong>正确做法</strong>：</p>
+<ol>
+<li>以目标市场本地时间为准，设置独立投放时段。</li>
+<li>参考该市场的社交媒体活跃高峰（东南亚 TikTok 活跃高峰约为 18:00-22:00，拉美约为 20:00-24:00）。</li>
+<li>按国家设置独立 Campaign，避免区域混投导致时段错配。</li>
+</ol>
+<hr />
+<h2>误区五：素材视觉风格一刀切</h2>
+<p><strong>错误做法</strong>：欧美市场高饱和度、模特西方面孔的素材直接复用到东南亚和拉美，点击率明显低于本地化竞品。</p>
+<p><strong>正确做法</strong>：</p>
+<ol>
+<li><strong>面孔适配</strong>：优先使用目标市场的本地模特或混血模特，提升代入感。</li>
+<li><strong>色彩偏好</strong>：东南亚偏好明亮配色（蓝、绿、黄），拉美部分区域对高饱和撞色接受度高，但斋戒期需调整。</li>
+<li><strong>字幕与配音</strong>：越南语、泰语、印尼语市场建议加字幕；巴西市场可尝试葡萄牙语配音版本。</li>
+</ol>
+<hr />
+<h2>本地化执行 SOP 检查清单</h2>
+<p>在素材上线前，逐项核对以下内容：</p>
+<ul>
+<li>[ ] 文字由母语者审校，无机翻痕迹</li>
+<li>[ ] 文案语调贴合目标市场习惯（热情/简洁）</li>
+<li>[ ] 支付方式覆盖前三本地选项</li>
+<li>[ ] 无宗教禁忌元素（猪、酒精、佛像等）</li>
+<li>[ ] 文化敏感点已过审</li>
+<li>[ ] 投放时段已换算为本地时间</li>
+<li>[ ] 素材面孔、配色、字幕符合当地审美</li>
+<li>[ ] 落地页加载速度已测试（东南亚网络条件较差）</li>
+</ul>
+<hr />
+<h2>小结</h2>
+<p>本地化的核心不是“翻译”，而是“适配”。东南亚与拉美市场虽然都是新兴投放区域，但用户习惯、支付生态、宗教文化差异显著。建议运营团队在每个新市场启动前，将本文检查清单纳入标准化流程，用结构化审核代替随意抽查，减少因本地化失误导致的预算浪费。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Introduction</h2>
+<p>Localization for overseas ad campaigns is more than just translation. The same creative assets can underperform by 30%-50% between Southeast Asia and Latin America—not due to the product, but because of localization oversights. This article covers five common pitfalls and provides a practical checklist for operations teams to follow step by step.</p>
+<hr />
+<h2>Mistake 1: Machine Translation Without Cultural Adaptation</h2>
+<p><strong>What teams do wrong</strong>: They run English copy through auto-translation for Thai, Vietnamese, or Brazilian Portuguese, resulting in stiff grammar, wrong word choices, or unintended meanings.</p>
+<p><strong>How to fix it</strong>:</p>
+<ol>
+<li>Prioritize native speakers. Have local users or agency contacts review copy instead of relying solely on translation tools.</li>
+<li>Match the tone. Southeast Asian users prefer concise, direct copy. Brazilian audiences respond better to enthusiastic, conversational language.</li>
+<li>Use local slang and trending phrases. Ad copy should mirror how people naturally talk on local social media.</li>
+</ol>
+<hr />
+<h2>Mistake 2: Ignoring Local Payment Methods</h2>
+<p><strong>What teams do wrong</strong>: They only offer credit cards or PayPal on landing pages, missing out on Southeast Asian e-wallets (GrabPay, GoPay, OVO) and Latin American options (Boleto Bancário, Pix).</p>
+<p><strong>How to fix it</strong>:</p>
+<ol>
+<li>Build a list of payment preferences per market, ranked by usage share.</li>
+<li>Support at least the top three local payment options on your landing page.</li>
+<li>A/B test different payment icons to measure conversion impact.</li>
+</ol>
+<blockquote>
+<p><strong>Note</strong>: Cart abandonment due to missing payment options is on average 15%-20% higher in Southeast Asia compared to Western markets.</p>
+</blockquote>
+<hr />
+<h2>Mistake 3: Overlooking Religious and Cultural Taboos</h2>
+<p><strong>What teams do wrong</strong>: Creatives feature pork-related imagery, Buddhist temple backgrounds with inappropriate figures, or run entertainment promos during Ramadan.</p>
+<p><strong>How to fix it</strong>:</p>
+<ol>
+<li>Create a cultural taboo checklist for each target market (e.g., pigs/alcohol/gambling in Indonesia and Malaysia; head-pointing禁忌 in Thailand).</li>
+<li>Have local agencies or native users review creatives before launch.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Target Market</th>
+<th>Common Taboos</th>
+<th>Recommended Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Indonesia / Malaysia</td>
+<td>Pork, alcohol, gambling references</td>
+<td>Swap in halal-certified visuals or family scenes</td>
+</tr>
+<tr>
+<td>Thailand</td>
+<td>Head pointing, Buddha imagery</td>
+<td>Center the subject; avoid top-down angles</td>
+</tr>
+<tr>
+<td>Brazil</td>
+<td>Gestures like the “OK” sign (offensive in some contexts)</td>
+<td>Minimize hand gestures or replace them</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Mistake 4: Using the Same Ad Scheduling Across Regions</h2>
+<p><strong>What teams do wrong</strong>: They copy European or North American time zone settings, causing ads to hit Southeast Asian users late at night or Latin American users during peak work hours.</p>
+<p><strong>How to fix it</strong>:</p>
+<ol>
+<li>Set ad schedules based on local time, not the advertiser's time zone.</li>
+<li>Reference peak social media activity windows (e.g., TikTok in Southeast Asia: 18:00–22:00; Latin America: 20:00–24:00).</li>
+<li>Create separate campaigns per country to avoid schedule mismatches in regional targeting.</li>
+</ol>
+<hr />
+<h2>Mistake 5: Using Identical Visuals Across All Markets</h2>
+<p><strong>What teams do wrong</strong>: They reuse Western-facing creatives with high saturation and Caucasian models across Southeast Asia and Latin America, seeing significantly lower CTRs than locally adapted competitors.</p>
+<p><strong>How to fix it</strong>:</p>
+<ol>
+<li><strong>Use relevant faces</strong>. Prioritize local or mixed-heritage models to boost relatability.</li>
+<li><strong>Respect color preferences</strong>. Southeast Asia favors bright tones (blue, green, yellow). Latin America generally tolerates bold contrasts, but adjust during fasting periods.</li>
+<li><strong>Subtitles and dubbing</strong>. Add subtitles in Vietnamese, Thai, or Indonesian. Consider Portuguese dubbing for Brazil.</li>
+</ol>
+<hr />
+<h2>Localization Execution Checklist</h2>
+<p>Before launching any campaign, run through each item:</p>
+<ul>
+<li>[ ] Text reviewed by a native speaker (no auto-translation artifacts)</li>
+<li>[ ] Copy tone matches local conventions (warm vs. direct)</li>
+<li>[ ] Top three local payment methods are supported</li>
+<li>[ ] No religious禁忌 elements (pork, alcohol, sacred imagery)</li>
+<li>[ ] Cultural sensitivities have been reviewed</li>
+<li>[ ] Ad schedules converted to local time zones</li>
+<li>[ ] Creatives use locally appropriate faces, colors, and subtitles</li>
+<li>[ ] Landing page load speed tested on regional networks</li>
+</ul>
+<hr />
+<h2>Bottom Line</h2>
+<p>Localization is not translation—it's adaptation. Southeast Asia and Latin America may both be emerging ad markets, but user behavior, payment ecosystems, and cultural norms differ significantly. We recommend embedding this checklist into your standard workflow for every new market launch, replacing casual checks with structured reviews to minimize budget waste from avoidable localization errors.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
