@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">广告账户充值、消耗与发票对账：4步走完财务核查全流程</span>
+                    <span x-show="lang === 'en'" x-cloak>4 Steps to Reconcile Your Overseas Ad Account: Charges, Spend &amp; Invoices</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-09-05</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="429" data-base-views="13">13</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu2181/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>为什么你的广告对账总出问题</h2>
+<p>出海团队在广告投放中常遇到这类情况：充值金额和实际消耗对不上、平台开具的发票和后台数据存在差异、月末财务结账时才发现账目混乱。这些问题背后往往是充值渠道多、账户层级复杂、币种汇率波动等原因。</p>
+<p>以下是一套经过验证的对账流程，帮助你从充值到发票实现全链路核查。</p>
+<hr />
+<h2>第一步：充值记录梳理（对账起点）</h2>
+<h3>需收集的材料</h3>
+<ul>
+<li>各广告平台后台的充值明细截图或导出文件</li>
+<li>公司财务系统中的付款凭证（银行转账记录、信用卡账单）</li>
+<li>代理商或渠道商提供的充值确认单</li>
+</ul>
+<h3>核查要点</h3>
+<ol>
+<li><strong>充值时间对齐</strong>：确保每笔充值日期与付款日期一致，注意时区差异（GMT+8 vs UTC）</li>
+<li><strong>金额核对</strong>：付款人民币金额换算为账户显示的美元/欧元金额时，是否使用了正确的汇率</li>
+<li><strong>账户归属确认</strong>：充值是否到达正确账户（主账户/子账户/代理账户）</li>
+<li><strong>余额变动记录</strong>：充值后账户余额是否与充值金额一致，排除已消耗部分</li>
+</ol>
+<blockquote>
+<p><strong>检查项</strong>：充值记录表是否包含“充值时间、金额、币种、汇率、到账账户、消耗金额、剩余余额”七个字段？</p>
+</blockquote>
+<hr />
+<h2>第二步：消耗数据核对（核心环节）</h2>
+<h3>数据来源对比</h3>
+<table>
+<thead>
+<tr>
+<th>数据来源</th>
+<th>内容</th>
+<th>常见问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>平台后台报告</td>
+<td>Campaign/Ad Set/Ad层级的消耗</td>
+<td>时区设置导致日期差异</td>
+</tr>
+<tr>
+<td>账户级账单</td>
+<td>月度汇总消耗</td>
+<td>预估值 vs 最终值</td>
+</tr>
+<tr>
+<td>API导出数据</td>
+<td>程序化获取消耗</td>
+<td>刷新频率导致的延迟</td>
+</tr>
+</tbody>
+</table>
+<h3>核查要点</h3>
+<ol>
+<li><strong>日期范围确认</strong>：对账周期是否覆盖完整自然月，排除跨月消耗</li>
+<li><strong>消耗归因统一</strong>：使用平台报告的“投放结束日期”还是“消耗发生日期”？全团队需统一标准</li>
+<li><strong>异常消耗标记</strong>：单日消耗突增超过均值200%的情况需单独备注</li>
+<li><strong>退款与积分处理</strong>：平台有时会返还部分消耗（如无效流量退款），需确认是否已冲减</li>
+</ol>
+<blockquote>
+<p><strong>检查项</strong>：平台报告消耗与账单消耗差异是否在±2%以内？超出此范围需排查原因。</p>
+</blockquote>
+<hr />
+<h2>第三步：发票核验（财务合规）</h2>
+<h3>各平台发票获取方式</h3>
+<ul>
+<li><strong>Meta (Facebook)</strong>: 在“账单-支付设置”中下载月度发票，注意区分“Commercial Invoice”和“Receipt”</li>
+<li><strong>Google Ads</strong>: 通过“工具-结算-交易”页面导出，发票金额基于“结算账户”而非单账户</li>
+<li><strong>TikTok</strong>: 在“资产-账单中心”获取，需确认是“消耗税发票”还是“充值预付款发票”</li>
+<li><strong>其他平台</strong>: 部分渠道商提供代开发票，需额外核对开票主体与充值主体的关系</li>
+</ul>
+<h3>核查要点</h3>
+<ol>
+<li><strong>金额匹配</strong>：发票金额是否与消耗金额一致，注意是否存在平台服务费或税差</li>
+<li><strong>公司信息核实</strong>：发票抬头、税号、公司地址是否与营业执照一致</li>
+<li><strong>币种与汇率</strong>：发票显示的币种是否与合同约定一致，涉及多币种时需保留汇率换算依据</li>
+<li><strong>发票时效</strong>：部分平台发票需在账单周期结束后3-5个工作日才能开具，财务需预留等待时间</li>
+</ol>
+<blockquote>
+<p><strong>检查项</strong>：发票是否在税务申报有效期内？建议在账单周期结束后15天内完成所有发票归档。</p>
+</blockquote>
+<hr />
+<h2>第四步：差异追踪与处理（闭环管理）</h2>
+<h3>常见差异原因</h3>
+<table>
+<thead>
+<tr>
+<th>差异类型</th>
+<th>可能原因</th>
+<th>处理方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>充值未到账</td>
+<td>支付通道延迟/失败</td>
+<td>联系代理商或平台客服，保留沟通记录</td>
+</tr>
+<tr>
+<td>消耗高于充值</td>
+<td>子账户共享额度/预授权消耗</td>
+<td>检查账户结构，限制子账户消费上限</td>
+</tr>
+<tr>
+<td>发票金额偏小</td>
+<td>平台优惠券/返点未入账</td>
+<td>确认返点协议，确认是否需要补充发票</td>
+</tr>
+<tr>
+<td>汇率差异</td>
+<td>充值与消耗使用不同汇率</td>
+<td>建立汇率锁定机制，记录换算标准</td>
+</tr>
+</tbody>
+</table>
+<h3>处理流程</h3>
+<ol>
+<li><strong>差异记录</strong>：将每个差异项记录到《广告账户差异追踪表》</li>
+<li><strong>原因追溯</strong>：联系平台或代理商获取差异说明，邮件确认</li>
+<li><strong>调整确认</strong>：确认需调整金额后，获取平台盖章的调整单或补充发票</li>
+<li><strong>归档备查</strong>：将对账结果、差异说明、沟通记录统一归档，保存至少12个月</li>
+</ol>
+<blockquote>
+<p><strong>检查项</strong>：本月是否存在未解决的差异项？如有，需标注责任人及计划解决日期。</p>
+</blockquote>
+<hr />
+<h2>本月对账完成清单</h2>
+<ul>
+<li>[ ] 所有充值记录已导出并与付款凭证核对完毕</li>
+<li>[ ] 平台报告消耗与账户账单差异在容许范围内</li>
+<li>[ ] 发票已获取且金额与消耗数据一致</li>
+<li>[ ] 汇率换算依据已记录归档</li>
+<li>[ ] 所有差异项已定位原因并制定处理计划</li>
+<li>[ ] 对账结果已同步给财务负责人确认签字</li>
+</ul>
+<hr />
+<p><strong>补充建议</strong>：若团队管理多个广告平台、多账户，建议使用统一的财务对账模板或ERP系统对接，避免手动汇总出错。同时，设置充值预警（余额低于某阈值时自动提醒），可从源头减少因余额不足导致的投放中断。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Why Your Ad Account Reconciliation Always Has Issues</h2>
+<p>Overseas advertising teams often encounter this situation: the charged amount doesn't match actual spend, the platform-issued invoice differs from backend data, or financial closing reveals messy accounts at month-end. These problems usually stem from multiple payment channels, complex account hierarchies, and currency exchange rate fluctuations.</p>
+<p>Here's a proven reconciliation process to help you achieve full-chain verification from charging to invoicing.</p>
+<hr />
+<h2>Step 1: Charge Record Organization (Reconciliation Starting Point)</h2>
+<h3>Materials to Collect</h3>
+<ul>
+<li>Screenshot or export files of charging details from each ad platform backend</li>
+<li>Payment vouchers in your company's financial system (bank transfer records, credit card statements)</li>
+<li>Charging confirmation from agents or channel partners</li>
+</ul>
+<h3>Verification Points</h3>
+<ol>
+<li><strong>Date Alignment</strong>: Ensure each charge date matches the payment date, accounting for timezone differences (GMT+8 vs UTC)</li>
+<li><strong>Amount Verification</strong>: When converting paid RMB to displayed USD/EUR, is the correct exchange rate used?</li>
+<li><strong>Account Attribution</strong>: Did the charge reach the correct account (main/sub/agent account)?</li>
+<li><strong>Balance Change Records</strong>: Does the post-charge account balance match the charged amount, excluding consumed portions?</li>
+</ol>
+<blockquote>
+<p><strong>Checklist Item</strong>: Does your charge record table include these seven fields: charge time, amount, currency, exchange rate, arrival account, consumed amount, remaining balance?</p>
+</blockquote>
+<hr />
+<h2>Step 2: Spend Data Verification (Core Process)</h2>
+<h3>Data Source Comparison</h3>
+<table>
+<thead>
+<tr>
+<th>Data Source</th>
+<th>Content</th>
+<th>Common Issues</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Platform backend reports</td>
+<td>Campaign/Ad Set/Ad-level spend</td>
+<td>Timezone settings causing date differences</td>
+</tr>
+<tr>
+<td>Account-level billing</td>
+<td>Monthly aggregated spend</td>
+<td>Estimated vs. final values</td>
+</tr>
+<tr>
+<td>API exported data</td>
+<td>Programmatically obtained spend</td>
+<td>Delays due to refresh frequency</td>
+</tr>
+</tbody>
+</table>
+<h3>Verification Points</h3>
+<ol>
+<li><strong>Date Range Confirmation</strong>: Does the reconciliation period cover the complete calendar month, excluding cross-month spend?</li>
+<li><strong>Spend Attribution Standardization</strong>: Using platform report "end date" or "spend date"? The entire team needs consistent standards</li>
+<li><strong>Anomalous Spend Flagging</strong>: Single-day spend exceeding 200% of average requires separate notation</li>
+<li><strong>Refund and Credit Processing</strong>: Platforms sometimes refund spend (e.g., invalid traffic refunds), confirm if these have been credited</li>
+</ol>
+<blockquote>
+<p><strong>Checklist Item</strong>: Is the variance between platform report spend and billing spend within ±2%? Exceeding this range requires investigation.</p>
+</blockquote>
+<hr />
+<h2>Step 3: Invoice Validation (Financial Compliance)</h2>
+<h3>Invoice Acquisition by Platform</h3>
+<ul>
+<li><strong>Meta (Facebook)</strong>: Download monthly invoices from "Billing &gt; Payment Settings," distinguish between "Commercial Invoice" and "Receipt"</li>
+<li><strong>Google Ads</strong>: Export through "Tools &gt; Billing &gt; Transactions," invoice amounts based on "Billing Account" not individual accounts</li>
+<li><strong>TikTok</strong>: Obtain from "Assets &gt; Billing Center," confirm whether it's a "spend tax invoice" or "prepaid charge invoice"</li>
+<li><strong>Other platforms</strong>: Some channel partners provide invoicing services, requiring additional verification of invoicing entity relationship to charged entity</li>
+</ul>
+<h3>Verification Points</h3>
+<ol>
+<li><strong>Amount Matching</strong>: Does the invoice amount match the spend amount? Watch for platform service fees or tax differences</li>
+<li><strong>Company Information Verification</strong>: Does the invoice name, tax ID, and company address match the business license?</li>
+<li><strong>Currency and Exchange Rate</strong>: Does the invoice currency match the contract agreement? Multi-currency situations require retention of exchange rate calculation basis</li>
+<li><strong>Invoice Timeliness</strong>: Some platform invoices take 3-5 business days after the billing cycle ends; finance needs to account for wait time</li>
+</ol>
+<blockquote>
+<p><strong>Checklist Item</strong>: Is the invoice within the tax filing validity period? Recommended to complete all invoice archiving within 15 days after the billing cycle ends.</p>
+</blockquote>
+<hr />
+<h2>Step 4: Variance Tracking and Resolution (Closed-Loop Management)</h2>
+<h3>Common Variance Reasons</h3>
+<table>
+<thead>
+<tr>
+<th>Variance Type</th>
+<th>Possible Cause</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Charge not received</td>
+<td>Payment channel delay/failure</td>
+<td>Contact agent or platform support, preserve communication records</td>
+</tr>
+<tr>
+<td>Spend exceeds charge</td>
+<td>Sub-account shared quota/pre-authorized spend</td>
+<td>Check account structure, limit sub-account spending caps</td>
+</tr>
+<tr>
+<td>Invoice amount low</td>
+<td>Platform credits/rebates not recorded</td>
+<td>Confirm rebate agreement, determine if supplementary invoice needed</td>
+</tr>
+<tr>
+<td>Exchange rate variance</td>
+<td>Different rates used for charge vs. spend</td>
+<td>Establish rate locking mechanism, document calculation standards</td>
+</tr>
+</tbody>
+</table>
+<h3>Resolution Process</h3>
+<ol>
+<li><strong>Variance Recording</strong>: Log each variance item in the "Ad Account Variance Tracking Sheet"</li>
+<li><strong>Cause Tracing</strong>: Contact platform or agent for variance explanation, confirm via email</li>
+<li><strong>Adjustment Confirmation</strong>: After confirming adjustment amount, obtain platform-stamped adjustment letter or supplementary invoice</li>
+<li><strong>Archive for Reference</strong>: Archive reconciliation results, variance explanations, and communication records for at least 12 months</li>
+</ol>
+<blockquote>
+<p><strong>Checklist Item</strong>: Are there any unresolved variance items this month? If yes, note the responsible person and planned resolution date.</p>
+</blockquote>
+<hr />
+<h2>Monthly Reconciliation Complete Checklist</h2>
+<ul>
+<li>[ ] All charge records exported and verified against payment vouchers</li>
+<li>[ ] Platform report spend and account billing variance within acceptable range</li>
+<li>[ ] Invoices obtained and amounts match spend data</li>
+<li>[ ] Exchange rate calculation basis documented and archived</li>
+<li>[ ] All variance items located with causes identified and resolution plans established</li>
+<li>[ ] Reconciliation results shared with finance lead for confirmation and sign-off</li>
+</ul>
+<hr />
+<p><strong>Additional Recommendations</strong>: If your team manages multiple ad platforms and accounts, consider using a unified financial reconciliation template or ERP system integration to avoid manual aggregation errors. Additionally, setting up charge alerts (automatic reminders when balance falls below a threshold) can reduce delivery interruptions due to insufficient balance at the source.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
