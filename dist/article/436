@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">广告账户突然被封怎么办？一次真实的出海合规巡检复盘</span>
+                    <span x-show="lang === 'en'" x-cloak>Account Suspended Suddenly? A Real Case Study of Ad Compliance Audit SOP</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-09-07</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="436" data-base-views="11">11</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu9306/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>案例开场：账户被封的那个下午</h2>
+<p>某工具类 App 出海团队在周三下午突然收到 Meta Business Manager 的封禁通知。广告账户显示“受限活动违规”，全部活跃广告暂停投放，账户BM的访问权限也被锁定。此时距离大促活动上线只剩48小时，日均消耗超过3000美元，团队陷入慌乱。</p>
+<p>这不是孤例。在出海广告投放中，账户封禁、广告素材被拒、付款方式被拒等问题几乎每个团队都遇到过。但区别在于：有的团队能在24小时内恢复账户，有的团队却要等上两周，损失大量预算和时机。差距就在于是否有成熟的合规巡检 SOP。</p>
+<hr />
+<h2>问题诊断：快速定位合规风险点</h2>
+<h3>判断一：封禁类型判断</h3>
+<p>账户被封后，第一步不是写申诉信，而是确认封禁类型：</p>
+<ul>
+<li><strong>完整账户封禁</strong>：所有广告功能受限，通常涉及政策严重违规或历史违规累积</li>
+<li><strong>广告素材拒登</strong>：单个或多个广告被拒登，账户本身仍可运行</li>
+<li><strong>付款方式被拒</strong>：充值失败或支付账户被标记</li>
+</ul>
+<p>案例中的团队发现，这是一次完整账户封禁，通知邮件提到“误导性广告行为”和“目标页面违规”。</p>
+<h3>判断二：快速溯源</h3>
+<p>团队立刻回溯最近7天的操作记录，发现三个高风险点：</p>
+<ol>
+<li>上周上线的新素材，使用了“#1 rated app”等无法核实的绝对化表述</li>
+<li>落地页在促销期间临时更换，但未更新隐私政策链接</li>
+<li>客服回复用户评论时，承诺了版本不支持的功能</li>
+</ol>
+<hr />
+<h2>SOP执行：72小时内的合规巡检清单</h2>
+<h3>第一阶段：0-6小时——止血与证据保全</h3>
+<p><strong>处理动作：</strong></p>
+<ul>
+<li>停止所有高风险素材的投放（即使账户已封，素材信息仍可能被用于二次审核）</li>
+<li>截图保存所有广告数据、消耗记录、账户状态截图</li>
+<li>导出广告历史报告，作为申诉材料的一部分</li>
+</ul>
+<p><strong>常见错误：</strong>很多团队此时会反复刷新账户状态，或尝试重新创建广告，这只会加重违规标记。</p>
+<h3>第二阶段：6-24小时——问题清单自查</h3>
+<p>使用以下清单逐项排查：</p>
+<table>
+<thead>
+<tr>
+<th>巡检项目</th>
+<th>检查内容</th>
+<th>高风险标识</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>广告素材文案</td>
+<td>是否含绝对化表述、虚假数据、煽动性语言</td>
+<td>"Guaranteed results""</td>
+</tr>
+<tr>
+<td>定向设置</td>
+<td>是否涉及歧视性词汇、受保护群体</td>
+<td>误触敏感定向</td>
+</tr>
+<tr>
+<td>支付方式</td>
+<td>信用卡/PayPal信息与账户主体是否一致</td>
+<td>主体不一致</td>
+</tr>
+<tr>
+<td>账户历史</td>
+<td>是否有未处理的违规记录</td>
+<td>警告累积</td>
+</tr>
+</tbody>
+</table>
+<h3>第三阶段：24-72小时——申诉提交与跟进</h3>
+<p><strong>申诉信核心要素：</strong></p>
+<ol>
+<li><strong>承认问题</strong>：明确指出违规点，不要辩解</li>
+<li><strong>整改说明</strong>：列出已采取的纠正措施</li>
+<li><strong>预防承诺</strong>：说明后续合规管理机制</li>
+<li><strong>附件支持</strong>：截图、数据报告、整改前后对比图</li>
+</ol>
+<p>案例中的团队在24小时内提交了申诉，附上了更新后的素材、落地页改版截图、以及新建立的素材审核流程文档。48小时后收到解封通知。</p>
+<hr />
+<h2>结果与反思：SOP的真正价值</h2>
+<h3>处理结果</h3>
+<ul>
+<li>账户在72小时内解封，广告恢复正常投放</li>
+<li>活动仅延迟1天上线，消耗损失控制在15%以内</li>
+<li>团队建立了素材上线前的合规预审流程</li>
+</ul>
+<h3>关键收获</h3>
+<p>合规巡检 SOP 的价值不在于“出了问题怎么救”，而在于建立一套预防机制：</p>
+<ol>
+<li><strong>素材上线前</strong>：执行3级审核——投放专员自检→组长复核→合规清单确认</li>
+<li><strong>落地页变更</strong>：任何页面调整需同步检查隐私政策、链接有效性</li>
+<li><strong>日常巡检</strong>：每周固定时间检查账户健康度，清理历史违规记录</li>
+<li><strong>权限管理</strong>：最小化高危操作权限，避免误触导致封禁</li>
+</ol>
+<hr />
+<h2>结语</h2>
+<p>广告账户封禁是出海投放的高频风险，但并非不可预防。建立清晰的合规巡检 SOP，核心是三件事：<strong>快速定位问题、系统化排查、标准化申诉</strong>。当你有了一套可执行的流程，遇到封禁时就不会慌乱，而是有条不紊地处理，最大程度降低损失。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Case Opening: The Afternoon the Account Got Suspended</h2>
+<p>A tool app's overseas team suddenly received a suspension notice from Meta Business Manager on a Wednesday afternoon. The ad account showed "restricted activity violation", all active ads were paused, and BM access was locked. With only 48 hours until the big promotion launch and daily spend over $3,000, the team was thrown into chaos.</p>
+<p>This isn't an isolated incident. Account suspensions, ad disapprovals, and payment rejections are challenges every team faces in overseas advertising. But the difference is: some teams recover within 24 hours, while others wait two weeks, losing significant budget and timing. The gap comes down to having a mature compliance audit SOP.</p>
+<hr />
+<h2>Problem Diagnosis: Quickly Locating Compliance Risks</h2>
+<h3>Judgment 1: Suspension Type</h3>
+<p>The first step after suspension isn't writing an appeal—it's confirming the suspension type:</p>
+<ul>
+<li><strong>Full account suspension</strong>: All advertising features restricted, usually involving serious policy violations or accumulated historical violations</li>
+<li><strong>Ad disapprovals</strong>: Individual or multiple ads rejected, account still functional</li>
+<li><strong>Payment rejection</strong>: Top-up failures or payment account flagged</li>
+</ul>
+<p>The team discovered this was a full account suspension, with the notification mentioning "misleading advertising behavior" and "landing page violations".</p>
+<h3>Judgment 2: Quick Tracing</h3>
+<p>The team immediately traced operations from the past 7 days, identifying three high-risk points:</p>
+<ol>
+<li>New creative launched last week using unverifiable absolute claims like "#1 rated app"</li>
+<li>Landing page was temporarily changed during promotion without updating privacy policy links</li>
+<li>Customer service promised unsupported features when replying to user comments</li>
+</ol>
+<hr />
+<h2>SOP Execution: Compliance Audit Checklist Within 72 Hours</h2>
+<h3>Phase 1: 0-6 Hours — Bleeding Control and Evidence Preservation</h3>
+<p><strong>Action taken:</strong></p>
+<ul>
+<li>Paused all high-risk creatives (even with account suspended, creative info may be used for secondary review)</li>
+<li>Screenshotted all ad data, spend records, account status</li>
+<li>Exported historical ad reports as part of appeal materials</li>
+</ul>
+<p><strong>Common mistake:</strong> Many teams repeatedly refresh account status or try recreating ads at this point, which only worsens violation flags.</p>
+<h3>Phase 2: 6-24 Hours — Problem List Self-Check</h3>
+<p>Use this checklist to inspect item by item:</p>
+<table>
+<thead>
+<tr>
+<th>Audit Item</th>
+<th>Check Content</th>
+<th>High-Risk Indicators</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ad creative copy</td>
+<td>Absolute claims, false data, inflammatory language</td>
+<td>"Guaranteed results"</td>
+</tr>
+<tr>
+<td>Landing page compliance</td>
+<td>Link validity, privacy policy, terms of service completeness</td>
+<td>Dead links, redirect anomalies</td>
+</tr>
+<tr>
+<td>Targeting settings</td>
+<td>Discriminatory terms, protected groups</td>
+<td>Accidental sensitive targeting</td>
+</tr>
+<tr>
+<td>Payment methods</td>
+<td>Credit card/PayPal info matching account holder</td>
+<td>Mismatched entities</td>
+</tr>
+<tr>
+<td>Account history</td>
+<td>Unresolved violation records</td>
+<td>Accumulated warnings</td>
+</tr>
+</tbody>
+</table>
+<h3>Phase 3: 24-72 Hours — Appeal Submission and Follow-up</h3>
+<p><strong>Core elements of appeal letter:</strong></p>
+<ol>
+<li><strong>Acknowledge the issue</strong>: Clearly state the violation, don't make excuses</li>
+<li><strong>Rectification explanation</strong>: List corrective measures already taken</li>
+<li><strong>Prevention commitment</strong>: Explain future compliance management mechanisms</li>
+<li><strong>Supporting attachments</strong>: Screenshots, data reports, before/after comparison</li>
+</ol>
+<p>The team submitted their appeal within 24 hours, attaching updated creatives, landing page revision screenshots, and documentation of their newly established creative review process. They received reinstatement notification 48 hours later.</p>
+<hr />
+<h2>Results and Reflection: The Real Value of SOPs</h2>
+<h3>Outcome</h3>
+<ul>
+<li>Account reinstated within 72 hours, ads resumed normally</li>
+<li>Campaign delayed only 1 day, spend loss controlled within 15%</li>
+<li>Team established a compliance pre-approval process for creative launches</li>
+</ul>
+<h3>Key Takeaways</h3>
+<p>The value of a compliance audit SOP isn't in "how to rescue when problems occur" but in establishing a prevention mechanism:</p>
+<ol>
+<li><strong>Pre-launch creative review</strong>: 3-level approval—specialist self-check → supervisor review → compliance checklist confirmation</li>
+<li><strong>Landing page changes</strong>: Any page adjustment requires synchronized privacy policy and link validity checks</li>
+<li><strong>Regular audits</strong>: Weekly scheduled health checks, clearing historical violation records</li>
+<li><strong>Permission management</strong>: Minimize high-risk operation permissions to avoid accidental triggers</li>
+</ol>
+<hr />
+<h2>Conclusion</h2>
+<p>Account suspension is a frequent risk in overseas advertising, but it's preventable. Building a clear compliance audit SOP comes down to three things: <strong>quick problem identification, systematic investigation, and standardized appeals</strong>. When you have an executable process, suspension won't cause panic—it will be handled methodically, minimizing damage as much as possible.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
