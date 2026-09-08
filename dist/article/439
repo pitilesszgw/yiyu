@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">周报观察 | 出海企业广告账户资金预警：三个高频触发点与排查清单</span>
+                    <span x-show="lang === 'en'" x-cloak>Weekly Watch: Three High-Frequency Triggers for Ad Account Balance Alerts in Overseas Markets</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-09-09</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="439" data-base-views="73">73</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu419/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>本周核心变化：资金链路承压</h2>
+<p>本周多个出海团队反馈广告投放节奏被打乱，根源不在素材或定向，而在于资金管理环节出现了“跑冒滴漏”。具体表现为三种典型场景：</p>
+<ul>
+<li><strong>充值到账延迟</strong>：通过代理商充值，款项已扣但平台未到账，客服响应滞后导致空跑时段损失</li>
+<li><strong>多账户余额可视化失效</strong>：同时管理 5+ 个 Meta/TikTok/Google 账户，运营人员无法快速判断哪个账户该补款</li>
+<li><strong>月度对账发现差异</strong>：财务核销时发现充值金额与平台入账金额不一致，追溯成本高</li>
+</ul>
+<p>这些问题的本质是：<strong>资金管理缺乏标准化运营指标</strong>，团队靠人工盯盘而非系统预警。</p>
+<h2>高频触发点拆解</h2>
+<h3>触发点一：充值链路透明度不足</h3>
+<p>许多团队选择通过代理商开户充值，图的是便捷，但代价是信息链不透明。当充值未到账时，问题可能出在：</p>
+<ol>
+<li>代理商侧财务处理延迟（非工作日提交）</li>
+<li>平台侧审核周期波动（如近期 TikTok 审核变严）</li>
+<li>账户主体信息与付款主体不一致触发风控</li>
+</ol>
+<p><strong>排查动作</strong>：<br />
+- 每次充值后保存交易凭证截图<br />
+- 记录充值时间、代理商确认时间、平台到账时间三个节点<br />
+- 建立充值时效台账，超过 4 小时未到账立即跟进</p>
+<h3>触发点二：余额预警阈值设置混乱</h3>
+<p>运营人员普遍存在“等账户空了再充值”的习惯，但这在跑量期是致命错误。建议设置三级预警机制：</p>
+<table>
+<thead>
+<tr>
+<th>预警等级</th>
+<th>触发条件</th>
+<th>推荐动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>黄色预警</td>
+<td>余额 &lt; 日均消耗 × 1.5</td>
+<td>检查跑量趋势，准备充值</td>
+</tr>
+<tr>
+<td>橙色预警</td>
+<td>余额 &lt; 日均消耗</td>
+<td>立即发起充值申请</td>
+</tr>
+<tr>
+<td>红色预警</td>
+<td>余额 &lt; 日均消耗 × 0.5</td>
+<td>暂停低效 campaign，确保核心跑量不停</td>
+</tr>
+</tbody>
+</table>
+<h3>触发点三：对账口径不一致</h3>
+<p>财务与运营的对账差异往往源于统计口径不同：平台后台显示的消耗时间（UTC 时间）与广告主理解的自然日存在时区差；部分平台对无效点击的退款会体现在下个账单周期。</p>
+<p><strong>建议操作</strong>：<br />
+- 以平台“消耗报告”生成时间为准，而非投放当天数据<br />
+- 建立充值-消耗-退款三线对账逻辑<br />
+- 月度对账时保留原始报告截图，避免平台数据更新后无法溯源</p>
+<h2>本周建议清单</h2>
+<ol>
+<li><strong>检查充值链路</strong>：本周内梳理所有广告账户的充值渠道，确认是否存在信息盲区</li>
+<li><strong>设置预警规则</strong>：在内部管理系统或表格工具中为每个账户设置余额预警值</li>
+<li><strong>统一对账模板</strong>：财务与运营共用同一份对账表格，明确统计口径和时区</li>
+</ol>
+<p>资金管理是出海投放的“基础设施”，基础设施不稳，上层的素材优化和 ROI 提升都是空谈。建议团队本周花 30 分钟审视现有流程，补齐这三个薄弱环节。</p>
+<hr />
+<p><em>下期周报将聚焦：海外广告账户开户被拒的常见原因与材料准备要点。</em></p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>This Week's Key Changes: Fund Flow Under Pressure</h2>
+<p>This week, multiple overseas teams reported disrupted ad delivery schedules—not due to creative or targeting issues, but because of "leakage" in fund management. Three typical scenarios emerged:</p>
+<ul>
+<li><strong>Delayed fund arrival</strong>: Funds deducted via agents but not credited to platforms, with slow customer support responses causing lost delivery time</li>
+<li><strong>Multi-account balance visibility failure</strong>: Managing 5+ Meta/TikTok/Google accounts simultaneously, operations staff unable to quickly identify which accounts need replenishment</li>
+<li><strong>Monthly reconciliation discrepancies</strong>: Finance discovered differences between charged amounts and platform credits, with high追溯成本</li>
+</ul>
+<p>The root cause: <strong>lack of standardized operational metrics</strong> for fund management, with teams relying on manual monitoring rather than systematic alerts.</p>
+<h2>Breaking Down High-Frequency Triggers</h2>
+<h3>Trigger 1: Insufficient Transparency in Fund Flow</h3>
+<p>Many teams prefer agent-based account setup for convenience, but this creates information opacity. When funds don't arrive, issues may stem from:</p>
+<ol>
+<li>Agent-side finance processing delays (weekend submissions)</li>
+<li>Platform review cycle fluctuations (recent TikTok reviews have tightened)</li>
+<li>Account holder information mismatch triggering risk controls</li>
+</ol>
+<p><strong>Troubleshooting actions</strong>:<br />
+- Save transaction receipts after each charge<br />
+- Record three timestamps: charge submission, agent confirmation, platform arrival<br />
+- Establish a charge timing log; follow up immediately if arrival exceeds 4 hours</p>
+<h3>Trigger 2: Chaotic Balance Alert Threshold Settings</h3>
+<p>Operations staff commonly wait until accounts empty before recharging—a fatal habit during peak delivery periods. A three-tier alert mechanism is recommended:</p>
+<table>
+<thead>
+<tr>
+<th>Alert Level</th>
+<th>Trigger Condition</th>
+<th>Recommended Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Yellow Alert</td>
+<td>Balance &lt; Daily Spend × 1.5</td>
+<td>Check delivery trends, prepare for recharge</td>
+</tr>
+<tr>
+<td>Orange Alert</td>
+<td>Balance &lt; Daily Spend</td>
+<td>Initiate recharge request immediately</td>
+</tr>
+<tr>
+<td>Red Alert</td>
+<td>Balance &lt; Daily Spend × 0.5</td>
+<td>Pause low-efficiency campaigns, ensure core delivery continues</td>
+</tr>
+</tbody>
+</table>
+<h3>Trigger 3: Inconsistent Reconciliation Standards</h3>
+<p>Finance-operations reconciliation discrepancies often stem from different calculation standards: platform reporting uses UTC time versus advertisers' natural day; invalid click refunds appear in the next billing cycle.</p>
+<p><strong>Recommended practices</strong>:<br />
+- Use platform "spend reports" generation time as the standard, not delivery-day data<br />
+- Establish three-line reconciliation logic: recharge-spend-refund<br />
+- Preserve original report screenshots during monthly reconciliation to avoid traceability loss when platform data updates</p>
+<h2>This Week's Action Checklist</h2>
+<ol>
+<li><strong>Audit fund flow channels</strong>: This week, map out all ad account recharge channels to identify information blind spots</li>
+<li><strong>Set alert rules</strong>: Configure balance alerts for each account in internal management systems or spreadsheet tools</li>
+<li><strong>Unify reconciliation templates</strong>: Finance and operations share the same reconciliation spreadsheet with clear calculation standards and time zones</li>
+</ol>
+<p>Fund management is the "infrastructure" of overseas delivery. Without stable infrastructure, creative optimization and ROI improvements are empty talk. This week, spend 30 minutes reviewing existing processes and strengthening these three weak points.</p>
+<hr />
+<p><em>Next week's watch will focus on: Common reasons for overseas ad account application rejections and material preparation guidelines.</em></p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
