@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">出海广告合规巡检 SOP：别等账户被封才后悔</span>
+                    <span x-show="lang === 'en'" x-cloak>Ad Compliance Audit SOP for Overseas Markets: Don&#39;t Wait Until Your Account Gets Banned</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-09-13</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="452" data-base-views="83">83</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu9379/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>结论先行：合规巡检不是成本，是保险</h2>
+<p>很多团队把合规巡检当成“可有可无的流程优化”，直到某天早上打开广告后台，发现账户被封、余额清零，才后悔没早点做这件事。我的判断是：<strong>合规巡检的投入产出比极高，一次巡检避免的损失，可能抵得上团队一周的人力成本。</strong></p>
+<p>这个结论来自真实的运营数据。某工具类 App 团队曾在 3 个月内因素材违规被 Meta 封禁账户两次，累计停投 12 天，按当时的 ROI 估算，直接损失超过 15 万美元，还不包括恢复期间的竞品抢占。另一家跨境电商团队因为落地页隐私政策缺失，被地区监管机构发函，整改周期长达一个月。这两个案例的共同点是：团队都有合规意识，但缺乏系统化的巡检机制。</p>
+<hr />
+<h2>出海广告合规巡检 SOP（可直接落地）</h2>
+<h3>第一步：素材合规检查（每次上新前必做）</h3>
+<p>素材是违规高发区，也是巡检的重中之重。检查清单如下：</p>
+<ol>
+<li><strong>文案自检</strong>：是否包含绝对化表述（"best""only""guaranteed"）？是否暗示产品能治疗或预防疾病？是否为竞争对手留有诋毁性内容？</li>
+<li><strong>图片/视频合规</strong>：是否使用他人品牌 logo 或版权素材？人物肖像是否获得授权？是否涉及暴力、色情、歧视性元素？</li>
+<li><strong>社会证明真实性</strong>：用户评价截图是否为真实用户授权使用？数据声明是否有第三方背书？</li>
+</ol>
+<blockquote>
+<p><strong>运营经验</strong>：素材过审率不是玄学。某信息流广告团队统计发现，在素材合规检查清单执行后，单条素材的审核通过率从 67% 提升至 89%，平均每天减少 3-4 次申诉操作。</p>
+</blockquote>
+<hr />
+<h3>第二步：受众定向合规排查</h3>
+<p>这一环节最容易在快速迭代中被忽视。以下是高频违规点：</p>
+<ul>
+<li><strong>年龄定向</strong>：教育、金融、医疗类产品是否设置了 18+ 或 21+ 年龄限制？</li>
+<li><strong>敏感属性</strong>：广告平台明确禁止基于种族、宗教、性别、性取向、健康状况等敏感属性进行定向或排除。若受众画像涉及这些维度，需要重新审视定向逻辑。</li>
+<li><strong>再营销列表</strong>：是否对曾有负面反馈的用户进行了排除？</li>
+</ul>
+<p><strong>实操建议</strong>：在 Meta Ads Manager 或 Google Ads 中创建受众时，建议在“保存受众”环节增加一道复核节点，由非创建者的团队成员确认定向逻辑无敏感属性。</p>
+<hr />
+<h3>第三步：落地页合规验收</h3>
+<p>素材通过了，落地页却拖了后腿——这种情况并不少见。巡检时重点关注：</p>
+<ol>
+<li><strong>隐私政策</strong>：是否明确说明数据收集范围、使用目的和用户权利？是否符合 GDPR（欧盟）、CCPA（加州）等地区法规要求？</li>
+<li><strong>退订/取消机制</strong>：订阅类产品是否提供清晰的取消路径？免费试用转付费前是否有明确告知？</li>
+<li><strong>联系方式</strong>：落地页是否包含真实的品牌联系方式（邮箱或地址）？</li>
+</ol>
+<p><strong>常见疏漏</strong>：很多团队在落地页上线后只关注转化率，忽略了页脚处的法律声明区。一位独立站卖家曾因“Terms of Service”链接指向 404 页面，被用户举报为“欺诈性广告”，账户险些被封。</p>
+<hr />
+<h3>第四步：数据追踪合规确认</h3>
+<p>海外广告平台对用户数据的使用有严格限制。检查以下内容：</p>
+<ul>
+<li><strong>Pixel/SDK 配置</strong>：是否仅用于广告归因，而非用于构建跨站用户画像？</li>
+<li><strong>事件跟踪</strong>：敏感事件（如“已登记信用卡”“已购买”等）是否在用户明确同意后触发？</li>
+<li><strong>第三方工具</strong>：Google Analytics、Mixpanel 等工具的数据共享协议是否合规？</li>
+</ul>
+<hr />
+<h2>一个工具推荐：巡检记录表</h2>
+<p>建议团队维护一份共享的《合规巡检记录表》，每次素材上新或账户结构调整时填写，包含以下字段：</p>
+<table>
+<thead>
+<tr>
+<th>巡检项目</th>
+<th>检查结果</th>
+<th>执行人</th>
+<th>日期</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>素材文案</td>
+<td>✅ 无违规词汇</td>
+<td>张三</td>
+<td>2025-01-15</td>
+<td>—</td>
+</tr>
+<tr>
+<td>素材图片</td>
+<td>✅ 已获授权</td>
+<td>张三</td>
+<td>2025-01-15</td>
+<td>—</td>
+</tr>
+<tr>
+<td>受众定向</td>
+<td>⚠️ 需确认年龄限制</td>
+<td>李四</td>
+<td>2025-01-15</td>
+<td>已发确认邮件</td>
+</tr>
+<tr>
+<td>落地页</td>
+<td>✅ 隐私政策已更新</td>
+<td>王五</td>
+<td>2025-01-15</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>记录表的价值在于：当问题发生时，可以快速回溯是哪一步的检查出现了疏漏，而不是“集体背锅、不了了之”。</p>
+<hr />
+<h2>写在最后</h2>
+<p>合规巡检不是什么高深的技术活，拼的是执行力和纪律性。<strong>把巡检从“想起来才做”变成“上线的必经步骤”，是降低账户风险最简单有效的方式。</strong></p>
+<p>如果你所在团队目前还没有这套 SOP，建议先从本文的第一步“素材合规检查”开始落地，先做起来，再逐步完善。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Conclusion First: Compliance Audits Are Insurance, Not Cost</h2>
+<p>Many teams treat compliance audits as "optional process optimization" until one morning they open their ad dashboard to find the account banned and balance cleared. My assessment is: <strong>the ROI of compliance audits is extremely high—one audit can prevent losses that might equal a week's labor costs.</strong></p>
+<p>This conclusion comes from real operational data. A utility app team had their Meta account banned twice within three months due to creative violations, resulting in 12 days of paused campaigns. Based on their ROI at the time, direct losses exceeded $150,000, not counting competitor gains during recovery. Another cross-border e-commerce team received regulatory letters due to missing privacy policies on landing pages, with a rectification period lasting a full month. The common thread: both teams had compliance awareness but lacked systematic audit mechanisms.</p>
+<hr />
+<h2>Overseas Ad Compliance Audit SOP (Ready to Implement)</h2>
+<h3>Step 1: Creative Compliance Check (Mandatory Before Every Launch)</h3>
+<p>Creatives are high-risk violation areas and the audit priority. Checklist:</p>
+<ol>
+<li><strong>Copy self-check</strong>: Any absolute statements ("best," "only," "guaranteed")? Any implications of therapeutic or preventive claims? Any disparaging content toward competitors?</li>
+<li><strong>Image/video compliance</strong>: Any unauthorized brand logos or copyrighted materials? Portrait rights obtained? No violence, pornography, or discriminatory elements?</li>
+<li><strong>Authenticity of social proof</strong>: User review screenshots from authorized real users? Data claims with third-party backing?</li>
+</ol>
+<blockquote>
+<p><strong>Operational experience</strong>: Approval rates aren't mysterious. A feed ad team found that after implementing the creative compliance checklist, per-creative approval rates increased from 67% to 89%, reducing appeals by 3-4 operations daily on average.</p>
+</blockquote>
+<hr />
+<h3>Step 2: Audience Targeting Compliance Review</h3>
+<p>This step is most often overlooked during rapid iteration. High-frequency violation points:</p>
+<ul>
+<li><strong>Age targeting</strong>: Are age restrictions (18+ or 21+) set for education, finance, or healthcare products?</li>
+<li><strong>Sensitive attributes</strong>: Ad platforms explicitly prohibit targeting or exclusions based on race, religion, gender, sexual orientation, or health status. If audience profiles touch these dimensions, targeting logic needs re-evaluation.</li>
+<li><strong>Retargeting lists</strong>: Are users with negative feedback excluded?</li>
+</ul>
+<p><strong>Practical advice</strong>: When creating audiences in Meta Ads Manager or Google Ads, add a verification node at the "Save Audience" stage—have someone other than the creator confirm no sensitive attributes are involved.</p>
+<hr />
+<h3>Step 3: Landing Page Compliance Verification</h3>
+<p>Creatives pass review, but landing pages fall short—this is more common than you'd think. Key areas:</p>
+<ol>
+<li><strong>Privacy policy</strong>: Does it clearly state data collection scope, usage purpose, and user rights? Compliant with GDPR (EU), CCPA (California), etc.?</li>
+<li><strong>Unsubscribe/cancellation</strong>: Do subscription products offer clear cancellation paths? Clear notice before free trial converts to paid?</li>
+<li><strong>Contact information</strong>: Does the landing page include real brand contact (email or address)?</li>
+</ol>
+<p><strong>Common oversight</strong>: Many teams only focus on conversion rates after landing pages go live, overlooking the legal notice area in the footer. One dropshipper nearly had their account banned after users reported the "Terms of Service" link led to a 404 page, flagged as "deceptive advertising."</p>
+<hr />
+<h3>Step 4: Data Tracking Compliance Confirmation</h3>
+<p>Overseas ad platforms have strict restrictions on user data usage. Verify:</p>
+<ul>
+<li><strong>Pixel/SDK configuration</strong>: Used only for ad attribution, not building cross-site user profiles?</li>
+<li><strong>Event tracking</strong>: Do sensitive events (e.g., "credit card registered," "purchase completed") fire only after explicit user consent?</li>
+<li><strong>Third-party tools</strong>: Are data-sharing agreements for Google Analytics, Mixpanel, etc. compliant?</li>
+</ul>
+<hr />
+<h2>A Tool Recommendation: Audit Log Sheet</h2>
+<p>Maintain a shared "Compliance Audit Log" documenting every creative launch or account structure change:</p>
+<table>
+<thead>
+<tr>
+<th>Audit Item</th>
+<th>Result</th>
+<th>Owner</th>
+<th>Date</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Creative copy</td>
+<td>✅ No violation keywords</td>
+<td>Zhang San</td>
+<td>2025-01-15</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Creative images</td>
+<td>✅ Authorized use</td>
+<td>Zhang San</td>
+<td>2025-01-15</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Audience targeting</td>
+<td>⚠️ Age restriction needs confirmation</td>
+<td>Li Si</td>
+<td>2025-01-15</td>
+<td>Confirmation email sent</td>
+</tr>
+<tr>
+<td>Landing page</td>
+<td>✅ Privacy policy updated</td>
+<td>Wang Wu</td>
+<td>2025-01-15</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>The log's value: when problems occur, quickly trace which step had oversight—instead of "everyone shares blame, case closed."</p>
+<hr />
+<h2>Final Thoughts</h2>
+<p>Compliance audits aren't technical wizardry—they require execution and discipline. <strong>Turning audits from "do it when remembered" to "mandatory step before launch" is the simplest, most effective way to reduce account risk.</strong></p>
+<p>If your team lacks this SOP, start with Step 1—creative compliance checks. Build the habit first, then gradually expand coverage.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">TikTok Shop 新品冷启动：我用20条素材跑出首周ROI 1.5</span>
+                    <span x-show="lang === 'en'" x-cloak>TikTok Shop Cold Start: How I Achieved 1.5x ROI in Week One with 20 Creatives</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-09-13</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="451" data-base-views="46">46</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu9041/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>场景：新品上架第3天，广告费烧了200美元却几乎没出单</h2>
+<p>深圳某3C配件团队在TikTok Shop马来西亚站上架了一款蓝牙耳机。</p>
+<p>产品定价12.9美元，首周广告预算200美元。运营小李信心满满地搭了3条广告，结果跑了3天：</p>
+<ul>
+<li>总展示次数12,000次</li>
+<li>点击率0.6%，远低于类目均值1.8%</li>
+<li>转化率0.7%，几乎没人下单</li>
+<li>广告花费182美元，GMV仅146美元</li>
+</ul>
+<p>“素材换了好几个版本，效果还是很差。”小李开始怀疑产品本身是不是有问题。</p>
+<hr />
+<h2>问题诊断：不是产品差，是素材方向没跑通</h2>
+<p>我和团队接手诊断时，发现问题并不在产品本身。</p>
+<p>核心症结是：<strong>素材方向模糊，导致无效曝光</strong>。</p>
+<p>团队当时用的素材是产品静态图+工厂介绍配音，属于典型的“传统外贸思维”——展示产品参数和生产能力。但TikTok用户关心的是：这个耳机用起来怎么样？戴起来好不好看？值不值这个价？</p>
+<p>问题拆解：</p>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>具体表现</th>
+<th>影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>素材方向不明确</td>
+<td>没有测试过用户对什么感兴趣</td>
+<td>预算浪费在无效曝光上</td>
+</tr>
+<tr>
+<td>素材类型单一</td>
+<td>全部是工厂风讲解视频</td>
+<td>用户划走率高</td>
+</tr>
+<tr>
+<td>缺乏信任背书</td>
+<td>0销量0评价，产品页无说服力</td>
+<td>转化决策成本高</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>判断：先做素材方向测试，再批量制作</h2>
+<p>TikTok Shop的流量分发逻辑是算法驱动的——系统会快速测试素材，找到能引发互动的内容并放大。</p>
+<p><strong>关键判断：冷启动阶段，素材方向比数量更重要。</strong></p>
+<p>我们的策略是：先花小预算跑出2-3个有潜力的素材方向，再围绕这些方向快速批量制作。</p>
+<h3>素材方向规划</h3>
+<p>根据蓝牙耳机类目的爆款内容分析，我们确定了三个可能的方向：</p>
+<ol>
+<li><strong>音质对比型</strong>：用对比手法展示耳机音质（如“某品牌耳机 vs 我们的耳机”），制造听觉反差</li>
+<li><strong>佩戴展示型</strong>：真实模特出镜，展示不同场景下的佩戴效果，强化使用代入感</li>
+<li><strong>促销紧迫型</strong>：限时折扣、库存紧张等促单话术，拉高即时转化冲动</li>
+</ol>
+<hr />
+<h2>处理动作：20条素材的搭建与测试</h2>
+<h3>第一批：按方向各做5-8条</h3>
+<table>
+<thead>
+<tr>
+<th>方向</th>
+<th>数量</th>
+<th>具体形式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>音质对比</td>
+<td>8条</td>
+<td>ASMR风格音效对比、不同音乐类型测试</td>
+</tr>
+<tr>
+<td>佩戴展示</td>
+<td>7条</td>
+<td>通勤场景、健身场景、办公室场景</td>
+</tr>
+<tr>
+<td>促销紧迫</td>
+<td>5条</td>
+<td>倒计时贴片、库存告急文案、专属优惠券</td>
+</tr>
+</tbody>
+</table>
+<p>制作标准：</p>
+<ul>
+<li>视频时长：15-25秒（完播率更高）</li>
+<li>前3秒必须有钩子：音效冲击/视觉对比/疑问句</li>
+<li>不加字幕（用户习惯看字幕但自动播放时可能被忽略）</li>
+<li>背景音乐：选TikTok热门BGM，提升原生感</li>
+</ul>
+<h3>测试节奏</h3>
+<p><strong>第1-2天：集中测方向</strong></p>
+<ul>
+<li>每天50美元预算</li>
+<li>每个方向至少跑2条素材</li>
+<li>观察：点击率、加购率、转化率</li>
+</ul>
+<p><strong>第3-4天：数据淘汰+快速迭代</strong></p>
+<ul>
+<li>保留点击率&gt;2%的素材</li>
+<li>暂停表现差的素材</li>
+<li>围绕数据好的方向，快速补新素材</li>
+</ul>
+<p><strong>第5-7天：主力素材放量</strong></p>
+<ul>
+<li>把80%预算集中到top 3素材</li>
+<li>其余20%继续测试新方向</li>
+<li>观察自然流量转化率</li>
+</ul>
+<hr />
+<h2>结果：首周ROI 1.5，32%订单来自自然流量</h2>
+<p>7天跑完，数据对比：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>优化前</th>
+<th>优化后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>广告花费</td>
+<td>182美元</td>
+<td>210美元</td>
+</tr>
+<tr>
+<td>GMV</td>
+<td>146美元</td>
+<td>315美元</td>
+</tr>
+<tr>
+<td>转化率</td>
+<td>0.7%</td>
+<td>2.1%</td>
+</tr>
+<tr>
+<td>ROI</td>
+<td>0.8</td>
+<td>1.5</td>
+</tr>
+<tr>
+<td>自然流量占比</td>
+<td>8%</td>
+<td>32%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>发生了什么？</strong></p>
+<ul>
+<li>音质对比型素材点击率最高（平均2.4%），其中一条“飞机噪音测试”视频带动了63%的GMV</li>
+<li>促销紧迫型素材转化最快，但加购后弃单率也高</li>
+<li>佩戴展示型素材自然流量表现好，说明内容有“种草”属性</li>
+</ul>
+<hr />
+<h2>复盘：素材池搭建的3个关键认知</h2>
+<p><strong>1. 方向比数量重要</strong></p>
+<p>冷启动阶段最怕的是“随便拍了几条就猛投”。先测方向再批量，是降低试错成本的核心逻辑。</p>
+<p><strong>2. TikTok素材要有“内容感”</strong></p>
+<p>用户刷到的是信息流广告，不是产品详情页。素材要像一条普通短视频，能引起好奇心或共鸣，而不是“买家秀+产品参数”。</p>
+<p><strong>3. 素材池要分层管理</strong></p>
+<p>建议按方向分类管理素材，为后续迭代和新市场复用做好准备。好的素材方向可以跨类目复用。</p>
+<hr />
+<h2>下一步：素材池如何持续供给？</h2>
+<p>冷启动成功后，这个团队的素材库并没有闲置。</p>
+<p>他们把跑通的“音质对比”和“佩戴展示”两个方向迁移到了其他产品线——比如蓝牙音箱、无线充电器。测试成本从首周200美元降低到后续50美元/产品。</p>
+<p><strong>这才是素材池搭建的真正价值：不是一次性的投放素材，而是可持续复用的内容资产。</strong></p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Scene: Day 3 After Launch, $200 Ad Spend with Almost No Sales</h2>
+<p>A 3C accessories team in Shenzhen launched a Bluetooth earphone on TikTok Shop Malaysia. </p>
+<p>Priced at $12.9, with a first-week ad budget of $200. Operator Xiao Li set up 3 ads with confidence—but after 3 days:</p>
+<ul>
+<li>12,000 total impressions</li>
+<li>CTR at 0.6%, far below category average of 1.8%</li>
+<li>CVR at 0.7%, almost no one purchased</li>
+<li>$182 ad spend, GMV only $146</li>
+</ul>
+<p>"I've tried several creative versions, but results are still poor." Xiao Li started doubting the product itself.</p>
+<hr />
+<h2>Problem Diagnosis: It's Not the Product—It's the Creative Direction</h2>
+<p>When our team took over the diagnosis, we found the problem wasn't the product itself.</p>
+<p><strong>Core issue: Unclear creative direction led to无效曝光.</strong></p>
+<p>The team was using static product images with factory narration—a typical "traditional trade export mindset": showcasing product specs and manufacturing capabilities. But TikTok users care about: How does this earphone sound? How does it look when worn? Is it worth it?</p>
+<p>Problem breakdown:</p>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Specific Issue</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unclear creative direction</td>
+<td>No testing on what users actually interested in</td>
+<td>Budget wasted on无效曝光</td>
+</tr>
+<tr>
+<td>Single creative type</td>
+<td>All factory-style explanation videos</td>
+<td>High scroll-away rate</td>
+</tr>
+<tr>
+<td>Lacking trust signals</td>
+<td>0 sales, 0 reviews, unpersuasive product page</td>
+<td>High conversion decision barrier</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Judgment: Test Creative Direction First, Then Batch Produce</h2>
+<p>TikTok Shop's traffic distribution is algorithm-driven—the system rapidly tests creatives, finds content that triggers engagement, and amplifies it.</p>
+<p><strong>Key judgment: In cold start, creative direction matters more than quantity.</strong></p>
+<p>Our strategy: spend a small budget to identify 2-3 promising creative directions, then quickly batch-produce around those directions.</p>
+<h3>Creative Direction Planning</h3>
+<p>Based on analysis of top-performing Bluetooth earphone content, we identified three possible directions:</p>
+<ol>
+<li><strong>Sound Quality Comparison</strong>: Use comparison tactics to showcase earphone sound quality (e.g., "Brand X vs. Ours"), creating auditory contrast</li>
+<li><strong>Wear Demonstration</strong>: Real models, showing wearing effects in different scenarios, building usage immersion</li>
+<li><strong>Urgency Promotion</strong>: Limited-time discounts, stock scarcity messaging, driving impulse conversion</li>
+</ol>
+<hr />
+<h2>Actions: Building and Testing 20 Creatives</h2>
+<h3>First Batch: 5-8 per direction</h3>
+<table>
+<thead>
+<tr>
+<th>Direction</th>
+<th>Quantity</th>
+<th>Specific Format</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sound comparison</td>
+<td>8</td>
+<td>ASMR-style sound comparison, different music type tests</td>
+</tr>
+<tr>
+<td>Wear demonstration</td>
+<td>7</td>
+<td>Commute scenario, gym scenario, office scenario</td>
+</tr>
+<tr>
+<td>Urgency promotion</td>
+<td>5</td>
+<td>Countdown overlays, low-stock copy, exclusive coupon</td>
+</tr>
+</tbody>
+</table>
+<p>Production standards:</p>
+<ul>
+<li>Video length: 15-25 seconds (better completion rate)</li>
+<li>First 3 seconds must have a hook: sound impact / visual contrast / question</li>
+<li>No subtitles (users are习惯 viewing captions but auto-play may miss them)</li>
+<li>Background music: Use TikTok trending BGM for native feel</li>
+</ul>
+<h3>Testing Rhythm</h3>
+<p><strong>Days 1-2: Focus on Direction Testing</strong></p>
+<ul>
+<li>$50 daily budget</li>
+<li>At least 2 creatives per direction</li>
+<li>Monitor: CTR, add-to-cart rate, CVR</li>
+</ul>
+<p><strong>Days 3-4: Data Elimination + Quick Iteration</strong></p>
+<ul>
+<li>Keep creatives with CTR &gt; 2%</li>
+<li>Pause underperformers</li>
+<li>Quickly add new creatives around high-performing directions</li>
+</ul>
+<p><strong>Days 5-7: Scale Top Creatives</strong></p>
+<ul>
+<li>80% budget to top 3 creatives</li>
+<li>20% continues testing new directions</li>
+<li>Monitor organic traffic conversion rate</li>
+</ul>
+<hr />
+<h2>Results: Week-One ROI 1.5x, 32% Orders from Organic Traffic</h2>
+<p>After 7 days, data comparison:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ad spend</td>
+<td>$182</td>
+<td>$210</td>
+</tr>
+<tr>
+<td>GMV</td>
+<td>$146</td>
+<td>$315</td>
+</tr>
+<tr>
+<td>CVR</td>
+<td>0.7%</td>
+<td>2.1%</td>
+</tr>
+<tr>
+<td>ROI</td>
+<td>0.8</td>
+<td>1.5</td>
+</tr>
+<tr>
+<td>Organic traffic %</td>
+<td>8%</td>
+<td>32%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>What happened?</strong></p>
+<ul>
+<li>Sound quality comparison creatives had highest CTR (avg 2.4%), with one "airplane noise test" video driving 63% of GMV</li>
+<li>Urgency promotion creatives converted fastest, but had higher cart abandonment</li>
+<li>Wear demonstration creatives performed well on organic traffic, indicating strong "discovery" appeal</li>
+</ul>
+<hr />
+<h2>Takeaways: 3 Key Insights for Creative Pool Building</h2>
+<p><strong>1. Direction &gt; Quantity</strong></p>
+<p>The biggest cold start mistake is "shooting a few random videos and boosting hard." Testing direction first then batching is the core logic for reducing trial-and-error costs.</p>
+<p><strong>2. TikTok creatives need "content feel"</strong></p>
+<p>Users encounter feed ads, not product detail pages. Creatives should feel like regular short videos that spark curiosity or resonance—not "buyer reviews + product specs."</p>
+<p><strong>3. Creative pools need tiered management</strong></p>
+<p>Organize creatives by direction for future iteration and new market reuse. Good creative directions can cross categories.</p>
+<hr />
+<h2>Next Step: How to Keep the Creative Pool Supplying?</h2>
+<p>After successful cold start, this team's creative pool wasn't idle.</p>
+<p>They migrated the proven "sound comparison" and "wear demonstration" directions to other product lines—Bluetooth speakers, wireless chargers. Testing cost dropped from $200 in the first week to $50 per product afterward.</p>
+<p><strong>This is the real value of creative pool building: not one-time ad creatives, but sustainable content assets.</strong></p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
