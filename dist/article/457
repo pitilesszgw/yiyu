@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">周报观察：出海广告对账季来了，充值、消耗、发票三大坑你踩过几个？</span>
+                    <span x-show="lang === 'en'" x-cloak>Weekly Watch: Ad Spend Reconciliation Season — Three Pitfalls in Top-Up, Spend and Invoice Matching</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-09-15</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="457" data-base-views="31">31</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu1445/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>本周观察：对账焦虑集中爆发</h2>
+<p>年末将至，海外广告平台的账单周期陆续闭合。Meta、Google、TikTok、Pinterest 等主流渠道的月度消耗报告正在密集释放，广告主和代理商的对账需求直线上升。</p>
+<p>本周以渔数媒后台收到的对账相关咨询量较上月同期增长约 40%，问题集中体现在三个维度：充值汇率与入账汇率不一致、平台消耗报告与财务记录存在差异、发票信息与报销要求难以匹配。这三个“坑”看似基础，却频繁出现在多账户、多平台运营团队的实际工作中。</p>
+<p>本期周报观察不打算写成教科书式的对账指南，而是结合本周真实咨询案例，聊聊这几个高频问题的成因和应对思路。</p>
+<hr />
+<h2>清单：本周三大高频对账问题</h2>
+<h3>1. 充值汇率差——你以为到账的钱，和平台显示的不一样</h3>
+<p><strong>问题表现</strong>：某跨境电商团队在月初集中充值 Google Ads，使用月初锁定的优惠汇率，但平台实际入账汇率在充值当日根据实时汇率计算，最终入账金额比预期少了约 1.2%。月结时财务发现账户余额与充值总额存在缺口。</p>
+<p><strong>成因拆解</strong>：<br />
+- 平台充值汇率与合同约定汇率存在时间差<br />
+- 部分平台对大额充值提供汇率保护，但需提前申请<br />
+- 月末充值时汇率波动更大，风险敞口增加</p>
+<p><strong>编辑建议</strong>：建立“充值日历”，提前规划大额充值时间窗口，避免在汇率高点集中充值。</p>
+<h3>2. 消耗数据延迟——报表上的数字，今天看和明天看不一样</h3>
+<p><strong>问题表现</strong>：某工具类 App 投放团队在 11 月 30 日查看 Meta 后台，消耗报告显示当月总消耗 12.8 万美元；12 月 1 日再次查看，同一周期数据更新为 13.1 万美元。财务据此做账时发现对不上。</p>
+<p><strong>成因拆解</strong>：<br />
+- 海外平台的数据同步存在 24-72 小时延迟<br />
+- 时区设置差异导致消耗归属日期错位<br />
+- 跨天时区（尤其是美东/UTC）的消费归属是重灾区</p>
+<p><strong>编辑建议</strong>：对账时以平台最终结算报告为准，而非实时看板。建议在每月 5 日后再进行上月消耗的最终确认。</p>
+<h3>3. 发票信息不一致——钱付了，发票开不出来</h3>
+<p><strong>问题表现</strong>：某出海游戏公司使用多个主体分别与 Google、Meta、TikTok 签约，财务对账时发现部分发票的税号、地址与公司注册信息存在细微差异，导致报销流程卡壳。</p>
+<p><strong>成因拆解</strong>：<br />
+- 开户主体与收款主体不一致<br />
+- 发票模板未提前与财务确认<br />
+- 平台发票出具周期长（通常 5-15 个工作日）</p>
+<p><strong>编辑建议</strong>：开户阶段就与财务确认发票信息模板，确保所有平台账户的发票抬头一致。</p>
+<hr />
+<h2>案例：多账户团队如何做三单核对</h2>
+<p>以渔数媒服务的某多平台投放团队，采用以下流程进行月度三单核对：</p>
+<ol>
+<li><strong>充值记录导出</strong>：从后台导出各平台充值明细，包含充值时间、金额、汇率</li>
+<li><strong>消耗报告下载</strong>：等待平台结算周期完成后（通常每月 3-5 日后）下载官方报告</li>
+<li><strong>发票核对</strong>：检查发票金额是否与充值金额匹配，注意区分“预充值”与“消耗抵扣”两种场景</li>
+<li><strong>差异标注</strong>：对汇率差、时区差异导致的微小差异做书面说明</li>
+<li><strong>归档留存</strong>：将对账记录存档，为季度审计做准备</li>
+</ol>
+<p>该团队负责人反馈，采用标准化流程后，月度对账时间从原来的 3 人/天缩短至 0.5 人/天。</p>
+<hr />
+<h2>年末对账 checklist，收藏备用</h2>
+<ul>
+<li>[ ] 确认各平台账单已稳定（建议每月 5 日后操作）</li>
+<li>[ ] 充值记录与平台入账明细逐一核对</li>
+<li>[ ] 检查时区设置，确保消耗归属正确</li>
+<li>[ ] 核对发票抬头、税号、地址与公司信息一致</li>
+<li>[ ] 记录汇率差，准备财务说明文档</li>
+<li>[ ] 多账户团队建议使用统一对账工具，避免手动 Excel 汇总</li>
+</ul>
+<hr />
+<h2>短评：现在不做准备，年末两行泪</h2>
+<p>海外广告对账不是年底才需要操心的事。日常做好充值记录、消耗核对和发票归档，年末对账季才能从容应对。</p>
+<p>对于管理多个平台、多个账户的出海团队而言，建议尽早建立标准化的对账 SOP。如果目前还没有成体系的流程，现在是建立的好时机——别等到 12 月 31 日晚上才发现账对不上。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>This Week's Observation: Reconciliation Anxiety Peaks</h2>
+<p>As year-end approaches, overseas ad platforms are closing their monthly billing cycles. Reports from Meta, Google, TikTok, Pinterest and other major channels are being released intensively, and reconciliation needs from advertisers and agencies are surging.</p>
+<p>This week, consultations related to reconciliation received through Yiyu Media's support channels increased by approximately 40% compared to the same period last month. Issues cluster around three dimensions: exchange rate gaps between top-ups and credited amounts, discrepancies between platform spend reports and financial records, and misaligned invoice information with报销 requirements. These three "potholes" may seem basic, yet they frequently appear in real operations of multi-account, multi-platform teams.</p>
+<p>This week's observation isn't intended as a textbook-style reconciliation guide. Instead, we analyze the causes and solutions based on real consultation cases from this week.</p>
+<hr />
+<h2>The List: Three High-Frequency Reconciliation Issues This Week</h2>
+<h3>1. Exchange Rate Gaps — The credited amount differs from what you expected</h3>
+<p><strong>Symptom</strong>: A cross-border e-commerce team concentrated their Google Ads top-ups early in the month using a locked-in favorable exchange rate. However, the platform's actual credited rate was calculated at the real-time rate on the top-up day, resulting in a final credited amount approximately 1.2% lower than expected. Finance discovered a gap between account balance and total top-up at month-end.</p>
+<p><strong>Root Cause</strong>: <br />
+- Time lag between platform top-up rates and contractually agreed rates<br />
+- Some platforms offer exchange rate protection for large top-ups, but pre-application is required<br />
+- Month-end top-ups face greater exchange rate volatility and risk exposure</p>
+<p><strong>Editor's Recommendation</strong>: Build a "top-up calendar" and plan large top-up timing windows in advance to avoid concentrated top-ups during rate peaks.</p>
+<h3>2. Spend Data Delays — Numbers look different today vs. tomorrow</h3>
+<p><strong>Symptom</strong>: A utility app's advertising team checked Meta's backend on November 30th. The spend report showed total monthly spend at $128,000. When checked again on December 1st, the same period's data updated to $131,000. Finance found discrepancies when reconciling.</p>
+<p><strong>Root Cause</strong>: <br />
+- Overseas platforms have 24-72 hour data sync delays<br />
+- Timezone setting differences cause spend attribution date misalignments<br />
+- Cross-day timezones (especially US Eastern/UTC) spend attribution are problem hotspots</p>
+<p><strong>Editor's Recommendation</strong>: Use the platform's final settlement report as the reconciliation basis, not the real-time dashboard. It's recommended to confirm the previous month's spend after the 5th of each month.</p>
+<h3>3. Invoice Information Mismatches — Payment made, but invoice can't be issued</h3>
+<p><strong>Symptom</strong>: An overseas gaming company uses multiple entities to contract with Google, Meta, and TikTok respectively. During finance reconciliation, they found that some invoice tax numbers and addresses had minor discrepancies with company registration information, causing reimbursement processes to stall.</p>
+<p><strong>Root Cause</strong>: <br />
+- Account opening entities don't match receiving entities<br />
+- Invoice templates weren't confirmed with finance in advance<br />
+- Platform invoice issuance cycles are long (typically 5-15 business days)</p>
+<p><strong>Editor's Recommendation</strong>: Confirm invoice template requirements with finance during the account setup phase, ensuring consistent invoice recipient information across all platform accounts.</p>
+<hr />
+<h2>Case Study: How Multi-Account Teams Perform Three-Way Matching</h2>
+<p>A multi-platform advertising team served by Yiyu Media uses the following process for monthly three-way matching:</p>
+<ol>
+<li><strong>Export top-up records</strong>: Download top-up details from each platform backend, including top-up time, amount, and exchange rate</li>
+<li><strong>Download spend reports</strong>: Wait for the platform's settlement cycle to complete (typically after the 3rd-5th of each month) before downloading official reports</li>
+<li><strong>Invoice verification</strong>: Check whether invoice amounts match top-up amounts; note the distinction between "prepaid top-up" and "spend deduction" scenarios</li>
+<li><strong>Variance annotation</strong>: Provide written explanations for minor discrepancies caused by exchange rate differences or timezone shifts</li>
+<li><strong>Archive for retention</strong>: Keep reconciliation records on file for quarterly audits</li>
+</ol>
+<p>The team lead reported that after adopting this standardized process, monthly reconciliation time reduced from 3 person-days to 0.5 person-days.</p>
+<hr />
+<h2>Year-End Reconciliation Checklist — Save for Reference</h2>
+<ul>
+<li>[ ] Confirm all platform statements are stable (recommended: operate after the 5th of each month)</li>
+<li>[ ] Cross-check top-up records with platform credited transaction details</li>
+<li>[ ] Verify timezone settings to ensure correct spend attribution</li>
+<li>[ ] Confirm invoice recipient names, tax numbers, and addresses match company information</li>
+<li>[ ] Record exchange rate variances and prepare finance explanation documentation</li>
+<li>[ ] Multi-account teams should consider unified reconciliation tools to avoid manual Excel consolidation</li>
+</ul>
+<hr />
+<h2>Editor's Note: No Preparation Now Means Tears at Year-End</h2>
+<p>Overseas ad reconciliation isn't something to worry about only at year-end. By maintaining proper top-up records, spend verification, and invoice archiving in your daily operations, you can handle year-end reconciliation season with ease.</p>
+<p>For overseas teams managing multiple platforms and accounts, establishing a standardized reconciliation SOP as early as possible is strongly advised. If you don't currently have a systematic process in place, now is the perfect time to build one — don't wait until the evening of December 31st only to discover your accounts don't match.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
