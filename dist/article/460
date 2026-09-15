@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">代理开户服务为什么需要系统化看板</span>
+                    <span x-show="lang === 'en'" x-cloak>Why Ad Agency Account Opening Services Need Systematic Kanban Management</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-09-16</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="460" data-base-views="67">67</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu5524/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>运营背景：代理开户服务的三大效率杀手</h2>
+<p>做广告代理开户，最怕的不是开不了户，而是：客户天天问进度、资料在哪个环节丢了、续费账户莫名其妙被暂停。</p>
+<p>这些问题背后有一个共同原因——<strong>没有系统化的流程管理工具</strong>。当开户量从每月10个增长到50个时，靠表格、微信群和记忆已经无法支撑。</p>
+<p>系统化看板不是“高大上”的管理概念，而是让重复性工作变得可控的实战工具。</p>
+<hr />
+<h2>检查项：你的开户服务是否存在这些问题？</h2>
+<p>在开始搭建看板之前，先确认当前痛点：</p>
+<ul>
+<li>[ ] 同一客户在不同渠道（邮件/微信/电话）有多个进度版本，信息不一致</li>
+<li>[ ] 资料提交后不知道卡在哪个环节，审核周期无法预估</li>
+<li>[ ] 账户充值后没有及时通知客户，导致广告投放中断</li>
+<li>[ ] 不同客户的开户标准不统一，服务质量依赖个人经验</li>
+<li>[ ] 月底对账时发现部分账户消耗异常，但无法追溯操作记录</li>
+</ul>
+<p>如果勾选超过2项，说明你的开户服务亟需系统化改造。</p>
+<hr />
+<h2>步骤一：设计看板的基础状态列</h2>
+<p>看板的核心是“账户状态可视化”。建议根据开户流程设计以下状态列：</p>
+<table>
+<thead>
+<tr>
+<th>状态列</th>
+<th>含义</th>
+<th>触发条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>客户资料待整理</td>
+<td>客户已咨询，但未提交完整资质</td>
+<td>新建工单时</td>
+</tr>
+<tr>
+<td>资质审核中</td>
+<td>资料已提交，等待内部初审</td>
+<td>运营接收资料</td>
+</tr>
+<tr>
+<td>平台提交中</td>
+<td>已向Meta/Google/TikTok提交开户申请</td>
+<td>进入平台审核</td>
+</tr>
+<tr>
+<td>补充材料</td>
+<td>平台要求补充文件</td>
+<td>收到平台反馈</td>
+</tr>
+<tr>
+<td>开户成功</td>
+<td>账户已激活，可充值投放</td>
+<td>收到账户确认</td>
+</tr>
+<tr>
+<td>投放跟进中</td>
+<td>账户已交付，持续服务中</td>
+<td>客户完成首充</td>
+</tr>
+<tr>
+<td>已休眠</td>
+<td>超过30天无消耗，需激活或归档</td>
+<td>定期检查触发</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>提示</strong>：状态列不是越多越好。超过7列反而增加认知负担，优先保证核心流程可见。</p>
+</blockquote>
+<hr />
+<h2>步骤二：为每个状态列配置操作清单</h2>
+<p>看板不仅要“看到”状态，还要能“推动”状态流转。每个状态列对应具体操作：</p>
+<p><strong>资质审核中</strong></p>
+<ul>
+<li>[ ] 对照平台要求清单，逐项核对资料完整性</li>
+<li>[ ] 检查营业执照、法人信息、广告主网站是否一致</li>
+<li>[ ] 如有疑问，在工单备注栏标注，待客户确认</li>
+</ul>
+<p><strong>补充材料</strong></p>
+<ul>
+<li>[ ] 明确记录平台返回的补材原因（截图保存）</li>
+<li>[ ] 24小时内通知客户所需材料清单</li>
+<li>[ ] 设置补材截止提醒（建议留出2天缓冲）</li>
+</ul>
+<p><strong>开户成功</strong></p>
+<ul>
+<li>[ ] 记录账户ID、户名、审核通过时间</li>
+<li>[ ] 将账户信息同步至财务系统，建立充值台账</li>
+<li>[ ] 发送账户交付邮件，包含登录指引和充值说明</li>
+</ul>
+<hr />
+<h2>步骤三：设置自动化提醒规则</h2>
+<p>手动追踪容易遗漏，自动化提醒是关键：</p>
+<ul>
+<li><strong>资料过期提醒</strong>：资质有效期不足30天时，自动预警（如营业执照年度检验）</li>
+<li><strong>充值余额预警</strong>：账户余额低于预设阈值（如$500），通知客户和运营</li>
+<li><strong>休眠账户激活</strong>：账户连续14天无消耗，触发激活检查流程</li>
+<li><strong>续费节点提醒</strong>：年度资质更新前15天，提醒客户准备材料</li>
+</ul>
+<hr />
+<h2>步骤四：建立财务对账检查清单</h2>
+<p>开户服务不仅是流程交付，还涉及充值和消耗追踪。建议看板关联财务字段：</p>
+<ul>
+<li>[ ] 每笔充值记录关联账户ID、时间、金额、支付方式</li>
+<li>[ ] 每周核对平台后台余额与财务记录是否一致</li>
+<li>[ ] 异常消耗（如单日消耗突增200%）需标记并排查</li>
+<li>[ ] 月底导出账户报告，与客户完成消耗确认</li>
+</ul>
+<hr />
+<h2>步骤五：实施后的检查与迭代</h2>
+<p>看板上线第一周，需要验证效果：</p>
+<ul>
+<li>[ ] 统计有多少账户跨越了完整的看板流程，有无“卡死”状态</li>
+<li>[ ] 收集运营人员的使用反馈，哪些字段是冗余的</li>
+<li>[ ] 客户咨询“进度”到运营查询的时间，是否缩短</li>
+<li>[ ] 基于实际案例，更新标准操作文档（SOP）</li>
+</ul>
+<hr />
+<h2>总结：看板让开户服务从“人盯人”到“系统驱动”</h2>
+<p>系统化看板的最终目标不是“看起来规范”，而是：</p>
+<ul>
+<li><strong>客户体验提升</strong>：流程透明，客户随时可查进度，减少无效催促</li>
+<li><strong>运营效率提升</strong>：新人可快速接手，经验不再只存在于个人脑子里</li>
+<li><strong>财务风险可控</strong>：充值和消耗有记录，异常可追溯</li>
+</ul>
+<p>从一张简单的看板开始，先把核心状态跑通，再逐步添加财务、协作等高级字段。这是比“一步到位”更可行的改造路径。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Context: Three Efficiency Killers in Agency Account Opening</h2>
+<p>The biggest challenge in ad agency account opening isn't getting accounts approved—it's clients constantly asking for updates, missing documents, and accounts mysteriously suspended.</p>
+<p>These problems share a common root: <strong>no systematic process management tool</strong>. When monthly account openings grow from 10 to 50, spreadsheets, WeChat groups, and memory alone can't keep up.</p>
+<p>A systematic kanban isn't a fancy management concept—it's a practical tool for making repetitive work controllable.</p>
+<hr />
+<h2>Checklist: Do These Problems Exist in Your Account Opening Service?</h2>
+<p>Before building a kanban, confirm your current pain points:</p>
+<ul>
+<li>[ ] Multiple progress versions across different channels (email/WeChat/call)</li>
+<li>[ ] No visibility into which stage documents are stuck at</li>
+<li>[ ] Delayed client notifications after account top-ups, causing campaign pauses</li>
+<li>[ ] Inconsistent service quality depending on individual experience</li>
+<li>[ ] Abnormal account spending discovered during monthly reconciliation with no audit trail</li>
+</ul>
+<p>If you checked more than 2 items, your account opening service needs systematic improvement.</p>
+<hr />
+<h2>Step 1: Design Basic Kanban Columns</h2>
+<p>The core of kanban is "account status visibility." Design columns based on your workflow:</p>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+<th>Trigger</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Documents Pending</td>
+<td>Client inquired but hasn't submitted complete credentials</td>
+<td>New ticket created</td>
+</tr>
+<tr>
+<td>Internal Review</td>
+<td>Documents submitted, awaiting initial internal check</td>
+<td>Operations receives documents</td>
+</tr>
+<tr>
+<td>Platform Submission</td>
+<td>Account application submitted to Meta/Google/TikTok</td>
+<td>Entering platform review</td>
+</tr>
+<tr>
+<td>Additional Materials</td>
+<td>Platform requires supplementary documents</td>
+<td>Platform feedback received</td>
+</tr>
+<tr>
+<td>Account Approved</td>
+<td>Account activated, ready for top-up</td>
+<td>Account confirmation received</td>
+</tr>
+<tr>
+<td>Active Management</td>
+<td>Account delivered, ongoing service</td>
+<td>Client completes first top-up</td>
+</tr>
+<tr>
+<td>Dormant</td>
+<td>No spending for 30+ days, needs activation or archiving</td>
+<td>Regular check triggers</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Tip</strong>: More columns aren't better. Over 7 columns increase cognitive load. Prioritize core workflow visibility.</p>
+</blockquote>
+<hr />
+<h2>Step 2: Configure Action Lists for Each Column</h2>
+<p>Kanban should not only show status but also drive status transitions. Each column has specific actions:</p>
+<p><strong>Internal Review</strong></p>
+<ul>
+<li>[ ] Cross-check document completeness against platform requirements</li>
+<li>[ ] Verify consistency of business license, legal representative, and advertiser website</li>
+<li>[ ] Flag uncertainties in ticket notes for client confirmation</li>
+</ul>
+<p><strong>Additional Materials</strong></p>
+<ul>
+<li>[ ] Record platform's reason for requesting additional materials (save screenshots)</li>
+<li>[ ] Notify client within 24 hours with required document list</li>
+<li>[ ] Set deadline reminder (recommend 2-day buffer)</li>
+</ul>
+<p><strong>Account Approved</strong></p>
+<ul>
+<li>[ ] Record account ID, name, and approval timestamp</li>
+<li>[ ] Sync account info to financial system, establish top-up ledger</li>
+<li>[ ] Send account delivery email with login guide and top-up instructions</li>
+</ul>
+<hr />
+<h2>Step 3: Set Up Automated Reminder Rules</h2>
+<p>Manual tracking leads to gaps. Automated reminders are essential:</p>
+<ul>
+<li><strong>Document expiry alert</strong>: Warning when credential validity falls below 30 days</li>
+<li><strong>Balance threshold alert</strong>: Notify client and operations when account balance drops below preset threshold (e.g., $500)</li>
+<li><strong>Dormant account check</strong>: Trigger activation check for accounts with 14+ consecutive days of no spending</li>
+<li><strong>Renewal reminder</strong>: Alert client 15 days before annual credential renewal</li>
+</ul>
+<hr />
+<h2>Step 4: Establish Financial Reconciliation Checklist</h2>
+<p>Account opening service involves top-up and spending tracking. Link kanban to financial fields:</p>
+<ul>
+<li>[ ] Link each top-up record to account ID, timestamp, amount, and payment method</li>
+<li>[ ] Weekly reconcile platform backend balance with financial records</li>
+<li>[ ] Flag abnormal spending (e.g., 200%+ daily increase) for investigation</li>
+<li>[ ] Export account reports monthly, confirm spending with clients</li>
+</ul>
+<hr />
+<h2>Step 5: Post-Implementation Review and Iteration</h2>
+<p>First week after kanban launch, verify effectiveness:</p>
+<ul>
+<li>[ ] Count how many accounts completed the full kanban flow, identify any "stuck" statuses</li>
+<li>[ ] Gather operations team feedback on redundant fields</li>
+<li>[ ] Measure time from client status inquiry to operations lookup</li>
+<li>[ ] Update standard operating documents (SOP) based on actual cases</li>
+</ul>
+<hr />
+<h2>Summary: Kanban Transforms Account Opening from "Person-to-Person" to "System-Driven"</h2>
+<p>The ultimate goal of systematic kanban isn't looking organized—it's achieving:</p>
+<ul>
+<li><strong>Improved client experience</strong>: Transparent process, clients can check progress anytime, reducing unnecessary follow-ups</li>
+<li><strong>Improved operations efficiency</strong>: New team members can onboard quickly, expertise no longer exists only in individual heads</li>
+<li><strong>Controllable financial risk</strong>: Top-ups and spending have records, anomalies are traceable</li>
+</ul>
+<p>Start with a simple kanban, get core statuses flowing first, then gradually add financial and collaboration features. This is a more feasible improvement path than "getting it perfect from day one."</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
