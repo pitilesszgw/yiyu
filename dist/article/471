@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">多账户投放团队本周观察：分层管理为何成为必修课</span>
+                    <span x-show="lang === 'en'" x-cloak>Weekly Pulse: Why Tiered Account Management Is Now Essential for Multi-Account Teams</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-09-19</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="471" data-base-views="90">90</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu1877/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>本周行业动向</h2>
+<p>进入 Q4 投放旺季以来，以渔数媒接到的多账户管理咨询量较上月增长约 40%，其中超过六成集中在<strong>账户分层策略缺失</strong>这一问题上。很多团队并非没有尝试分层，而是分得很粗糙——要么按平台分（Meta 账户、TikTok 账户、Google 账户），要么按产品分，但充值节奏、预算分配和风控响应仍然一团乱麻。</p>
+<p>本周我们观察到三个值得重点关注的变化：</p>
+<ol>
+<li><strong>平台对多账户关联的审查更严格</strong>，部分团队的子账户因充值 IP 集中触发风控，导致余额被冻结。</li>
+<li><strong>旺季预算波动加剧</strong>，头部账户与尾部账户的消耗差距拉大，资源分配失衡问题集中暴露。</li>
+<li><strong>素材生命周期缩短</strong>，跑量素材往往在 3-5 天内衰减，依赖单一账户的团队开始出现青黄不接的情况。</li>
+</ol>
+<hr />
+<h2>三个高频痛点解析</h2>
+<h3>痛点一：充值优先级混乱</h3>
+<p>典型场景是：团队手里有 10 个账户，其中 3 个是主力跑量账户、5 个是测试账户、2 个是备用账户。但充值时往往哪个账户余额告急就先充哪个，结果主力账户有时反而因为财务审批延迟被降速。</p>
+<p><strong>影响</strong>：跑量账户资金断档直接拉高 CPM，整个投放计划的 eCPM 上涨 15%-25% 并不罕见。</p>
+<p><strong>建议</strong>：建立账户分级充值 SOP。按账户层级设定不同的充值阈值和审批流程，主力账户可采用自动充值或预付款模式，测试账户则按周预算固定充值。</p>
+<h3>痛点二：预算分配失衡</h3>
+<p>部分团队采用"经验直觉"分配预算，即运营人员凭感觉给各账户分配每日预算。没有数据支撑的分配方式，在旺季流量波动加剧时，会导致优质账户预算不足、劣质账户空消耗。</p>
+<p><strong>建议</strong>：按账户历史 ROAS 和生命周期价值（LTV）将账户分为核心账户、增长账户和实验账户三类，核心账户占用总预算的 60%-70%，增长账户占 20%-30%，实验账户控制在 10% 以内，并设置周度动态调整机制。</p>
+<h3>痛点三：风控响应滞后</h3>
+<p>当某个账户触发平台审核或被限制投放时，很多团队的反应是"先等等看"，结果错过最佳申诉窗口。多个账户同时运营的情况下，风控事件的关联风险也在上升——一个账户出问题，同 IP 或同支付方式的账户可能受到波及。</p>
+<p><strong>建议</strong>：为各层级账户配置不同的风控响应预案。核心账户建议安排专人监控，测试账户可采用较低的充值金额以控制风险敞口。</p>
+<hr />
+<h2>本周实操清单</h2>
+<p>以下是以渔数媒本周为合作团队落地的三项具体操作，供同类团队参考：</p>
+<ul>
+<li><strong>完成账户分级标签化</strong>：按"主力/测试/备用"三级重新命名并打标签，统一在管理后台呈现。</li>
+<li><strong>重新校准充值阈值</strong>：主力账户设置余额低于 20% 自动预警，测试账户设置 30% 预警，备用账户按需充值。</li>
+<li><strong>建立跨账户素材共享机制</strong>：测试账户跑出的高互动素材，在 24 小时内同步至主力账户扩量，避免素材断层。</li>
+</ul>
+<hr />
+<h2>本周小结</h2>
+<p>多账户分层管理不是"大团队才需要"的事务。随着投放规模扩大或平台政策收紧，分层不清的后果会被快速放大。建议各团队本周优先完成两件事：明确账户分级标准，并建立与分级挂钩的充值与预算规则。这两件事做好了，后续的风控和扩量都会顺畅很多。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Weekly Industry Pulse</h2>
+<p>This week, Yuyumei Media received about 40% more inquiries on multi-account management compared to last month, with over 60% centering on one core issue: the lack of a structured account tiering system. Many teams have attempted tiering but with minimal sophistication—either grouping by platform or by product. When it comes to recharge timing, budget allocation, and risk response, things remain chaotic.</p>
+<p>Three key changes observed this week:</p>
+<ol>
+<li><strong>Platforms are tightening multi-account correlation reviews</strong>, with some teams' sub-accounts frozen due to concentrated recharge IPs triggering risk controls.</li>
+<li><strong>Peak-season budget volatility is intensifying</strong>, widening the spending gap between top-tier and bottom-tier accounts and exposing resource allocation imbalances.</li>
+<li><strong>Creative lifecycles are shortening</strong>, with high-performing creatives fading within 3-5 days, and teams relying on single accounts are facing serious content gaps.</li>
+</ol>
+<hr />
+<h2>Breaking Down Three High-Frequency Pain Points</h2>
+<h3>Pain Point 1: Chaotic Recharge Priorities</h3>
+<p>A typical scenario: a team manages 10 accounts—3 are high-performance primary accounts, 5 are testing accounts, and 2 are backups. Recharges happen on a "whoever runs low first" basis, sometimes delaying top performers due to finance approval bottlenecks.</p>
+<p><strong>Impact</strong>: A funding gap in high-performing accounts directly increases CPM, with eCPM rising 15-25% not uncommon.</p>
+<p><strong>Recommendation</strong>: Establish an account-tiered recharge SOP. Set different recharge thresholds and approval workflows per tier. Primary accounts should use auto-recharge or prepaid models; testing accounts get fixed weekly budget recharges.</p>
+<h3>Pain Point 2: Budget Misalignment</h3>
+<p>Some teams rely on "gut instinct" to allocate budgets—individual managers decide daily budgets by feel. Without data-driven allocation, peak-season traffic fluctuations expose this weakness: quality accounts get underfunded while underperforming accounts consume budget wastefully.</p>
+<p><strong>Recommendation</strong>: Categorize accounts into three tiers based on historical ROAS and LTV: core accounts, growth accounts, and experimental accounts. Core accounts receive 60-70% of total budget, growth accounts 20-30%, and experiments capped at 10%, with weekly dynamic adjustment mechanisms.</p>
+<h3>Pain Point 3: Delayed Risk Response</h3>
+<p>When an account triggers platform review or ad restrictions, many teams default to "wait and see," missing the optimal escalation window. With multiple accounts in operation, correlation risk increases—one account flagged can affect others sharing the same IP or payment method.</p>
+<p><strong>Recommendation</strong>: Configure tier-specific risk response playbooks. Core accounts need dedicated monitoring; testing accounts should carry lower recharge amounts to control exposure. Use distinct IPs and payment methods across account tiers to reduce correlation risk.</p>
+<hr />
+<h2>Action Checklist for This Week</h2>
+<p>Three specific measures Yuyumei Media implemented this week for partner teams:</p>
+<ul>
+<li><strong>Completed account tier tagging</strong>: Reclassified all accounts under "Primary / Testing / Backup" with unified labels across the management dashboard.</li>
+<li><strong>Recalibrated recharge thresholds</strong>: Primary accounts trigger alerts at 20% balance remaining; testing accounts at 30%; backups recharged on demand.</li>
+<li><strong>Established cross-account creative sharing</strong>: High-engagement creatives from testing accounts are synced to primary accounts within 24 hours for scaling, avoiding content gaps.</li>
+</ul>
+<hr />
+<h2>Weekly Takeaway</h2>
+<p>Multi-account tiered management is not a "large-team-only" concern. As ad spend scales or platform policies tighten, the consequences of unclear tiering compound quickly. This week, prioritize two actions: define your account tiering criteria, and build recharge and budget rules tied directly to those tiers. Get these right, and risk management and scaling become significantly smoother.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
