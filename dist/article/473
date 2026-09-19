@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">TikTok Shop 新品冷启动：素材池到底要提前准备多少条？</span>
+                    <span x-show="lang === 'en'" x-cloak>TikTok Shop Cold Launch: How Many Creatives Should You Prepare in Advance?</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-09-20</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="473" data-base-views="88">88</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu4488/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>先给结论：新品冷启动至少备好 30 条素材，再谈投放</h2>
+<p>很多团队在 TikTok Shop 开店后急着开跑广告，结果素材两天耗尽，账户空转。<strong>冷启动失败的第一原因不是出价低，而是素材池太薄。</strong></p>
+<p>以渔数媒接触过的多个跨境团队案例中，新品首周能跑出正向 ROI 的，平均准备了 35-50 条素材，经过 3-5 天素材测试期后逐步收敛到 5-8 条主力素材。而冷启动拖到三周以上的团队，往往只准备了 10-15 条素材，后期只能反复拉量、反复衰减。</p>
+<blockquote>
+<p><strong>结论：TikTok Shop 新品冷启动的素材池底线是 30 条，目标是 40-60 条。低于这个数字，账户大概率会在测试期陷入反复调优的死循环。</strong></p>
+</blockquote>
+<hr />
+<h2>一、素材池的 4 个核心维度</h2>
+<p>不是所有素材都“等效”。一条跑量的素材，必须同时满足以下四个条件：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>说明</th>
+<th>常见错误</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>产品卖点可视化</strong></td>
+<td>能在 3 秒内让用户感知到核心价值</td>
+<td>只展示产品外观，没有使用场景</td>
+</tr>
+<tr>
+<td><strong>情绪触发点</strong></td>
+<td>引发好奇、惊讶、认同或紧迫感</td>
+<td>平铺直叙，缺乏“钩子”</td>
+</tr>
+<tr>
+<td><strong>行动引导清晰</strong></td>
+<td>明确告知用户下一步做什么</td>
+<td>CTA 不明确或缺失</td>
+</tr>
+<tr>
+<td><strong>平台原生感</strong></td>
+<td>符合 TikTok 的竖屏、节奏、字幕风格</td>
+<td>直接搬运横版图文视频</td>
+</tr>
+</tbody>
+</table>
+<p>素材池搭建时，建议按以下配比分配：</p>
+<ul>
+<li><strong>60% 情景剧/UGC 类</strong>：模拟真实用户使用场景，真人出镜优先</li>
+<li><strong>25% 产品展示类</strong>：开箱、功能演示、卖点拆解</li>
+<li><strong>15% 工厂/溯源类</strong>：展示供应链实力，增强信任（适合有差异化的白牌或自有品牌）</li>
+</ul>
+<hr />
+<h2>二、素材生产的 3 个阶段</h2>
+<h3>阶段 1：开播前 2 周 — 批量生产</h3>
+<p>这一阶段的核心目标是<strong>跑出素材的“最小可测试集”</strong>。</p>
+<ul>
+<li>每日产出 5-8 条新素材</li>
+<li>优先覆盖爆款竞品的热门音乐、热门文案结构</li>
+<li>启用 AI 配音或本地化模特，控制单条素材成本在 150-300 元人民币区间（东南亚市场参考）</li>
+</ul>
+<h3>阶段 2：开播前 1 周 — 快速测试</h3>
+<p>将素材分 3-4 组同步上线，每组预算 50-100 美元，观察 48 小时的 CTR 和 CPC 数据。</p>
+<p><strong>判断标准</strong>：</p>
+<ul>
+<li>CTR &gt; 3% 且 CPC &lt; 0.5 美元的素材，优先放量</li>
+<li>CTR &lt; 1% 的素材直接淘汰，不做二次优化</li>
+</ul>
+<h3>阶段 3：开播后 2 周 — 迭代收敛</h3>
+<p>根据 Shop 广告后台的转化数据，锁定 2-3 条主力素材，同时<strong>保留 20% 的预算持续测试新素材</strong>，避免主力素材衰退后青黄不接。</p>
+<hr />
+<h2>三、一个常见的误区</h2>
+<blockquote>
+<p>“先投 5 条素材测试，效果好再追加。”</p>
+</blockquote>
+<p>这是最常见的冷启动陷阱。5 条素材的测试样本量根本不足以判断产品与受众的匹配度——TikTok 的算法需要足够多的“信号”才能找到目标人群，素材太少等于让算法“盲猜”。</p>
+<p><strong>正确的做法是</strong>：先用 30 条素材做批量探测，让算法在海量信号中找到跑量的组合，然后再逐步收窄到主力素材。</p>
+<hr />
+<h2>四、可落地的素材池搭建清单</h2>
+<ul>
+<li>[ ] 明确主推产品及核心卖点（不超过 3 个）</li>
+<li>[ ] 确定目标市场及目标受众画像</li>
+<li>[ ] 招募/采购至少 3 种不同风格的素材（情景剧、产品特写、UGC 风格）</li>
+<li>[ ] 每种风格准备 10-15 条，合计 30-50 条</li>
+<li>[ ] 配置本地化字幕和配音（避免机器翻译腔）</li>
+<li>[ ] 设定素材测试计划：分批次、分预算上线</li>
+<li>[ ] 预留 20% 预算用于素材迭代储备</li>
+</ul>
+<hr />
+<p><strong>以渔数媒的服务提示</strong>：如果你的团队在素材批量生产或广告账户冷启动阶段遇到瓶颈，可以咨询我们的投放顾问，协助你搭建从素材储备到账户策略的完整链路。新品上线前的准备工作做得越充分，开跑后的容错空间就越大。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Start with the Conclusion: Prepare at Least 30 Creatives Before Launch</h2>
+<p>Many teams are in a rush to launch ads the moment their TikTok Shop opens, only to run out of fresh creatives within two days and leave the account idling. <strong>The primary reason for cold launch failure isn't low bidding—it's an insufficient creative pool.</strong></p>
+<p>Based on cases from multiple cross-border teams we've worked with, those that achieved positive ROI in their first week prepared an average of 35-50 creatives, gradually narrowing down to 5-8主力素材 (main creatives) after 3-5 days of testing. Teams that dragged their cold launch for three weeks or more often prepared only 10-15 creatives, leaving them stuck in a cycle of repeated scaling and decline.</p>
+<blockquote>
+<p><strong>Conclusion: The minimum creative pool for TikTok Shop cold launch is 30 pieces; the target is 40-60. Below this threshold, your account will almost certainly get stuck in an optimization loop during the testing phase.</strong></p>
+</blockquote>
+<hr />
+<h2>Four Core Dimensions of a Creative Pool</h2>
+<p>Not all creatives are created equal. A winning creative must satisfy all four conditions simultaneously:</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Description</th>
+<th>Common Mistakes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Product Value Visibility</strong></td>
+<td>Users can perceive core value within 3 seconds</td>
+<td>Only showing product appearance, no usage scenario</td>
+</tr>
+<tr>
+<td><strong>Emotional Trigger Point</strong></td>
+<td>Evokes curiosity, surprise, recognition, or urgency</td>
+<td>Flat and straightforward, lacking a "hook"</td>
+</tr>
+<tr>
+<td><strong>Clear Call-to-Action</strong></td>
+<td>Clearly tells users what to do next</td>
+<td>Unclear or missing CTA</td>
+</tr>
+<tr>
+<td><strong>Platform-Native Feel</strong></td>
+<td>Fits TikTok's vertical format, pacing, and subtitle style</td>
+<td>Directly repurposing horizontal image videos</td>
+</tr>
+</tbody>
+</table>
+<p>When building your creative pool, follow this allocation ratio:</p>
+<ul>
+<li><strong>60% Scenario/UGC content</strong>: Simulating authentic user scenarios, prioritize real-person presence</li>
+<li><strong>25% Product showcase content</strong>: Unboxing, feature demos, benefit breakdowns</li>
+<li><strong>15% Factory/source content</strong>: Demonstrating supply chain credibility (suitable for differentiated white-label or owned brands)</li>
+</ul>
+<hr />
+<h2>Three Phases of Creative Production</h2>
+<h3>Phase 1: Two Weeks Before Launch — Batch Production</h3>
+<p>The goal at this stage is to establish a "minimum testable set" of creatives.</p>
+<ul>
+<li>Produce 5-8 new creatives daily</li>
+<li>Prioritize covering trending sounds and copy structures from top competitors</li>
+<li>Use AI voiceovers or localized models to control per-creative cost at 150-300 CNY (reference for Southeast Asian markets)</li>
+</ul>
+<h3>Phase 2: One Week Before Launch — Rapid Testing</h3>
+<p>Launch creatives in 3-4 batches simultaneously, with a budget of $50-100 per batch, and monitor CTR and CPC data for 48 hours.</p>
+<p><strong>Decision Criteria:</strong></p>
+<ul>
+<li>CTR &gt; 3% AND CPC &lt; $0.50 → prioritize for scaling</li>
+<li>CTR &lt; 1% → immediately eliminate, do not attempt secondary optimization</li>
+</ul>
+<h3>Phase 3: Two Weeks Post-Launch — Iteration and Convergence</h3>
+<p>Based on conversion data from the Shop Ads dashboard, lock in 2-3 main creatives while <strong>allocating 20% of budget to continuous new creative testing</strong> to avoid a gap when main creatives decline.</p>
+<hr />
+<h2>A Common Misconception</h2>
+<blockquote>
+<p>"Let's test with 5 creatives first, then add more if results are good."</p>
+</blockquote>
+<p>This is the most frequent cold launch trap. Five creatives provide insufficient sample size to judge product-audience fit—TikTok's algorithm needs enough "signals" to identify the target audience, and too few creatives means forcing the algorithm to guess blindly.</p>
+<p><strong>The correct approach</strong>: Use 30 creatives for batch discovery, letting the algorithm find winning combinations from abundant signals, then gradually narrow down to main creatives.</p>
+<hr />
+<h2>Actionable Creative Pool Checklist</h2>
+<ul>
+<li>[ ] Identify primary product and core selling points (no more than 3)</li>
+<li>[ ] Define target market and audience profile</li>
+<li>[ ] Source/commission at least 3 different creative styles (scenario, product close-up, UGC style)</li>
+<li>[ ] Prepare 10-15 pieces per style, totaling 30-50 creatives</li>
+<li>[ ] Add localized subtitles and voiceovers (avoid machine translation tone)</li>
+<li>[ ] Set up creative testing plan: phased rollout with budget allocation</li>
+<li>[ ] Reserve 20% budget for creative iteration buffer</li>
+</ul>
+<hr />
+<p><strong>Yiyu Media Service Note</strong>: If your team faces bottlenecks in batch creative production or ad account cold launch, our投放顾问 (campaign consultants) can help you build a complete pipeline from creative preparation to account strategy. The more thorough your pre-launch preparation, the greater your margin for error once you go live.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
