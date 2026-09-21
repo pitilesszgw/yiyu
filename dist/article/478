@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">本周多账户管理风向变了：平台规则收紧，投放团队分层策略急需调整</span>
+                    <span x-show="lang === 'en'" x-cloak>Weekly Update: Platform Policy Shift Forces Restructuring of Multi-Account Management</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-09-22</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="478" data-base-views="73">73</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu3971/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>本周观察：平台多账户政策出现收紧信号</h2>
+<p>本周，我们监测到 Google Ads 和 Meta 两家主流平台同时加强了对多账户运营的审查力度。多个投放团队反馈，账户因“关联风险”被暂停的比例较上月上升约 15%。这波政策调整的核心变化在于：平台开始将同一企业主体下的多个广告账户视为整体进行风控评估，而非像过去那样主要针对单账户操作行为。</p>
+<p>这一变化意味着，传统的“分账户、分预算、分素材”管理模式遇到了新挑战。以往靠大量账户分散风险的做法，现在反而可能成为风险传导的渠道——一个账户违规，其他关联账户的信任度也会被系统下调。</p>
+<h2>三个直接冲击</h2>
+<p><strong>风险放大而非分散</strong></p>
+<p>过去多账户策略的底层逻辑是“东方不亮西方亮”，但现在平台关联识别技术升级后，单账户的操作失误会快速波及整个账户网络。某工具类 App 投放团队上周就遇到了这样的情况：测试新素材时一条广告被判定为“误导性内容”，结果导致同主体下另外三个稳定投放的账户被附加了额外验证要求。</p>
+<p><strong>管理复杂度指数级上升</strong></p>
+<p>账户越多，需要同步管理的合规节点越多。包括但不限于：落地页一致性、转化追踪设置、广告素材相似度、支付方式关联等。任何环节的不一致都可能触发平台的关联审查。</p>
+<p><strong>财务对账压力加剧</strong></p>
+<p>多账户意味着多充值渠道、多余额水位。当账户风险等级不同时，平台对其充值渠道和到账速度的处理也会不同，增加了财务团队核对账目和预警余额的难度。</p>
+<h2>建议：重构账户分层逻辑</h2>
+<p>面对以上变化，我们建议投放团队从“数量优先”转向“分层优先”的管理思路：</p>
+<ol>
+<li>
+<p><strong>核心账户隔离</strong>：将稳定放量、日消耗较大的账户与测试账户严格隔离，使用不同的支付方式、不同的管理员邮箱、不同的 IP 登录环境。</p>
+</li>
+<li>
+<p><strong>建立账户健康度仪表盘</strong>：实时监控每个账户的广告政策合规评分、支付状态、投放历史稳定性。当某账户评分低于阈值时，自动降低其预算分配，防止风险扩散。</p>
+</li>
+<li>
+<p><strong>差异化充值策略</strong>：核心账户保持余额充足，避免因低余额触发平台的风控提示；测试账户可采用小额定额充值，减少资金沉淀风险。</p>
+</li>
+<li>
+<p><strong>素材隔离发布</strong>：同一套产品素材，避免在多个账户同时跑。新素材先在专用测试账户验证合规性后，再同步至核心账户。</p>
+</li>
+</ol>
+<h2>本周行动清单</h2>
+<ul>
+<li>[ ] 检查所有账户的登录 IP 和登录设备是否存在交叉</li>
+<li>[ ] 梳理当前账户矩阵，识别可能存在高关联风险的业务组</li>
+<li>[ ] 与充值和财务团队同步账户风险等级，调整充值优先级</li>
+<li>[ ] 更新素材发布 SOP，加入跨账户合规确认节点</li>
+</ul>
+<p>平台政策的这轮调整，本质上是在倒逼投放团队提升精细化管理能力。账户多不再等于安全边际高，反而需要更强的系统化运营能力来支撑。下周我们将继续跟踪政策走向，及时分享最新应对策略。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>This Week's Observation: Platform Multi-Account Policies Tighten</h2>
+<p>This week, we observed both Google Ads and Meta simultaneously intensifying their scrutiny of multi-account operations. Multiple teams reported a roughly 15% increase in account suspensions due to "association risk" compared to last month. The core shift: platforms now evaluate all accounts under the same business entity as a whole rather than focusing primarily on individual account behaviors.</p>
+<p>This change challenges the traditional "divide accounts, divide budgets, divide creatives" management model. Practices that once spread risk across numerous accounts may now become channels for risk transmission.</p>
+<h2>Three Direct Impacts</h2>
+<p><strong>Risk Amplification, Not Dispersion</strong></p>
+<p>The old logic was "if one fails, others succeed." But with upgraded association detection, a single account's mistake quickly affects the entire network. A utility app team experienced this last week: a new creative flagged as "misleading content" resulted in additional verification requirements for three other stable-running accounts under the same entity.</p>
+<p><strong>Exponential Management Complexity</strong></p>
+<p>More accounts mean more compliance nodes to manage simultaneously: landing page consistency, conversion tracking setup, creative similarity, payment method associations. Any inconsistency may trigger platform association review.</p>
+<p><strong>Intensified Financial Reconciliation Pressure</strong></p>
+<p>Multiple accounts mean multiple recharge channels and balance levels. When accounts have different risk levels, platforms handle their payment methods and fund arrival speeds differently, complicating finance teams' reconciliation and balance warning efforts.</p>
+<h2>Recommendation: Restructure Account Tiering Logic</h2>
+<p>Facing these changes, we recommend teams shift from "quantity priority" to "tiering priority":</p>
+<ol>
+<li>
+<p><strong>Isolate Core Accounts</strong>: Strictly separate stable, high-spend accounts from test accounts using different payment methods, admin emails, and IP login environments.</p>
+</li>
+<li>
+<p><strong>Build Account Health Dashboard</strong>: Real-time monitor each account's ad policy compliance score, payment status, and delivery stability. Auto-reduce budget allocation when scores fall below thresholds.</p>
+</li>
+<li>
+<p><strong>Differentiated Recharge Strategy</strong>: Keep core accounts well-funded to avoid low-balance triggers. Test accounts can use smaller fixed amounts to reduce fund deposit risk.</p>
+</li>
+<li>
+<p><strong>Isolated Creative Publishing</strong>: Avoid running identical product creatives across multiple accounts simultaneously. Verify new creatives' compliance in dedicated test accounts first.</p>
+</li>
+</ol>
+<h2>This Week's Action Checklist</h2>
+<ul>
+<li>[ ] Audit all accounts for IP and device crossover</li>
+<li>[ ] Map current account matrix, identify high-association-risk business groups</li>
+<li>[ ] Sync with finance team on account risk levels, adjust recharge priorities</li>
+<li>[ ] Update creative publishing SOP with cross-account compliance checkpoints</li>
+</ul>
+<p>This policy adjustment essentially forces teams toward refined management. More accounts no longer equals higher safety margins—instead, stronger systematic operational capabilities are needed. We'll continue tracking policy developments and sharing updated strategies next week.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
