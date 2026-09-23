@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">海外广告账户资金管理 SOP：运营必须掌握的 5 大核心指标</span>
+                    <span x-show="lang === 'en'" x-cloak>Overseas Ad Account Fund Management SOP: 5 Core Metrics Every Operator Must Track</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-09-24</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="485" data-base-views="22">22</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu4208/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>适用场景与前置条件</h2>
+<p>本文适用于同时管理 Meta（Facebook）、Google、TikTok 等多个海外广告平台账户的出海团队。如果你遇到过以下问题，这套 SOP 能帮你系统性地解决：</p>
+<ul>
+<li>账户余额不足导致广告突然暂停</li>
+<li>多账户充值后无法准确追踪每笔消耗</li>
+<li>月底对账发现账期差异却找不到原因</li>
+<li>充值汇率波动造成预算超支</li>
+</ul>
+<p><strong>前置条件</strong>：确认已开通各平台的账单管理后台权限，并建立基础的财务台账模板。</p>
+<hr />
+<h2>第一步：建立账户资金健康度诊断清单</h2>
+<p>每月初，运营需完成一次账户资金健康度诊断。诊断维度包括：</p>
+<table>
+<thead>
+<tr>
+<th>诊断项</th>
+<th>健康标准</th>
+<th>预警阈值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>账户余额可支撑天数</td>
+<td>≥ 7 天</td>
+<td>&lt; 3 天</td>
+</tr>
+<tr>
+<td>近 7 天日均消耗</td>
+<td>波动率 &lt; 20%</td>
+<td>波动率 &gt; 50%</td>
+</tr>
+<tr>
+<td>账单周期匹配度</td>
+<td>充值时间与账期对齐</td>
+<td>频繁出现账期末集中充值</td>
+</tr>
+<tr>
+<td>卡片/钱包余额</td>
+<td>余额 &gt; 月均消耗 50%</td>
+<td>余额 &lt; 月均消耗 20%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>操作步骤</strong>：</p>
+<ol>
+<li>导出各平台近 30 天消耗报告</li>
+<li>计算日均消耗和波动率</li>
+<li>将当前余额除以日均消耗，得出可支撑天数</li>
+<li>对照预警阈值，标记需要优先处理的账户</li>
+</ol>
+<hr />
+<h2>第二步：制定充值节奏规划</h2>
+<p>充值节奏的核心原则是"提前量 + 批次化"，避免临时抱佛脚式的单笔大额充值。</p>
+<p><strong>标准充值节奏</strong>：</p>
+<ul>
+<li><strong>周度充值</strong>：每周固定一天检查余额，补充至两周预估消耗量</li>
+<li><strong>月度预估</strong>：每月 25 日前完成下月消耗预估，按消耗节奏分配充值批次</li>
+<li><strong>账期对齐</strong>：若平台有账期（如 Net 15/30），优先使用账期结算，减少资金占用</li>
+</ul>
+<p><strong>案例参考</strong>：某工具类 App 团队同时运营 3 个地区账户，运营设置每周二为"充值日"，每次充值覆盖未来 10-14 天消耗。三个月后，因余额不足导致的广告暂停次数从月均 6 次降至 0 次。</p>
+<hr />
+<h2>第三步：配置余额预警机制</h2>
+<p>预警机制需要覆盖"人工预警"和"系统预警"两层。</p>
+<p><strong>人工预警设置</strong>：</p>
+<ol>
+<li>在日历中设置各账户的预警触发提醒</li>
+<li>低于 5 天消耗量时，标记为"黄色预警"</li>
+<li>低于 3 天消耗量时，标记为"红色预警"，立即启动充值流程</li>
+</ol>
+<p><strong>系统预警配置（以 Meta Business 为例）</strong>：</p>
+<ol>
+<li>进入 Business Settings &gt; Payments</li>
+<li>启用"Low balance alert"通知</li>
+<li>设置阈值：建议设为账户周均消耗的 30%</li>
+<li>绑定企业微信/钉钉/邮件通知渠道</li>
+</ol>
+<hr />
+<h2>第四步：财务对账流程标准化</h2>
+<p>财务对账是资金管理的最后一环，也是最容易出问题的环节。建议采用"日结+月结"双轨制。</p>
+<p><strong>日结流程</strong>：</p>
+<ol>
+<li>每日 18:00 导出前日消耗报告</li>
+<li>与充值记录、信用卡账单进行三方比对</li>
+<li>差异超过 2% 时，记录并追溯原因</li>
+</ol>
+<p><strong>月结流程</strong>：</p>
+<ol>
+<li>月底导出完整账单周期报告</li>
+<li>对照发票（Invoice）核对应付金额</li>
+<li>若使用代理或服务商，确认返点/优惠已正确抵扣</li>
+<li>归档所有对账凭证，保留至少 12 个月</li>
+</ol>
+<p><strong>常见差异来源及处理</strong>：</p>
+<ul>
+<li><strong>时区差异</strong>：各平台统计时区不同，统一换算为 UTC 或北京时间</li>
+<li><strong>退款冲减</strong>：退款通常在次月账单体现，注意跨期调整</li>
+<li><strong>汇率波动</strong>：大额充值优先锁定汇率，使用平台内汇率计算</li>
+</ul>
+<hr />
+<h2>第五步：异常风险识别与响应</h2>
+<p>资金管理中的异常风险主要包括以下三类：</p>
+<p><strong>1. 充值未到账</strong></p>
+<p>响应流程：</p>
+<ol>
+<li>核查银行/支付平台转账记录</li>
+<li>确认收款账户信息是否正确（账户 ID、收款人）</li>
+<li>超过 24 小时未到账，立即联系平台客服或代理</li>
+<li>保存转账凭证，作为申诉依据</li>
+</ol>
+<p><strong>2. 非正常消耗激增</strong></p>
+<p>响应流程：</p>
+<ol>
+<li>立即暂停相关广告组或广告系列</li>
+<li>排查是否为素材审核变更、投放端配置错误或恶意点击</li>
+<li>30 分钟内完成初步排查，结果同步至财务和运营负责人</li>
+<li>若确认为异常消耗，收集证据提交平台申诉</li>
+</ol>
+<p><strong>3. 账户被限制或封禁</strong></p>
+<p>响应流程：</p>
+<ol>
+<li>第一时间截图保存账户状态和余额信息</li>
+<li>确认账户内余额是否可提取</li>
+<li>通过官方渠道提交申诉，同时通知财务冻结该账户后续充值计划</li>
+<li>调整其他关联账户的投放策略，避免预算集中风险</li>
+</ol>
+<hr />
+<h2>运营指标速查清单</h2>
+<p>以下指标建议固化到每周运营周报中：</p>
+<ul>
+<li>各账户余额及可支撑天数</li>
+<li>本周实际消耗 vs 预估消耗偏差率</li>
+<li>充值及时率（是否在预警触发前完成充值）</li>
+<li>对账差异率（差异金额 / 总消耗）</li>
+<li>异常事件响应时效（从发现到处理完成的小时数）</li>
+</ul>
+<p>坚持每周追踪以上指标，你的资金管理效率将显著提升，投放稳定性也能得到保障。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Applicable Scenarios and Prerequisites</h2>
+<p>This SOP is designed for overseas teams managing Meta (Facebook), Google, TikTok, and other international advertising platforms simultaneously. If you've encountered any of the following issues, this SOP will help you systematically address them:</p>
+<ul>
+<li>Ads suddenly pausing due to insufficient account balance</li>
+<li>Unable to accurately track spending per account after multi-account top-ups</li>
+<li>Month-end reconciliation reveals billing discrepancies with no traceable cause</li>
+<li>Exchange rate fluctuations causing budget overruns on top-ups</li>
+</ul>
+<p><strong>Prerequisites</strong>: Confirm access to each platform's billing management backend and establish a basic financial ledger template.</p>
+<hr />
+<h2>Step 1: Establish Account Fund Health Diagnosis Checklist</h2>
+<p>At the beginning of each month, operators must complete an account fund health diagnosis. Diagnostic dimensions include:</p>
+<table>
+<thead>
+<tr>
+<th>Diagnostic Item</th>
+<th>Healthy Standard</th>
+<th>Warning Threshold</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Days of Balance Coverage</td>
+<td>≥ 7 days</td>
+<td>&lt; 3 days</td>
+</tr>
+<tr>
+<td>Daily Average Spend (Last 7 Days)</td>
+<td>Fluctuation &lt; 20%</td>
+<td>Fluctuation &gt; 50%</td>
+</tr>
+<tr>
+<td>Billing Cycle Alignment</td>
+<td>Top-up timing aligned with billing cycle</td>
+<td>Frequent end-of-cycle top-ups</td>
+</tr>
+<tr>
+<td>Card/Wallet Balance</td>
+<td>Balance &gt; 50% of monthly average spend</td>
+<td>Balance &lt; 20% of monthly average spend</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Operation Steps</strong>:</p>
+<ol>
+<li>Export 30-day spending reports from each platform</li>
+<li>Calculate daily average spend and fluctuation rate</li>
+<li>Divide current balance by daily average spend to determine days of coverage</li>
+<li>Compare against warning thresholds and flag accounts requiring priority action</li>
+</ol>
+<hr />
+<h2>Step 2: Develop Top-Up Rhythm Planning</h2>
+<p>The core principle of top-up rhythm is "advance planning + batched execution," avoiding last-minute large single top-ups.</p>
+<p><strong>Standard Top-Up Rhythm</strong>:</p>
+<ul>
+<li><strong>Weekly Top-Up</strong>: Check balance on a fixed day each week, replenishing to cover 10-14 days of estimated spend</li>
+<li><strong>Monthly Forecast</strong>: Complete next month's spend forecast before the 25th of each month, distributing top-up batches according to spending rhythm</li>
+<li><strong>Billing Cycle Alignment</strong>: Prioritize billing cycle payments if available (e.g., Net 15/30) to reduce capital occupation</li>
+</ul>
+<p><strong>Case Reference</strong>: A utility app team operating 3 regional accounts set every Tuesday as "Top-Up Day," replenishing to cover 10-14 days of estimated spend each time. After three months, ad pause incidents due to insufficient balance dropped from an average of 6 times per month to 0.</p>
+<hr />
+<h2>Step 3: Configure Balance Alert Mechanisms</h2>
+<p>Alert mechanisms require coverage at both "manual" and "automated" levels.</p>
+<p><strong>Manual Alert Setup</strong>:</p>
+<ol>
+<li>Set calendar reminders for each account's alert triggers</li>
+<li>Flag as "Yellow Alert" when balance falls below 5 days of consumption</li>
+<li>Flag as "Red Alert" when balance falls below 3 days of consumption, immediately initiating top-up process</li>
+</ol>
+<p><strong>System Alert Configuration (Example: Meta Business)</strong>:</p>
+<ol>
+<li>Navigate to Business Settings &gt; Payments</li>
+<li>Enable "Low balance alert" notifications</li>
+<li>Set threshold: Recommend setting at 30% of account's weekly average spend</li>
+<li>Bind enterprise notification channels (WeChat Work/DingTalk/Email)</li>
+</ol>
+<hr />
+<h2>Step 4: Standardize Financial Reconciliation Workflow</h2>
+<p>Financial reconciliation is the final step in fund management and where errors most commonly occur. A "daily + monthly" dual-track system is recommended.</p>
+<p><strong>Daily Reconciliation Process</strong>:</p>
+<ol>
+<li>Export previous day's spending report at 18:00 daily</li>
+<li>Cross-compare with top-up records and credit card statements</li>
+<li>When discrepancies exceed 2%, record and trace the cause</li>
+</ol>
+<p><strong>Monthly Reconciliation Process</strong>:</p>
+<ol>
+<li>Export complete billing cycle report at month-end</li>
+<li>Verify payable amount against Invoice</li>
+<li>If using agents or service providers, confirm rebates/discounts are correctly applied</li>
+<li>Archive all reconciliation documents, retaining for at least 12 months</li>
+</ol>
+<p><strong>Common Discrepancy Sources and Handling</strong>:</p>
+<ul>
+<li><strong>Time Zone Differences</strong>: Platform statistics use different time zones; convert uniformly to UTC or Beijing time</li>
+<li><strong>Refund Deductions</strong>: Refunds typically appear in next month's bill; watch for cross-period adjustments</li>
+<li><strong>Exchange Rate Fluctuations</strong>: For large top-ups, prioritize rate locks and use in-platform rates for calculations</li>
+</ul>
+<hr />
+<h2>Step 5: Anomaly Risk Identification and Response</h2>
+<p>Anomaly risks in fund management primarily fall into three categories:</p>
+<p><strong>1. Top-Up Not Received</strong></p>
+<p>Response Process:</p>
+<ol>
+<li>Verify transfer records from bank/payment platform</li>
+<li>Confirm recipient account information is correct (Account ID, Payee name)</li>
+<li>If not received within 24 hours, immediately contact platform support or agent</li>
+<li>Preserve transfer receipts as evidence for appeals</li>
+</ol>
+<p><strong>2. Abnormal Spend Surge</strong></p>
+<p>Response Process:</p>
+<ol>
+<li>Immediately pause relevant ad groups or campaigns</li>
+<li>Investigate whether caused by creative policy changes, delivery configuration errors, or malicious clicks</li>
+<li>Complete initial investigation within 30 minutes, sync findings to finance and operations leads</li>
+<li>If confirmed as abnormal consumption, collect evidence and submit platform appeal</li>
+</ol>
+<p><strong>3. Account Restricted or Disabled</strong></p>
+<p>Response Process:</p>
+<ol>
+<li>Immediately screenshot and preserve account status and balance information</li>
+<li>Confirm whether account balance can be withdrawn</li>
+<li>Submit appeal through official channels while notifying finance to freeze subsequent top-up plans for that account</li>
+<li>Adjust delivery strategies for other linked accounts to avoid budget concentration risk</li>
+</ol>
+<hr />
+<h2>Operations Metrics Quick Reference Checklist</h2>
+<p>The following metrics are recommended for consolidation into weekly operations reports:</p>
+<ul>
+<li>Account balance and days of coverage for each account</li>
+<li>Weekly actual vs. estimated spend deviation rate</li>
+<li>Top-up timeliness rate (whether top-ups completed before alert triggers)</li>
+<li>Reconciliation discrepancy rate (discrepancy amount / total spend)</li>
+<li>Anomaly event response time (hours from discovery to resolution)</li>
+</ul>
+<p>Consistently tracking these metrics weekly will significantly improve your fund management efficiency and ensure delivery stability.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
