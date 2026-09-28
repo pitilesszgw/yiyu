@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">TikTok Shop 新品冷启动：素材池搭建实战与避坑指南</span>
+                    <span x-show="lang === 'en'" x-cloak>TikTok Shop Cold Start: Material Pool Building Guide &amp; Case Study</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-09-29</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="501" data-base-views="26">26</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu6515/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>案例开场：一个工具类 App 的冷启动困境</h2>
+<p>某工具类 App 团队在 3 月初上架 TikTok Shop 美国市场，首周预算 300 美元，却只跑出 12 个转化，ROI 低至 0.3。运营负责人小林翻看后台数据发现：素材重复率高、用户停留时长不足 3 秒、评论区全是“没用”“骗人的”。</p>
+<p>这不是素材质量问题，而是素材池根本没搭起来。</p>
+<hr />
+<h2>问题拆解：冷启动失败的三重困境</h2>
+<h3>困境一：素材数量严重不足</h3>
+<p>冷启动期很多团队只准备了 5-8 条素材就急着上线，认为“质量比数量重要”。但 TikTok 的算法需要足够的素材进行 A/B 测试和流量分配测试。素材太少，系统找不到最优匹配人群，导致整体跑量困难。</p>
+<p><strong>判断方法</strong>：打开广告管理器，查看每个广告组下素材的曝光分布。如果 80% 流量集中在一两条素材上，说明素材池深度不够。</p>
+<h3>困境二：素材结构单一</h3>
+<p>很多新手卖家会陷入一个误区：既然某类视频效果好，就全部复制。这类同质化素材会导致审美疲劳，同时无法覆盖不同兴趣圈层的用户。</p>
+<p><strong>处理动作</strong>：将素材分为三种类型——</p>
+<ul>
+<li><strong>种草型</strong>：展示产品使用场景和效果对比</li>
+<li><strong>测评型</strong>：强调真实体验和可信度</li>
+<li><strong>UGC 型</strong>：模拟用户自发推荐的口吻</li>
+</ul>
+<p>三类素材比例建议保持 4:3:3，确保覆盖不同决策阶段的用户。</p>
+<h3>困境三：未建立素材生命周期管理</h3>
+<p>一个常见错误是：素材跑了两天数据差就关停，没给系统足够的学习时间；或者一条素材跑了 5 万曝光还没做任何迭代。</p>
+<p><strong>建议 SOP</strong>：</p>
+<ol>
+<li>上线前 48 小时只观察不干预，让系统完成学习期</li>
+<li>素材曝光过万后仍未出单，标记为待优化或暂停</li>
+<li>优质素材进行二次剪辑（换个开头、配乐、字幕），延长生命周期</li>
+</ol>
+<hr />
+<h2>处理动作：两周重建素材池</h2>
+<p>针对上述问题，该团队做了三件事：</p>
+<p><strong>第一步：扩充素材类型</strong><br />
+从 8 条扩展到 30 条，包括原版视频重新剪辑的 15 条、厂家提供的场景视频 8 条、用户真实反馈素材 7 条。</p>
+<p><strong>第二步：建立素材标签体系</strong><br />
+给每条素材打上“人群标签-产品卖点-内容形式”的三维标签，方便后续快速筛选和组合投放。</p>
+<p><strong>第三步：设置素材迭代节奏</strong><br />
+每天固定时间（建议下午 3 点）查看素材数据，淘汰 CTR 低于 1% 的素材，每周新增 5-8 条新素材进入测试组。</p>
+<hr />
+<h2>结果对比：ROI 从 0.3 到 1.8 的关键变化</h2>
+<p>两周后复盘数据：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>冷启动第一周</th>
+<th>调整后第二周</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>素材数量</td>
+<td>8 条</td>
+<td>30+ 条</td>
+</tr>
+<tr>
+<td>平均 CTR</td>
+<td>0.8%</td>
+<td>2.1%</td>
+</tr>
+<tr>
+<td>转化成本</td>
+<td>$28</td>
+<td>$9</td>
+</tr>
+<tr>
+<td>ROI</td>
+<td>0.3</td>
+<td>1.8</td>
+</tr>
+</tbody>
+</table>
+<p>关键转折点在于第三周——当素材池深度达到 20 条以上时，系统开始自动将流量分配给表现更好的素材组合，整体账户进入正向循环。</p>
+<hr />
+<h2>实战建议：给运营者的三条提醒</h2>
+<ol>
+<li>
+<p><strong>不要在素材池还没搭好时就猛砸预算</strong>。系统需要足够的测试素材才能找到人群模型，预热期预算建议控制在目标预算的 30%-50%。</p>
+</li>
+<li>
+<p><strong>素材迭代比新建更重要</strong>。与其花时间拍新视频，不如先把现有素材换个开头、调整字幕顺序、替换背景音乐，往往能直接提升 20%-30% 的 CTR。</p>
+</li>
+<li>
+<p><strong>关注素材的完播率而非只是点击率</strong>。TikTok 算法对完播率权重较高，15-30 秒的视频如果前 3 秒抓不住用户，后面再好的内容也是白费。</p>
+</li>
+</ol>
+<p>冷启动的本质是“用足够的素材换算法对产品的理解”。素材池不是越大越好，但一定要够深、够多元、够迭代。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Case Opening: A Utility App's Cold Start Dilemma</h2>
+<p>A utility app team launched on TikTok Shop US market in early March with a $300 weekly budget, but only got 12 conversions with an ROI as low as 0.3. Operations manager Xiaolin found: high material repetition, user dwell time under 3 seconds, and comment section full of "useless" and "scam" remarks.</p>
+<p>This wasn't a quality issue—it was a material pool that was never properly built.</p>
+<hr />
+<h2>Problem Breakdown: Three Predicaments of Cold Start Failure</h2>
+<h3>Predicament 1: Severely Insufficient Materials</h3>
+<p>Many teams launch with only 5-8 materials, believing "quality over quantity." But TikTok's algorithm needs sufficient materials for A/B testing and traffic distribution. Too few materials means the system can't find optimal audience matching, causing overall delivery difficulties.</p>
+<p><strong>Judgment Method</strong>: Open Ads Manager and check the exposure distribution of materials under each ad group. If 80% of traffic concentrates on 1-2 materials, the material pool depth is insufficient.</p>
+<h3>Predicament 2: Monotonous Material Structure</h3>
+<p>Many beginners fall into a trap: since certain video types perform well, they copy them all. Such homogenized materials cause aesthetic fatigue and fail to cover users in different interest circles.</p>
+<p><strong>Action</strong>: Classify materials into three types:</p>
+<ul>
+<li><strong>Product Showcase</strong>: Display product usage scenarios and effect comparisons</li>
+<li><strong>Review Type</strong>: Emphasize authentic experience and credibility</li>
+<li><strong>UGC Style</strong>: Simulate the tone of spontaneous user recommendations</li>
+</ul>
+<p>Maintain a 4:3:3 ratio for these three types, ensuring coverage for users at different decision stages.</p>
+<h3>Predicament 3: No Material Lifecycle Management</h3>
+<p>A common mistake: stopping a material after 2 days of poor data without giving the system enough learning time; or not iterating a material that has run 50,000 exposures.</p>
+<p><strong>Recommended SOP</strong>:</p>
+<ol>
+<li>First 48 hours: observe only, no intervention, let the system complete its learning phase</li>
+<li>Materials with 10,000+ exposures but no conversions: mark for optimization or pause</li>
+<li>High-performing materials: create secondary edits (different opening, music, subtitles) to extend lifecycle</li>
+</ol>
+<hr />
+<h2>Actions Taken: Rebuilding the Material Pool in Two Weeks</h2>
+<p>The team did three things:</p>
+<p><strong>Step 1: Expand Material Types</strong><br />
+Expanded from 8 to 30 materials, including 15 re-edited original videos, 8 factory-provided scenario videos, and 7 user feedback materials.</p>
+<p><strong>Step 2: Establish Material Tagging System</strong><br />
+Tag each material with "Audience Tag - Product Selling Point - Content Format" in three dimensions for quick filtering and combination delivery later.</p>
+<p><strong>Step 3: Set Material Iteration Rhythm</strong><br />
+Check material data at a fixed time daily (recommended 3 PM), eliminate materials with CTR below 1%, and add 5-8 new materials to the test group weekly.</p>
+<hr />
+<h2>Results Comparison: Key Changes from ROI 0.3 to 1.8</h2>
+<p>Two-week review data:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Cold Start Week 1</th>
+<th>After Adjustment Week 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Material Count</td>
+<td>8 pieces</td>
+<td>30+ pieces</td>
+</tr>
+<tr>
+<td>Average CTR</td>
+<td>0.8%</td>
+<td>2.1%</td>
+</tr>
+<tr>
+<td>CPA</td>
+<td>$28</td>
+<td>$9</td>
+</tr>
+<tr>
+<td>ROI</td>
+<td>0.3</td>
+<td>1.8</td>
+</tr>
+</tbody>
+</table>
+<p>The key turning point was week three—when material pool depth exceeded 20 pieces, the system began automatically distributing traffic to better-performing material combinations, bringing the overall account into a positive cycle.</p>
+<hr />
+<h2>Practical Advice: Three Reminders for Operators</h2>
+<ol>
+<li>
+<p><strong>Don't heavily invest budget before the material pool is ready</strong>. The system needs sufficient test materials to understand the product model. Warm-up period budget should be controlled at 30%-50% of target budget.</p>
+</li>
+<li>
+<p><strong>Material iteration is more important than creation</strong>. Instead of spending time shooting new videos, try changing the opening of existing materials, adjusting subtitle sequences, or replacing background music—this often directly improves CTR by 20%-30%.</p>
+</li>
+<li>
+<p><strong>Focus on video completion rate, not just click rate</strong>. TikTok's algorithm weighs completion rate heavily. For 15-30 second videos, if the first 3 seconds don't capture users, great content afterward is wasted.</p>
+</li>
+</ol>
+<p>The essence of cold start is "using sufficient materials to exchange for the algorithm's understanding of the product." The material pool doesn't need to be bigger, but it must be deep enough, diverse enough, and well-iterated.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
