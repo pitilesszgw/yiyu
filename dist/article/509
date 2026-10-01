@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">代理开户服务系统化看板操作手册（SOP）</span>
+                    <span x-show="lang === 'en'" x-cloak>Systematic Kanban SOP for Agency Account Opening Services</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-10-02</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="509" data-base-views="73">73</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu4757/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>背景：代理开户服务的三个高频痛点</h2>
+<p>在服务出海企业的过程中，以渔数媒发现代理开户服务长期存在三个高频问题：</p>
+<ul>
+<li><strong>信息分散</strong>：开户进度、客户需求、资质审核状态分布在不同的聊天记录、表格和邮件中，运营同事每天花大量时间“找信息”。</li>
+<li><strong>责任模糊</strong>：一个开户申请涉及销售、渠道、财务、技术等多个环节，出现问题时经常出现“以为对方处理了”的真空地带。</li>
+<li><strong>异常滞后</strong>：客户主动来催进度时才发现某个环节卡住了，此时已经影响服务体验和后续合作。</li>
+</ul>
+<p>这三个问题本质上都是<strong>信息不透明、流程不可见</strong>导致的。解决思路很简单：把开户全流程搬到一块系统化看板上，让每个人随时看到当前状态、下一秒该做什么、哪里可能出问题。</p>
+<hr />
+<h2>SOP 步骤</h2>
+<h3>步骤一：设计看板框架，定义标准列</h3>
+<p>看板列代表开户流程的不同阶段。建议设置为以下六列：</p>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>待核实</strong></td>
+<td>客户提交开户申请，尚未核实资质</td>
+</tr>
+<tr>
+<td><strong>资质审核中</strong></td>
+<td>正在审核营业执照、KYC材料等</td>
+</tr>
+<tr>
+<td><strong>渠道对接中</strong></td>
+<td>与 Meta/Google/TikTok 等平台或一级代理沟通</td>
+</tr>
+<tr>
+<td><strong>账户创建中</strong></td>
+<td>平台侧正在开账户</td>
+</tr>
+<tr>
+<td><strong>账户交付</strong></td>
+<td>账户已开好，交付给客户</td>
+</tr>
+<tr>
+<td><strong>已完成/异常</strong></td>
+<td>正常关闭或需要特殊处理</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>注意</strong>：列名不要写得太抽象，如“进行中”“待处理”这类宽泛词汇没有信息量。每一列的命名应该是团队成员看了一眼就能判断“当前卡在哪里”的状态。</p>
+</blockquote>
+<hr />
+<h3>步骤二：为每张卡片设定必填信息</h3>
+<p>每张卡片代表一个开户任务，拖入看板时必须包含以下字段：</p>
+<ul>
+<li><strong>客户名称</strong>（匿名处理：客户A、客户B）</li>
+<li><strong>平台</strong>（Meta/Google/TikTok 等）</li>
+<li><strong>需求类型</strong>（新账户/追加账户/重新开户）</li>
+<li><strong>提交时间</strong></li>
+<li><strong>预计完成时间</strong>（与客户约定）</li>
+<li><strong>责任人</strong>（明确到人）</li>
+<li><strong>当前卡点</strong>（若无则填“无”）</li>
+</ul>
+<p>这些字段决定了卡片迁移的自动化程度。字段不全的卡片，看板形同虚设。</p>
+<hr />
+<h3>步骤三：设置状态迁移规则</h3>
+<p>不是所有卡片都能随意迁移到下一列。定义明确的迁移条件：</p>
+<ul>
+<li><strong>待核实 → 资质审核中</strong>：客户提供完整资质材料</li>
+<li><strong>资质审核中 → 渠道对接中</strong>：内部审核通过</li>
+<li><strong>渠道对接中 → 账户创建中</strong>：渠道确认可以开户</li>
+<li><strong>账户创建中 → 账户交付</strong>：平台返回账户凭证</li>
+</ul>
+<blockquote>
+<p><strong>运营提醒</strong>：每个迁移节点建议设定“超时预警”。例如资质审核超过 2 个工作日未通过，卡片自动变红或触发提醒。这比等客户来问要高效得多。</p>
+</blockquote>
+<hr />
+<h3>步骤四：建立日常看板维护机制</h3>
+<p>看板搭建好只是第一步，关键在于每日维护：</p>
+<ol>
+<li><strong>每日晨会（5分钟）</strong>：过一遍“待核实”和“异常”两列，确认没有遗漏任务</li>
+<li><strong>卡片即时更新</strong>：每完成一个环节，5分钟内更新卡片状态</li>
+<li><strong>周度清理</strong>：每周五检查所有卡片，是否有过期未迁移的，标注原因</li>
+</ol>
+<hr />
+<h3>步骤五：异常处理流程</h3>
+<p>当卡片进入“异常”列时，按以下流程处理：</p>
+<ol>
+<li><strong>记录异常原因</strong>：平台驳回、资质不符、渠道响应慢等</li>
+<li><strong>指定跟进人</strong>：不要让异常卡悬空，指定唯一责任人</li>
+<li><strong>设置处理时限</strong>：根据异常类型设定 24-48 小时的处理目标</li>
+<li><strong>升级机制</strong>：超过时限未解决，自动升级至主管</li>
+</ol>
+<hr />
+<h2>常见问题</h2>
+<p><strong>Q：客户数量多的情况下，看板会不会太乱？</strong></p>
+<p>A：建议按平台或客户类型设置多个泳道（Swimlane），每个泳道内独立看板。例如泳道一专门处理 Meta 账户，泳道二处理 Google 账户，互不干扰。</p>
+<p><strong>Q：已经有表格管理了，还需要看板吗？</strong></p>
+<p>A：表格适合记录“结果”，看板适合追踪“过程”。如果你的表格能实时反映每个环节的当前状态和责任人，那表格就是看板。如果不能，建议迁移到看板工具（如飞书多维表格、Trello）上。</p>
+<p><strong>Q：团队成员不配合更新怎么办？</strong></p>
+<p>A：看板的前提是团队共识。建议先试点 1-2 周，收集大家的反馈调整规则，然后正式推行。把“是否更新看板”与工作流程绑定——例如没有更新看板就默认任务未完成。</p>
+<hr />
+<h2>小结</h2>
+<p>系统化看板不是多一个管理工具，而是<strong>把隐性流程变成显性流程</strong>。运营同事不再需要翻聊天记录找进度，主管不再需要逐个问谁卡在哪，客户也不再需要催问才能知道进展。</p>
+<p>看板的核心价值就一句话：<strong>让每个人随时知道这件事现在在哪、下一步谁做、有没有问题</strong>。把这套 SOP 用起来，至少能把因信息不对称导致的客户投诉降低 60% 以上。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Background: Three High-Frequency Pain Points in Agency Account Opening</h2>
+<p>In serving overseas enterprises, Yiyu Shumei has identified three persistent issues in agency account opening services:</p>
+<ul>
+<li><strong>Information Scattered</strong>: Opening progress, client requirements, and qualification review status are distributed across different chat records, spreadsheets, and emails. Operations staff spend significant time daily just "finding information."</li>
+<li><strong>Ambiguous Responsibilities</strong>: Each account opening involves sales, channel, finance, and technical teams. When problems arise, there's often a vacuum where everyone assumes someone else handled it.</li>
+<li><strong>Delayed Exception Detection</strong>: Clients only discover a blockage when they proactively ask about progress—by then, service experience and follow-up cooperation have already suffered.</li>
+</ul>
+<p>These three issues fundamentally stem from <strong>opaque information and invisible processes</strong>. The solution is straightforward: move the entire account opening workflow onto a systematic Kanban board where everyone can see current status, what needs to happen next, and where problems might emerge.</p>
+<hr />
+<h2>SOP Steps</h2>
+<h3>Step 1: Design the Kanban Framework with Defined Columns</h3>
+<p>Columns represent different stages of the account opening process. Recommended six-column setup:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Pending Verification</strong></td>
+<td>Client submitted application, qualification not yet verified</td>
+</tr>
+<tr>
+<td><strong>Qualification Review</strong></td>
+<td>Verifying business license, KYC materials, etc.</td>
+</tr>
+<tr>
+<td><strong>Channel Coordination</strong></td>
+<td>Communicating with platforms (Meta/Google/TikTok) or Tier-1 agents</td>
+</tr>
+<tr>
+<td><strong>Account Creation</strong></td>
+<td>Platform-side account creation in progress</td>
+</tr>
+<tr>
+<td><strong>Account Delivery</strong></td>
+<td>Account opened and delivered to client</td>
+</tr>
+<tr>
+<td><strong>Completed/Exception</strong></td>
+<td>Normal closure or requiring special handling</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note</strong>: Column names shouldn't be too abstract. Vague terms like "In Progress" or "Pending" lack informational value. Each column name should let team members instantly determine "where is this currently stuck."</p>
+</blockquote>
+<hr />
+<h3>Step 2: Define Required Fields for Each Card</h3>
+<p>Each card represents an account opening task and must include these fields when moved to the board:</p>
+<ul>
+<li><strong>Client Name</strong> (anonymized: Client A, Client B)</li>
+<li><strong>Platform</strong> (Meta/Google/TikTok, etc.)</li>
+<li><strong>Request Type</strong> (new account/add account/reopen account)</li>
+<li><strong>Submission Time</strong></li>
+<li><strong>Expected Completion Time</strong> (agreed with client)</li>
+<li><strong>Responsible Person</strong> (assigned to specific individual)</li>
+<li><strong>Current Blockage</strong> (or "None" if clear)</li>
+</ul>
+<p>These fields determine the automation level of card migration. Cards with incomplete fields render the Kanban ineffective.</p>
+<hr />
+<h3>Step 3: Establish Status Migration Rules</h3>
+<p>Not all cards can freely migrate to the next column. Define clear migration conditions:</p>
+<ul>
+<li><strong>Pending Verification → Qualification Review</strong>: Client provides complete materials</li>
+<li><strong>Qualification Review → Channel Coordination</strong>: Internal review passed</li>
+<li><strong>Channel Coordination → Account Creation</strong>: Channel confirmed account can be opened</li>
+<li><strong>Account Creation → Account Delivery</strong>: Platform returns account credentials</li>
+</ul>
+<blockquote>
+<p><strong>Operations Reminder</strong>: Set "overdue alerts" for each migration node. For example, if qualification review isn't approved within 2 business days, the card automatically turns red or triggers an alert. This is far more efficient than waiting for client inquiries.</p>
+</blockquote>
+<hr />
+<h3>Step 4: Establish Daily Kanban Maintenance Routine</h3>
+<p>Building the Kanban is just the first step—daily maintenance is critical:</p>
+<ol>
+<li><strong>Daily Standup (5 minutes)</strong>: Review "Pending Verification" and "Exception" columns to ensure no tasks are missed</li>
+<li><strong>Immediate Card Updates</strong>: Update card status within 5 minutes of completing each step</li>
+<li><strong>Weekly Cleanup</strong>: Every Friday, check all cards for overdue migrations and document reasons</li>
+</ol>
+<hr />
+<h3>Step 5: Exception Handling Process</h3>
+<p>When a card enters the "Exception" column, follow this process:</p>
+<ol>
+<li><strong>Document Exception Reason</strong>: Platform rejection, qualification mismatch, slow channel response, etc.</li>
+<li><strong>Assign Follow-up Person</strong>: Don't leave exceptions floating—assign a single responsible party</li>
+<li><strong>Set Resolution Timeline</strong>: Based on exception type, establish 24-48 hour resolution targets</li>
+<li><strong>Escalation Mechanism</strong>: Auto-escalate to supervisor if unresolved beyond timeline</li>
+</ol>
+<hr />
+<h2>Frequently Asked Questions</h2>
+<p><strong>Q: With many clients, won't the Kanban become too cluttered?</strong></p>
+<p>A: It's recommended to set up multiple swimlanes by platform or client type, with independent Kanbans within each lane. For example, Lane 1 handles Meta accounts exclusively, Lane 2 handles Google accounts—keeping things organized.</p>
+<p><strong>Q: I already have spreadsheets managing this. Do I still need a Kanban?</strong></p>
+<p>A: Spreadsheets are better for recording "results" while Kanbans track "process." If your spreadsheets can reflect each stage's current status and responsible person in real-time, then your spreadsheet is already a Kanban. If not, consider migrating to Kanban tools (Feishu Multi-dimensional Tables, Trello, etc.).</p>
+<p><strong>Q: Team members won't cooperate with updates. What do I do?</strong></p>
+<p>A: The Kanban relies on team consensus. Consider piloting for 1-2 weeks first, collecting feedback to adjust rules, then formally implementing. Tie Kanban updates to workflow—e.g., cards not updated mean tasks aren't considered complete.</p>
+<hr />
+<h2>Summary</h2>
+<p>A systematic Kanban isn't just another management tool—it's about <strong>making implicit processes explicit</strong>. Operations staff no longer need to scroll through chat history for progress updates, supervisors don't need to ask who's stuck where, and clients no longer need to inquire to learn about progress.</p>
+<p>The core value of a Kanban can be summed up in one sentence: <strong>Let everyone know at any moment where things stand, who's responsible for next steps, and whether there are problems.</strong> Implementing this SOP should reduce client complaints caused by information asymmetry by at least 60%.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
