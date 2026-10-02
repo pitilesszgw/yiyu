@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">海外广告充值、消耗和发票统一对账指南</span>
+                    <span x-show="lang === 'en'" x-cloak>Overseas Advertising Top-up, Spend and Invoice Reconciliation Guide</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-10-03</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="512" data-base-views="45">45</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu8622/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <p>在做海外广告投放时，对账这件事听起来简单，做起来全是坑。充值不到账、消耗对不上、发票抬头错漏——这些问题几乎每个出海团队都遇到过。本文以6个常见业务问题展开，直接给判断、给方案。</p>
+<h2>充值后多久到账算正常？</h2>
+<p><strong>核心判断：线上支付通常5-30分钟内到账，银行转账1-3个工作日。</strong></p>
+<p>如果你用的是Meta、Google、TikTok官方后台的信用卡或PayPal充值，一般几分钟内就能到账。但如果走的是第三方代理商账户代充，到账时间就取决于代理商的财务处理速度。建议每次充值后截图保存交易凭证，并记录充值时间点，方便后续核查。</p>
+<p><strong>常见坑：</strong> 有些代理商采用“先消耗后结算”模式，账户余额显示正常但实际消耗已经透支，这时要以平台后台的实时消耗为准，不要只看代理商提供的余额数字。</p>
+<h2>广告后台显示的消耗和账单金额不一致怎么办？</h2>
+<p><strong>核心判断：应以平台官方后台的消耗报告为准，账单金额作为参考。</strong></p>
+<p>Meta Ads Manager、Google Ads后台显示的是实时消耗数据，会因时区设置、汇率换算产生微小差异，一般在1%-2%范围内属于正常。但如果差异超过5%，需要排查以下原因：</p>
+<ul>
+<li><strong>时区差异</strong>：很多团队忽视这点，平台后台通常使用UTC时间，而财务账单可能按本地时区统计，导致日消耗数字错位</li>
+<li><strong>数据延迟</strong>：某些平台对消耗数据有24-48小时的回溯调整，月初对账时要以平台最终确认的消耗为准</li>
+<li><strong>账户结构问题</strong>：子账户、代理账户层级多时，父账户汇总数据可能存在统计口径差异</li>
+</ul>
+<p><strong>建议：</strong> 每月固定时间导出平台后台的消耗明细，与内部财务记录交叉核对，不要仅凭账单数字做判断。</p>
+<h2>发票抬头和税号信息填错了能改吗？</h2>
+<p><strong>核心判断：开票后30天内可申请重开，超过期限基本无法修改。</strong></p>
+<p>大多数广告平台在账单周期结束后才会开具发票，比如Meta是月结发票、Google按消耗周期出具。一旦发票已经生成并发出，发票抬头、纳税人识别号、企业地址等关键信息就很难变更。</p>
+<p><strong>落地建议：</strong><br />
+- 开户前在后台填入正确的公司注册名称和税号，不要用缩写或简称<br />
+- 如果是多主体运营，确认哪个公司主体承担广告费用，提前在后台绑定对应信息<br />
+- 开票申请提交后，尽快核对电子发票上的信息，发现问题24小时内联系平台客服</p>
+<h2>多平台广告消耗如何统一对账？</h2>
+<p><strong>核心判断：用投放归因维度统一汇总，不要混用平台口径。</strong></p>
+<p>出海团队通常同时运营Meta、Google、TikTok等多个平台，每个平台的消耗数据格式、时区、货币单位都不一样。统一对账的关键是建立内部自己的消耗台账，按“投放日期 + 账户 + 消耗金额（美元）+ 对应的人民币换算”这四个字段来记录。</p>
+<p>实际操作中，可以用飞书表格或轻流等工具搭一个简易的消耗汇总表，每月初手动从各平台后台导出报表，填入统一模板。如果账户数量超过10个，建议接入DataTower、AppGrowing等第三方归因平台，实现数据自动汇总。</p>
+<h2>汇率波动影响对账准确性怎么处理？</h2>
+<p><strong>核心判断：对外按月固定汇率换算，对内按交易发生时实际汇率入账。</strong></p>
+<p>广告平台多以美元计价，但国内财务记账用人民币。月初对账时，如果用月末汇率倒算全月消耗，会导致报表失真。正确做法是：</p>
+<ul>
+<li>内部财务按充值当日的银行现汇卖出价入账</li>
+<li>月度汇总报表可以选一个固定汇率做参考，但需注明“此汇率仅供参考”</li>
+<li>如果消耗量大（单月超过10万美元），建议与平台或代理商确认是否有锁汇服务</li>
+</ul>
+<h2>代理商账单和平台后台数据该信哪个？</h2>
+<p><strong>核心判断：钱的问题永远以平台官方数据为准，代理商数据仅作参考。</strong></p>
+<p>有些团队习惯通过代理商充值和查看账单，但如果代理商后台出现技术故障或数据延迟，就会导致判断失误。比如代理商显示余额充足，平台却已经暂停投放；或者代理商账单显示消耗偏低，实际已经透支。</p>
+<p><strong>底线原则：</strong> 财务对账必须以平台官方后台数据为准，代理商提供的账单只能用于内部核对参考，发现差异立即向代理商核实并保留沟通记录。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>How Long Does Top-up Take to Arrive?</h2>
+<p><strong>Core judgment: Online payments typically arrive within 5-30 minutes; bank transfers take 1-3 business days.</strong></p>
+<p>If you use credit cards or PayPal directly on Meta, Google, or TikTok ad platforms, funds usually arrive within minutes. However, if you go through third-party agents, arrival time depends on their financial processing speed. Always screenshot transaction receipts and record top-up timestamps for future verification.</p>
+<p><strong>Common pitfall:</strong> Some agents operate on a "spend first, settle later" model. Your account balance may appear normal while actual spend has already overdrafted. Always prioritize real-time spend data from the platform backend over agent-provided balance figures.</p>
+<h2>What to Do When Platform Spend Doesn't Match Your Bill?</h2>
+<p><strong>Core judgment: Platform backend data is authoritative; billing amounts are reference only.</strong></p>
+<p>Meta Ads Manager and Google Ads display real-time spend data. Minor discrepancies (1-2%) due to timezone settings or currency conversion are normal. However, if variance exceeds 5%, investigate these causes:</p>
+<ul>
+<li><strong>Timezone differences</strong>: Many teams overlook this. Platforms typically use UTC time while financial bills may use local timezone, causing daily spend misalignment</li>
+<li><strong>Data delays</strong>: Some platforms have 24-48 hour retrospective adjustments; use final confirmed spend data when reconciling monthly bills</li>
+<li><strong>Account structure issues</strong>: With multiple sub-accounts or agency accounts, parent account aggregation may have calculation discrepancies</li>
+</ul>
+<p><strong>Recommendation:</strong> Export platform backend spend details on a fixed monthly schedule and cross-check against internal financial records. Don't rely solely on billing figures for judgment.</p>
+<h2>Can You Correct Invoice Details After Submission?</h2>
+<p><strong>Core judgment: Reissuance is possible within 30 days of invoicing; modifications are nearly impossible after that period.</strong></p>
+<p>Most advertising platforms issue invoices after the billing cycle ends—for example, Meta issues monthly invoices. Once an invoice is generated and sent, correcting company names, tax IDs, or business addresses becomes extremely difficult.</p>
+<p><strong>Actionable advice:</strong><br />
+- Enter correct company registration names and tax IDs during account setup; avoid abbreviations<br />
+- For multi-entity operations, confirm which entity bears advertising costs and bind corresponding information in the backend in advance<br />
+- After invoice applications are submitted, verify information on electronic invoices immediately and contact platform support within 24 hours if issues are found</p>
+<h2>How to Reconcile Multi-Platform Advertising Spend?</h2>
+<p><strong>Core judgment: Consolidate using attribution dimensions consistently; don't mix platform metrics.</strong></p>
+<p>Overseas teams typically operate Meta, Google, TikTok, and other platforms simultaneously. Each platform has different data formats, timezones, and currency units. The key to unified reconciliation is establishing your own internal spend ledger with four standard fields: spend date, account, spend amount (USD), and corresponding RMB conversion.</p>
+<p>In practice, use tools like Feishu spreadsheets or Qingflow to build a simple spend summary template. Manually export reports from each platform backend at the beginning of each month and fill into the unified template. If managing more than 10 accounts, consider integrating third-party attribution platforms like DataTower or AppGrowing for automatic data aggregation.</p>
+<h2>How to Handle Currency Fluctuation Impact on Reconciliation?</h2>
+<p><strong>Core judgment: Use fixed monthly exchange rate for external reporting; use transaction-day rates for internal bookkeeping.</strong></p>
+<p>Advertising platforms are mostly USD-denominated while domestic finance books in RMB. Retroactively calculating monthly spend using month-end exchange rates distorts reports. Correct approach:</p>
+<ul>
+<li>Finance entries use the bank's spot sell rate on the day of transaction</li>
+<li>Monthly summary reports can use a fixed reference rate, but must note "for reference only"</li>
+<li>For large spend (exceeding $100,000 monthly), confirm with platforms or agents whether forward exchange services are available</li>
+</ul>
+<h2>Which Data Should You Trust: Agent Bills or Platform Backend?</h2>
+<p><strong>Core judgment: For financial matters, always prioritize official platform data; agent data is for reference only.</strong></p>
+<p>Some teams习惯 rely on agents for top-ups and bill viewing, but agent backend failures or data delays cause misjudgment. For example, agent shows sufficient balance while platform has already paused campaigns, or agent bills show lower spend while overdraft has actually occurred.</p>
+<p><strong>Bottom line:</strong> Financial reconciliation must use official platform backend data as authoritative. Agent-provided bills are for internal reference only. When discrepancies are found, immediately verify with agents and retain all communication records.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>

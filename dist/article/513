@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">一个爆量账户被封的教训：多账户投放团队的账户分层实战</span>
+                    <span x-show="lang === 'en'" x-cloak>How a Top-Performing Account Got Banned: Multi-Account Layering Strategy for Ad Teams</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-10-03</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="513" data-base-views="41">41</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu3807/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>案例背景：日消耗过万的账户突然被封</h2>
+<p>10月中旬，某工具类App投放团队负责人老周遇到了棘手问题：跑了3个月、日消耗1500美元的“主力账户”突然被平台封禁。更让他头疼的是，团队同时运营着11个账户，预算分配完全凭经验——“感觉哪个效果好就多投点”。</p>
+<p>封号原因很快查明：该账户曾使用过一批被平台标记过的素材变体，新账户复用时触发了关联审查。老周这才意识到，<strong>多账户管理不是“账户多了就好”，而是需要对账户进行科学分层</strong>。</p>
+<hr />
+<h2>问题拆解：多账户投放团队常见的四类病症</h2>
+<h3>病症一：账户健康度互相传染</h3>
+<p>该团队12个账户中，有2个曾因轻微违规被警告过。按平台规则，历史违规记录可能影响新账户的初始评级。但团队没有隔离管理，导致这2个“高危账户”使用的IP、设备和素材，无意间“污染”了其他健康账户。</p>
+<p><strong>判断标准</strong>：检查账户是否有历史违规记录、是否使用过共享资源（IP、设备、素材包）。</p>
+<h3>病症二：预算分配靠感觉，效率低下</h3>
+<p>老周的团队分配预算是这样的：主力账户占60%，其他账户分剩下的40%，没有明确的数据依据。结果是某些潜力账户因为初期测试预算不足，数据样本不足，无法验证效果。</p>
+<p><strong>判断标准</strong>：是否有账户长期消耗低于预期均值30%以上，且没有明确优化计划。</p>
+<h3>病症三：素材重复投放，账户内竞争</h3>
+<p>12个账户共用同一个素材库，所有账户都在测试相似的人群定向。这导致同一个用户可能在多个账户看到相同广告，浪费曝光不说，还影响转化数据真实性。</p>
+<p><strong>判断标准</strong>：是否存在跨账户的素材、用户重合度高于15%的情况。</p>
+<h3>病症四：权限混乱，误操作频发</h3>
+<p>团队5个投放手都能登录所有账户。有一次新人误将主力账户的投放时间表全部暂停，导致当天转化损失约800美元。</p>
+<p><strong>判断标准</strong>：是否所有成员对所有账户拥有同等权限，没有按角色区分。</p>
+<hr />
+<h2>处理动作：四步建立账户分层体系</h2>
+<h3>第一步：账户分级，划定“三层九等”</h3>
+<p>团队按照<strong>健康度、历史表现、战略价值</strong>三个维度，将12个账户重新划分为三层：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>定义</th>
+<th>数量</th>
+<th>管理重点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>主力层</strong></td>
+<td>稳定出单、ROAS高于团队均值20%以上、无违规记录</td>
+<td>2个</td>
+<td>稳定预算、严格隔离资源</td>
+</tr>
+<tr>
+<td><strong>测试层</strong></td>
+<td>有数据积累但尚未稳定、存在优化空间</td>
+<td>5个</td>
+<td>适度测试、每周复盘</td>
+</tr>
+<tr>
+<td><strong>探索层</strong></td>
+<td>新账户或表现波动大的账户</td>
+<td>5个</td>
+<td>小预算验证、快速迭代</td>
+</tr>
+</tbody>
+</table>
+<h3>第二步：资源隔离，切断“传染链”</h3>
+<p>主力账户立即执行硬隔离策略：</p>
+<ul>
+<li>独立设备登录，使用固定IP，禁止跨境登录</li>
+<li>素材必须经过二次原创处理，禁止直接复用其他账户素材</li>
+<li>浏览器指纹、Cookie完全清除后重建</li>
+</ul>
+<p>测试层和探索层可以共享部分资源，但共享前需通过“风险评估清单”过滤。</p>
+<h3>第三步：预算分配模型化</h3>
+<p>根据行业经验值和团队历史数据，建立了动态预算分配比例：</p>
+<pre><code>主力层：60-70% 预算，保证稳定性
+测试层：20-30% 预算，每周根据上周CPA调整
+探索层：5-10% 预算，单账户日预算不超过$200
+</code></pre>
+<p>每月复盘时，根据各层账户的实际表现重新分配，<strong>表现连续2周低于预期的账户自动降层</strong>。</p>
+<h3>第四步：权限分级，专人专责</h3>
+<p>团队内部推行“账户Owner制”：</p>
+<ul>
+<li><strong>Owner</strong> 对账户表现负全责，可执行所有操作</li>
+<li><strong>Operator</strong> 只能在Owner授权范围内调整预算和暂停/开启广告</li>
+<li><strong>Viewer</strong> 只能查看数据，无法操作</li>
+</ul>
+<p>新人入职第一周，只能获得Viewer权限，通过考核后才逐步升级。</p>
+<hr />
+<h2>结果：3个月后的变化</h2>
+<p>实施分层管理3个月后，团队交出了这样一份成绩单：</p>
+<ul>
+<li><strong>主力账户被封风险降低70%</strong>：严格的资源隔离让违规关联成为历史</li>
+<li><strong>测试层账户中跑出2个“准主力”</strong>：原本被低估的账户因为获得足够预算，验证了真实潜力</li>
+<li><strong>整体ROAS提升23%</strong>：素材重复投放问题解决后，跨账户竞争消失</li>
+<li><strong>零误操作事故</strong>：权限分级后，再也没有因个人失误影响主力账户</li>
+</ul>
+<hr />
+<h2>避坑建议清单</h2>
+<ol>
+<li><strong>新账户上线前，必做健康度检查</strong>：确认IP、设备、素材均无违规风险</li>
+<li><strong>不要让“经验”决定预算</strong>：建立数据驱动的分配模型，定期校准</li>
+<li><strong>分层不是固定不变的</strong>：每月复盘，动态调整，保持流动性</li>
+<li><strong>权限是最容易被忽视的防线</strong>：从入职第一天就建立权限意识</li>
+</ol>
+<p>多账户投放的核心挑战，不是“账户数量”，而是<strong>账户质量的可控性</strong>。分层管理的本质，是让每一层账户都有明确的使命，让资源在对的账户上发挥作用。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Case Background: A $1,500/Day Account Suddenly Banned</h2>
+<p>In mid-October, Lao Zhou, performance marketing lead at a utility app company, faced a critical issue: their "main account" that had been running for three months at $1,500 daily spend was suddenly suspended by the platform. To make things worse, his team was managing 12 accounts simultaneously with budget allocation based purely on intuition—"whichever seems to perform better gets more budget."</p>
+<p>The ban reason quickly surfaced: the account had used a batch of ad creative variants previously flagged by the platform, and reusing them in the new account triggered association review. Lao Zhou realized then that <strong>managing multiple accounts isn't about "more accounts is better"—it requires scientific account layering</strong>.</p>
+<hr />
+<h2>Problem Analysis: Four Common Illnesses in Multi-Account Teams</h2>
+<h3>Illness 1: Account Health Contagion</h3>
+<p>Among the team's 12 accounts, two had received warnings for minor violations. Platform rules mean historical violations can affect new accounts' initial ratings. However, the team had no isolation management, causing these two "high-risk accounts" to unknowingly "contaminate" other healthy accounts through shared IP, devices, and creatives.</p>
+<p><strong>Judgment criteria</strong>: Check for historical violations, shared resources (IP, devices, creative packages).</p>
+<h3>Illness 2: Budget Allocation by Gut Feel</h3>
+<p>The team's budget allocation was: main accounts 60%, remaining accounts 40%—no data basis. Result: some potential accounts couldn't gather sufficient data samples due to insufficient initial testing budget.</p>
+<p><strong>Judgment criteria</strong>: Accounts consistently spending below expected average by 30%+ without clear optimization plans.</p>
+<h3>Illness 3: Creative Repetition, Intra-Team Competition</h3>
+<p>All 12 accounts shared the same creative library, testing similar audience targeting. This meant the same user might see identical ads across multiple accounts, wasting impressions and distorting conversion data.</p>
+<p><strong>Judgment criteria</strong>: Cross-account creative and user overlap exceeding 15%.</p>
+<h3>Illness 4: Permission Chaos, Misoperation Frequency</h3>
+<p>All five performance marketers could log into all accounts. Once, a newcomer accidentally paused all schedules on the main account, causing ~$800 in lost conversions that day.</p>
+<p><strong>Judgment criteria</strong>: All members having equal permissions across all accounts without role distinction.</p>
+<hr />
+<h2>Action Plan: Four Steps to Build Account Layering System</h2>
+<h3>Step 1: Account Classification, Defining "Three Layers Nine Grades"</h3>
+<p>The team reclassified 12 accounts into three layers based on <strong>health status, historical performance, and strategic value</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Definition</th>
+<th>Count</th>
+<th>Management Focus</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Main Layer</strong></td>
+<td>Stable conversions, ROAS 20%+ above team average, no violation records</td>
+<td>2</td>
+<td>Stable budget, strict resource isolation</td>
+</tr>
+<tr>
+<td><strong>Testing Layer</strong></td>
+<td>Data accumulated but not yet stable, optimization potential exists</td>
+<td>5</td>
+<td>Moderate testing, weekly review</td>
+</tr>
+<tr>
+<td><strong>Exploration Layer</strong></td>
+<td>New accounts or accounts with volatile performance</td>
+<td>5</td>
+<td>Small-budget validation, rapid iteration</td>
+</tr>
+</tbody>
+</table>
+<h3>Step 2: Resource Isolation, Cutting the "Transmission Chain"</h3>
+<p>Main accounts immediately implemented hard isolation:</p>
+<ul>
+<li>Dedicated device login with fixed IP, cross-border login prohibited</li>
+<li>Creatives must undergo secondary original processing, direct reuse from other accounts prohibited</li>
+<li>Browser fingerprints and cookies completely cleared before rebuild</li>
+</ul>
+<p>Testing and exploration layers can share some resources, but must pass "risk assessment checklist" before sharing.</p>
+<h3>Step 3: Model-Based Budget Allocation</h3>
+<p>Based on industry benchmarks and team historical data, a dynamic allocation ratio was established:</p>
+<pre><code>Main Layer: 60-70% budget, ensuring stability
+Testing Layer: 20-30% budget, adjusted weekly based on previous week's CPA
+Exploration Layer: 5-10% budget, max $200 daily per account
+</code></pre>
+<p>Monthly reviews recalibrate allocations—<strong>accounts underperforming for two consecutive weeks are automatically downgraded</strong>.</p>
+<h3>Step 4: Permission Stratification, Dedicated Responsibilities</h3>
+<p>The team implemented "Account Owner System":</p>
+<ul>
+<li><strong>Owner</strong>: Full responsibility for account performance, can execute all operations</li>
+<li><strong>Operator</strong>: Can only adjust budget and pause/enable ads within Owner-authorized scope</li>
+<li><strong>Viewer</strong>: Data viewing only, no operations</li>
+</ul>
+<p>New hires receive Viewer permissions only in their first week, progressively upgraded after passing assessments.</p>
+<hr />
+<h2>Results: Changes After Three Months</h2>
+<p>After three months of layered management, the team delivered these results:</p>
+<ul>
+<li><strong>Main account ban risk reduced by 70%</strong>: Strict resource isolation made violation association history</li>
+<li><strong>2 "quasi-main" accounts emerged from testing layer</strong>: Previously underestimated accounts validated their true potential with adequate budget</li>
+<li><strong>Overall ROAS improved by 23%</strong>: Creative repetition eliminated, cross-account competition vanished</li>
+<li><strong>Zero misoperation incidents</strong>: Permission stratification prevented individual errors from affecting main accounts</li>
+</ul>
+<hr />
+<h2>Actionable Checklist</h2>
+<ol>
+<li><strong>Health check before new account launch</strong>: Confirm IP, device, and creatives have no violation risks</li>
+<li><strong>Don't let "experience" decide budget</strong>: Build data-driven allocation model, calibrate regularly</li>
+<li><strong>Layering isn't fixed</strong>: Monthly reviews, dynamic adjustments, maintain fluidity</li>
+<li><strong>Permissions are the most overlooked defense</strong>: Establish permission awareness from day one</li>
+</ol>
+<p>The core challenge of multi-account advertising isn't "account quantity"—it's <strong>controllability of account quality</strong>. Account layering essentially gives each layer a clear mission, enabling resources to work where they matter most.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
