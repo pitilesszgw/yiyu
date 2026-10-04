@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">广告账户突然被封？亲历者复盘：一次合规巡检如何救回账户</span>
+                    <span x-show="lang === 'en'" x-cloak>Account Banned Suddenly? A First-Hand Recap: How a Compliance Audit Saved the Account</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-10-05</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="517" data-base-views="54">54</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu8872/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>案例：周一早上，广告账户进入“受限审查”</h2>
+<p>周一早上9点，某工具类 App 出海团队的投放运营小张像往常一样登录 Meta 广告后台，准备提量，却发现所有广告状态显示“已暂停”，账户提示“受限审查”。</p>
+<p>更糟糕的是，账户中还有 3 万多余额，而广告已经停了将近 48 小时。</p>
+<p>小张翻看了最近的通知邮件，发现三天前有一条素材审核未通过的提示，但当时觉得只是单条素材被拒，没有重视。没想到系统自动触发了账户级别的审查，连带所有广告都被暂停。</p>
+<hr />
+<h2>问题：三条线同时出问题</h2>
+<p>事后复盘，这次账户受限的根本原因不在某一条素材，而是三个问题叠加：</p>
+<ol>
+<li><strong>素材层面</strong>：多款广告素材在图片中使用了未经授权的手机截图界面，被判定为“误导性内容”</li>
+<li><strong>落地页层面</strong>：产品页底部有几条“用户好评”被怀疑是虚假评价，违反平台“社会证明”政策</li>
+<li><strong>文案层面</strong>：广告文案中出现了“100% free”的表述，但 App 实际存在付费订阅，属于“夸大功能”</li>
+</ol>
+<p>三条线同时触发平台的合规红线，最终导致账户被系统性审查。</p>
+<hr />
+<h2>判断：这不是“偶发问题”，而是系统性风险</h2>
+<p>很多团队会把这类事件归因为“运气不好”“平台严了”，但实际上，这反映了团队在<strong>合规管理上的系统性缺失</strong>：</p>
+<ul>
+<li>素材提交前没有预审机制，单条被拒是随机，批量被拒是必然</li>
+<li>没有跟踪平台政策变化的习惯，违规标准已经更新但团队不知道</li>
+<li>账户预警机制缺失，审核通知被淹没在邮件中无人处理</li>
+<li>落地页与广告素材是不同的人负责，没有统一合规标准</li>
+</ul>
+<hr />
+<h2>处理动作：48 小时紧急修复 SOP</h2>
+<h3>第一步：确认违规原因（0-2 小时）</h3>
+<p>登录广告后台，找到“账户状态”和“政策中心”，下载所有未通过审核的具体原因。整理成问题清单：</p>
+<ul>
+<li>违规类型：误导性内容 × 5 条</li>
+<li>违规类型：虚假评价 × 2 条</li>
+<li>违规类型：夸大功能 × 3 条</li>
+</ul>
+<h3>第二步：素材整改（2-8 小时）</h3>
+<p>针对每一类违规，团队分工处理：</p>
+<ul>
+<li>设计组：替换所有未授权截图，改用自制 UI 界面</li>
+<li>文案组：修改夸大表述，改为客观功能描述</li>
+<li>产品组：清理落地页所有可疑评价，保留真实截图</li>
+</ul>
+<h3>第三步：申诉提交（8-12 小时）</h3>
+<p>在 Meta Business Help Center 提交账户申诉。申诉内容需要包含：</p>
+<ul>
+<li>违规问题说明</li>
+<li>已完成的整改措施（附截图）</li>
+<li>合规承诺书（说明后续预防计划）</li>
+</ul>
+<h3>第四步：巡检其他账户（12-24 小时）</h3>
+<p>这个团队有 3 个广告账户，本次只出问题了 1 个。另外两个账户的素材和落地页是否存在同样的风险点？</p>
+<p>团队用同样的清单做了快速扫描，发现账户 B 有 2 条类似素材，立即下架处理。</p>
+<h3>第五步：恢复投放与观察（24-48 小时）</h3>
+<p>申诉通过后，账户解封。团队没有立刻恢复所有广告，而是优先测试已确认合规的素材，控制预算，观察 48 小时内的审核状态，确认没有新问题后再逐步放量。</p>
+<hr />
+<h2>结果：账户救回，但教训是系统性的</h2>
+<p>48 小时后，账户恢复正常。3 万多余额保住，广告恢复投放。</p>
+<p>但这个案例真正带来的改变不是“救回了一个账户”，而是<strong>推动了团队建立合规巡检 SOP</strong>：</p>
+<ul>
+<li>素材上线前增加“合规自检清单”环节</li>
+<li>每周五固定执行一次账户健康度巡检</li>
+<li>指定专人负责平台政策更新推送</li>
+<li>落地页与广告素材使用统一的合规标准</li>
+</ul>
+<hr />
+<h2>一个提醒：合规巡检不是“走过场”</h2>
+<p>很多团队知道合规重要，但往往把它当成“偶尔检查一下”的事情。</p>
+<p>实际上，平台的政策在持续更新，素材在持续产出，违规风险是动态的。一次疏忽可能只是单条素材被拒，但连续积累就会触发账户级别的审查。</p>
+<p>与其等账户被封后紧急修复，不如把巡检变成日常工作的一部分。</p>
+<hr />
+<h2>以渔数媒合规支持服务</h2>
+<p>以渔数媒在为出海团队提供广告账户管理时，会同步包含合规巡检环节：<strong>素材上线前的合规预审</strong>、<strong>账户状态的实时监控</strong>、<strong>违规问题的快速响应</strong>。帮助团队在扩大投放规模的同时，守住合规底线。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Case: Monday Morning, Account Enters 'Restricted Review'</h2>
+<p>Monday morning, 9 AM. Xiao Zhang, the performance marketer for a utility app overseas team, logged into the Meta ad dashboard as usual, ready to scale up. But all ad statuses showed 'Paused', and the account was under 'Restricted Review'. </p>
+<p>Worse, there were still over $30,000 in the account balance, and the ads had been paused for nearly 48 hours.</p>
+<p>Xiao Zhang checked recent notification emails and found a creative disapproval alert from three days earlier—but at the time, they thought it was just a single disapproved ad and didn't take it seriously. It turned out the system had automatically triggered an account-level review, pausing all ads.</p>
+<hr />
+<h2>The Problem: Three Issues Simultaneously</h2>
+<p>Looking back, the root cause wasn't a single creative issue but a combination of three problems:</p>
+<ol>
+<li><strong>Creative Level</strong>: Several ad creatives used unauthorized phone screenshot interfaces, flagged as 'Misleading Content'</li>
+<li><strong>Landing Page Level</strong>: The product page had several 'user reviews' suspected of being fake, violating platform 'Social Proof' policies</li>
+<li><strong>Copy Level</strong>: Ad copy contained '100% free' claims, but the app actually had paid subscriptions—'Exaggerated Functionality'</li>
+</ol>
+<p>All three triggered the platform's compliance red lines simultaneously, leading to a systematic account review.</p>
+<hr />
+<h2>Diagnosis: This Wasn't 'Bad Luck'—It Was Systemic Risk</h2>
+<p>Many teams would attribute this to 'bad luck' or 'stricter platform enforcement', but in reality, it reflects a <strong>systematic gap in compliance management</strong>:</p>
+<ul>
+<li>No pre-approval mechanism for creatives; single disapprovals were random, but batch disapprovals were inevitable</li>
+<li>No habit of tracking platform policy changes; violation standards had updated but the team didn't know</li>
+<li>No account alert mechanism; review notifications got buried in emails</li>
+<li>Landing page and ad creatives were handled by different people with no unified compliance standards</li>
+</ul>
+<hr />
+<h2>Actions: 48-Hour Emergency Response SOP</h2>
+<h3>Step 1: Confirm Violation Reasons (0-2 Hours)</h3>
+<p>Log into the ad dashboard, find 'Account Status' and 'Policy Center', and download all specific reasons for disapproved items. Create a problem list:</p>
+<ul>
+<li>Violation Type: Misleading Content × 5 items</li>
+<li>Violation Type: Fake Reviews × 2 items</li>
+<li>Violation Type: Exaggerated Functionality × 3 items</li>
+</ul>
+<h3>Step 2: Creative Remediation (2-8 Hours)</h3>
+<p>Handle each violation category by division:</p>
+<ul>
+<li>Design Team: Replace all unauthorized screenshots with custom UI mockups</li>
+<li>Copy Team: Revise exaggerated claims to objective feature descriptions</li>
+<li>Product Team: Remove all suspicious reviews from landing pages, keep only authentic ones</li>
+</ul>
+<h3>Step 3: Submit Appeal (8-12 Hours)</h3>
+<p>Submit an account appeal through Meta Business Help Center. The appeal should include:</p>
+<ul>
+<li>Explanation of violation issues</li>
+<li>Completed remediation measures (with screenshots)</li>
+<li>Compliance commitment letter (outlining future prevention plans)</li>
+</ul>
+<h3>Step 4: Audit Other Accounts (12-24 Hours)</h3>
+<p>This team had 3 ad accounts; only 1 had issues this time. Did the other two accounts have the same risk points in their creatives and landing pages?</p>
+<p>The team ran a quick scan using the same checklist and found 2 similar creatives in Account B—those were immediately paused.</p>
+<h3>Step 5: Resume and Monitor (24-48 Hours)</h3>
+<p>After the appeal was approved, the account was restored. Instead of resuming all ads immediately, the team first tested only confirmed-compliant creatives, controlled budgets, and observed for 48 hours before gradually scaling.</p>
+<hr />
+<h2>Outcome: Account Restored, But the Lesson Was Systematic</h2>
+<p>After 48 hours, the account was back to normal. The $30,000+ balance was preserved, and ads resumed.</p>
+<p>But the real change this case brought wasn't 'saved one account'—it was <strong>pushing the team to establish a compliance audit SOP</strong>:</p>
+<ul>
+<li>Added 'Compliance Self-Check' step before creative launch</li>
+<li>Fixed weekly account health audit every Friday</li>
+<li>Designated someone to track platform policy updates</li>
+<li>Unified compliance standards for landing pages and ad creatives</li>
+</ul>
+<hr />
+<h2>A Reminder: Compliance Audits Aren't 'Just a Checklist'</h2>
+<p>Many teams know compliance matters but often treat it as 'check occasionally when we have time'.</p>
+<p>In reality, platform policies are constantly evolving, creatives are continuously being produced, and violation risks are dynamic. One oversight might only disapprove a single creative, but accumulated violations will trigger account-level reviews.</p>
+<p>Instead of emergency recovery after account suspension, make audits part of daily operations.</p>
+<hr />
+<h2>Yiyu Media Compliance Support Services</h2>
+<p>When managing overseas ad accounts for teams, Yiyu Media includes compliance auditing as part of the service: <strong>pre-launch creative compliance review</strong>, <strong>real-time account status monitoring</strong>, and <strong>rapid response to violation issues</strong>. Help teams scale their ad spend while maintaining compliance standards.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
