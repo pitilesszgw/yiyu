@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">TikTok Shop新品冷启动：为什么你的素材池一开始就错了</span>
+                    <span x-show="lang === 'en'" x-cloak>TikTok Shop Cold Start: Why Your Creative Strategy Is Wrong From Day One</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-10-06</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="522" data-base-views="12">12</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu5262/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>先说结论：冷启动期堆素材是最低效的做法</h2>
+<p>新品在TikTok Shop上线的前两周，是跑通投放模型的关键窗口。很多运营团队的习惯动作是：准备20-30条素材一起上线，靠系统自然筛选。这种做法看似稳妥，实际上是在浪费测试预算。</p>
+<p>真正高效的冷启动策略，是用更少但差异度更高的素材，快速完成模型学习。具体来说：<strong>10-15条高度差异化的素材，配合3-5天的集中测试周期</strong>，往往比30条同质化素材的效果更好。</p>
+<hr />
+<h2>素材池的差异度，比数量更关键</h2>
+<p>什么叫“差异度”？简单讲，就是每条素材在<strong>核心元素</strong>上要有明确区分：</p>
+<ul>
+<li><strong>产品使用场景</strong>：家居产品在厨房用 vs 在卧室用</li>
+<li><strong>人物角色</strong>：真实用户出镜 vs 产品特写+字幕</li>
+<li><strong>信息呈现节奏</strong>：0-3秒强钩子 vs 10秒完整故事线</li>
+<li><strong>视觉风格</strong>：原相机直拍 vs 精致剪辑</li>
+</ul>
+<p>某工具类App团队在东南亚市场冷启动时，第一版准备了25条素材，全部是“产品功能展示+价格优惠”的同质化结构。跑了三天，消耗了预算但没有一条跑出量。后来运营复盘发现，25条素材实际上只有1种创意逻辑。</p>
+<p>后来他们重构素材池，保留5条核心产品展示片，额外加入：用户真实使用场景短片、对比实验类素材、情景短剧。调整后，一周内就跑出了3条CTR明显优于均值的主力素材。</p>
+<hr />
+<h2>冷启动期素材池搭建清单</h2>
+<p>如果你是从零开始搭建素材池，建议按以下结构准备：</p>
+<p><strong>A类产品展示类（4-5条）</strong></p>
+<ul>
+<li>产品核心功能特写，字幕标注关键卖点</li>
+<li>痛点切入+解决方案直拍</li>
+<li>前后对比类素材</li>
+</ul>
+<p><strong>B类场景化内容（4-5条）</strong></p>
+<ul>
+<li>真实用户使用场景直拍，东南亚用户偏好多场景</li>
+<li>融入本地化生活情境，不只是展示产品</li>
+<li>UGC风格的真实分享</li>
+</ul>
+<p><strong>C类测试性素材（2-3条）</strong></p>
+<ul>
+<li>尝试不同的钩子形式：数字型、疑问型、反常识型</li>
+<li>不同的视频长度：15秒短版 vs 30-60秒完整版</li>
+<li>不同配乐风格或字幕排版</li>
+</ul>
+<p><strong>D类素材变形（2-3条）</strong></p>
+<ul>
+<li>同一素材的不同剪辑比例</li>
+<li>同一脚本换配音或字幕语言</li>
+<li>封面图和标题的AB版本</li>
+</ul>
+<p>这样算下来，一个完整的冷启动素材池在12-16条左右，覆盖了主要的创意方向，且每条之间有明确的差异度区分。</p>
+<hr />
+<h2>测试期别拖太长，也别太短</h2>
+<p>3-5天的集中测试周期是经验值。太短看不出数据趋势，太长会消耗不必要的预算。测试期间有几个判断标准：</p>
+<ul>
+<li><strong>CTR低于1%的素材</strong>，基本可以直接暂停</li>
+<li><strong>5秒完播率低于40%的素材</strong>，钩子需要调整</li>
+<li><strong>有转化但成本过高的素材</strong>，观察CVR是否还有优化空间</li>
+</ul>
+<p>测试结束后，保留跑得最好的2-3条作为主力素材，同时把测试中发现的“潜力素材”继续微调优化。</p>
+<hr />
+<h2>总结：冷启动要快，素材要准</h2>
+<p>TikTok Shop的算法对新账号有学习期，这个阶段最怕的就是：<strong>把太多同质化素材喂给系统，让算法搞不清楚目标用户长什么样</strong>。</p>
+<p>所以，冷启动的核心不是“有多少条素材”，而是“素材之间的差异度够不够让系统快速学习”。</p>
+<p>下次准备新品冷启动时，先问自己一个问题：<strong>我这批素材，如果删掉一半，剩下的是不是仍然覆盖了所有核心创意方向？</strong> 如果答案是“删了就没了”，说明差异度够了；如果答案是“删了也差不多”，说明还是同质化素材太多，需要重新规划。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Start With the Conclusion: Volume Is the Least Effective Approach</h2>
+<p>The first two weeks after launching a new product on TikTok Shop are critical for training your ad delivery model. Most teams default to uploading 20-30 creatives simultaneously and letting the algorithm sort it out. This approach feels safe, but it's actually burning budget inefficiently.</p>
+<p>The truly efficient cold start strategy uses fewer but more differentiated creatives to accelerate model learning. Specifically: <strong>10-15 highly differentiated creatives with a 3-5 day concentrated testing cycle</strong> typically outperforms 30 similar creatives.</p>
+<hr />
+<h2>Creative Diversity Matters More Than Volume</h2>
+<p>What does "diversity" mean in practice? It means each creative should differ meaningfully in <strong>core elements</strong>:</p>
+<ul>
+<li><strong>Use scenarios</strong>: A home product shown in the kitchen vs. bedroom</li>
+<li><strong>Persona</strong>: Real user in-frame vs. product close-up with captions</li>
+<li><strong>Information pacing</strong>: Strong hook in 0-3 seconds vs. 10-second narrative arc</li>
+<li><strong>Visual style</strong>: Raw camera footage vs. polished editing</li>
+</ul>
+<p>A utility app team launching in Southeast Asia prepared 25 creatives initially—all following the same "product feature showcase + discount" format. After three days with no standout performers, they realized the 25 creatives were essentially variations of a single creative logic.</p>
+<p>They restructured the creative pool: kept 5 core product showcase videos, then added genuine user scenarios, comparison demonstrations, and mini-story content. Within one week, 3 creatives emerged with CTR significantly above their baseline.</p>
+<hr />
+<h2>Cold Start Creative Pool Checklist</h2>
+<p>When building your creative pool from scratch, structure it this way:</p>
+<p><strong>A. Product Showcase (4-5 creatives)</strong></p>
+<ul>
+<li>Core feature close-ups with key selling points in captions</li>
+<li>Pain point intro + solution straight-shoot</li>
+<li>Before/after comparisons</li>
+</ul>
+<p><strong>B. Scenario-Based Content (4-5 creatives)</strong></p>
+<ul>
+<li>Real user scenarios—Southeast Asian audiences prefer diverse contexts</li>
+<li>Localized lifestyle integration beyond product display</li>
+<li>UGC-style authentic sharing</li>
+</ul>
+<p><strong>C. Experimental Creatives (2-3 creatives)</strong></p>
+<ul>
+<li>Different hook formats: numeric, question-based, counterintuitive</li>
+<li>Varying lengths: 15-second short version vs. 30-60 second full story</li>
+<li>Different music styles or caption layouts</li>
+</ul>
+<p><strong>D. Creative Variations (2-3 creatives)</strong></p>
+<ul>
+<li>Different aspect ratios of the same footage</li>
+<li>Same script with different voiceovers or subtitle languages</li>
+<li>A/B versions of thumbnails and headlines</li>
+</ul>
+<p>This gives you a complete cold start pool of 12-16 creatives covering all major creative directions with clear differentiation between each one.</p>
+<hr />
+<h2>Don't Test Too Long—Or Too Short</h2>
+<p>A 3-5 day concentrated testing period is an operational benchmark. Too short reveals no trend; too long burns unnecessary budget. During testing, use these benchmarks:</p>
+<ul>
+<li><strong>Creatives with CTR below 1%</strong> can typically be paused immediately</li>
+<li><strong>Creatives with under 40% 5-second retention</strong> need hook adjustments</li>
+<li><strong>Creatives generating conversions but at high cost</strong>: monitor whether CVR can be optimized</li>
+</ul>
+<p>After testing ends, preserve your top 2-3 performers as primary creatives while fine-tuning any "potential" creatives that showed promise.</p>
+<hr />
+<h2>Conclusion: Cold Start Needs Speed and Precision</h2>
+<p>TikTok Shop's algorithm has a learning period for new accounts. During this phase, the biggest risk is <strong>feeding the system too many similar creatives, leaving the algorithm confused about what the target user actually looks like</strong>.</p>
+<p>So the core principle for cold start isn't "how many creatives"—it's "do these creatives have enough diversity to let the algorithm learn quickly?"</p>
+<p>Next time you're preparing for a new product cold start, ask yourself this: <strong>If I deleted half of these creatives, would the remaining ones still cover all core creative directions?</strong> If yes, your diversity is sufficient. If not, you still have too much homogenization and need to restructure.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
