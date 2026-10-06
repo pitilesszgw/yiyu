@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="https://t.me/yiyiyiads" target="_blank" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">出海团队必看：多平台广告账户充值、消耗与发票统一对账SOP</span>
+                    <span x-show="lang === 'en'" x-cloak>SOP: Unified Reconciliation of Overseas Ad Spend, Recharge &amp; Invoices</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-10-07</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="525" data-base-views="11">11</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu9241/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>适用场景</h2>
+<p>本文适用于以下情况：<br />
+- 同时运营多个海外广告平台账户<br />
+- 每月需完成广告消耗与财务账目核对<br />
+- 需要管理多个账户的充值记录和发票<br />
+- 财务团队对账时经常发现差异</p>
+<hr />
+<h2>步骤一：建立账户台账表</h2>
+<p><strong>操作方法：</strong></p>
+<p>在开始对账前，先整理一份账户台账表，包含以下字段：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>平台</td>
+<td>广告平台名称</td>
+<td>Meta / Google / TikTok</td>
+</tr>
+<tr>
+<td>账户ID</td>
+<td>代理商分配的账户编号</td>
+<td>USxxxxxx</td>
+</tr>
+<tr>
+<td>账户名称</td>
+<td>便于识别的简称</td>
+<td>某App北美主力户</td>
+</tr>
+<tr>
+<td>代理商</td>
+<td>开户代理商名称</td>
+<td>以渔数媒</td>
+</tr>
+<tr>
+<td>充值方式</td>
+<td>预付款/月结</td>
+<td>预付款</td>
+</tr>
+<tr>
+<td>账户余额</td>
+<td>当前剩余额度</td>
+<td>$1,250.00</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>提示：</strong> 建议在每月1日更新账户余额，便于后续消耗计算。</p>
+</blockquote>
+<hr />
+<h2>步骤二：充值记录同步</h2>
+<p><strong>操作方法：</strong></p>
+<p>从代理商后台或邮件通知中提取本月所有充值记录，填入对账表。</p>
+<table>
+<thead>
+<tr>
+<th>日期</th>
+<th>账户</th>
+<th>金额(USD)</th>
+<th>凭证号</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>12/05</td>
+<td>USxxxxxx</td>
+<td>$500</td>
+<td>INV-20241205-001</td>
+<td>以渔后台</td>
+</tr>
+<tr>
+<td>12/12</td>
+<td>USxxxxxx</td>
+<td>$300</td>
+<td>INV-20241212-002</td>
+<td>邮件通知</td>
+</tr>
+</tbody>
+</table>
+<p><strong>核验要点：</strong></p>
+<ul>
+<li>充值金额与代理商出具的账单是否一致</li>
+<li>汇率是否按约定标准计算（涉及人民币换算时）</li>
+<li>充值到账时间与记录时间是否匹配</li>
+</ul>
+<hr />
+<h2>步骤三：消耗数据核对</h2>
+<p><strong>操作方法：</strong></p>
+<p>登录各平台后台，导出本月广告消耗报告。</p>
+<ol>
+<li><strong>Meta Business Manager</strong>：进入广告管理后台 → 报告 → 导出本月数据</li>
+<li><strong>Google Ads</strong>：工具与设置 → 报告 → 下载报告</li>
+<li><strong>TikTok Ads</strong>：数据中心 → 报告 → 消耗报表</li>
+</ol>
+<p><strong>核对公式：</strong></p>
+<pre><code>期末余额 = 期初余额 + 本月充值 - 本月消耗
+</code></pre>
+<p><strong>常见差异及原因：</strong></p>
+<table>
+<thead>
+<tr>
+<th>差异类型</th>
+<th>可能原因</th>
+<th>处理方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>余额为负</td>
+<td>存在待结算消耗</td>
+<td>等待24小时后重新核对</td>
+</tr>
+<tr>
+<td>消耗超出充值</td>
+<td>月结账户或信用额度</td>
+<td>确认账单周期</td>
+</tr>
+<tr>
+<td>金额相差几美元</td>
+<td>平台汇率波动</td>
+<td>记录为汇兑差额</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>步骤四：发票收集与核对</h2>
+<p><strong>操作方法：</strong></p>
+<p>将收到的发票按账户分类，检查以下信息：</p>
+<ul>
+<li>[ ] 发票金额与充值记录一致</li>
+<li>[ ] 发票抬头公司名称正确</li>
+<li>[ ] 开票日期在充值之后</li>
+<li>[ ] 发票代码、号码可查验</li>
+<li>[ ] 对应消耗明细已附上（如需要）</li>
+</ul>
+<p><strong>归类存档：</strong></p>
+<p>建议按以下结构存档：</p>
+<pre><code>2024年度广告发票/
+├── 01月/
+│   ├── Meta_202401.pdf
+│   ├── Google_202401.pdf
+│   └── TikTok_202401.pdf
+├── 02月/
+│   └── ...
+</code></pre>
+<hr />
+<h2>步骤五：差异分析与处理</h2>
+<p><strong>处理流程：</strong></p>
+<ol>
+<li><strong>差异金额 ≤ $10</strong>：记录备注，可直接结转</li>
+<li><strong>差异金额 $10-$100</strong>：联系代理商核查，保留沟通记录</li>
+<li><strong>差异金额 &gt; $100</strong>：提交平台后台申诉或代理商对账请求</li>
+</ol>
+<p><strong>必要留存材料：</strong></p>
+<ul>
+<li>充值截图/邮件</li>
+<li>平台消耗后台截图</li>
+<li>与代理商的沟通记录</li>
+<li>差异说明文档</li>
+</ul>
+<hr />
+<h2>步骤六：完成月度对账报表</h2>
+<p>完成以上步骤后，汇总输出月度对账汇总表，包含：</p>
+<ul>
+<li>各账户充值总额</li>
+<li>各账户消耗总额</li>
+<li>期末余额汇总</li>
+<li>发票收到情况</li>
+<li>未处理差异说明</li>
+</ul>
+<blockquote>
+<p><strong>建议：</strong> 在每月10日前完成上月对账，确保在财务结算周期内完成所有核对工作。</p>
+</blockquote>
+<hr />
+<h2>常见问题</h2>
+<p><strong>Q：充值后余额未立即更新怎么办？</strong></p>
+<p>海外平台通常有5-30分钟的到账延迟，建议充值后等待30分钟再核对余额。</p>
+<p><strong>Q：发票金额与充值金额不一致怎么入账？</strong></p>
+<p>以平台实际消耗金额为准，发票金额可能因汇率或手续费略有差异，在财务备注中说明即可。</p>
+<p><strong>Q：多账户对账工作量大，有什么工具推荐？</strong></p>
+<p>可使用以渔数媒的多账户管理后台，一站式查看所有账户的充值、消耗和余额状态，减少人工切换核对的时间成本。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Applicable Scenarios</h2>
+<p>This SOP is designed for teams that:</p>
+<ul>
+<li>Operate multiple overseas ad platform accounts simultaneously</li>
+<li>Need to reconcile monthly ad spend with financial records</li>
+<li>Manage recharge records and invoices across various accounts</li>
+<li>Experience frequent discrepancies during finance reconciliation</li>
+</ul>
+<hr />
+<h2>Step 1: Build an Account Registry</h2>
+<p><strong>Procedure:</strong></p>
+<p>Before starting reconciliation, create an account registry with the following fields:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Platform</td>
+<td>Ad platform name</td>
+<td>Meta / Google / TikTok</td>
+</tr>
+<tr>
+<td>Account ID</td>
+<td>Agency-assigned account number</td>
+<td>USxxxxxx</td>
+</tr>
+<tr>
+<td>Account Name</td>
+<td>Easy-to-identify nickname</td>
+<td>App North America Primary</td>
+</tr>
+<tr>
+<td>Agency</td>
+<td>Account opening agency</td>
+<td>Yiyu Media</td>
+</tr>
+<tr>
+<td>Payment Type</td>
+<td>Prepay / Monthly</td>
+<td>Prepay</td>
+</tr>
+<tr>
+<td>Balance</td>
+<td>Current remaining credit</td>
+<td>$1,250.00</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Tip:</strong> Update account balances on the 1st of each month for easier spend calculation.</p>
+</blockquote>
+<hr />
+<h2>Step 2: Sync Recharge Records</h2>
+<p><strong>Procedure:</strong></p>
+<p>Extract all monthly recharge records from the agency backend or email notifications and input them into the reconciliation sheet.</p>
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Account</th>
+<th>Amount(USD)</th>
+<th>Reference No.</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>12/05</td>
+<td>USxxxxxx</td>
+<td>$500</td>
+<td>INV-20241205-001</td>
+<td>Agency Backend</td>
+</tr>
+<tr>
+<td>12/12</td>
+<td>USxxxxxx</td>
+<td>$300</td>
+<td>INV-20241212-002</td>
+<td>Email Notification</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Verification Points:</strong></p>
+<ul>
+<li>Verify recharge amounts match agency invoices</li>
+<li>Check exchange rates match agreed standards (for CNY conversions)</li>
+<li>Confirm arrival time matches record time</li>
+</ul>
+<hr />
+<h2>Step 3: Verify Spend Data</h2>
+<p><strong>Procedure:</strong></p>
+<p>Log into each platform backend and export monthly ad spend reports.</p>
+<ol>
+<li><strong>Meta Business Manager</strong>: Ads Manager → Reports → Export monthly data</li>
+<li><strong>Google Ads</strong>: Tools &amp; Settings → Reports → Download report</li>
+<li><strong>TikTok Ads</strong>: Data Center → Reports → Spend report</li>
+</ol>
+<p><strong>Reconciliation Formula:</strong></p>
+<pre><code>Ending Balance = Beginning Balance + Monthly Recharge - Monthly Spend
+</code></pre>
+<p><strong>Common Discrepancies and Causes:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Discrepancy Type</th>
+<th>Possible Cause</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Negative balance</td>
+<td>Pending settlement spend</td>
+<td>Wait 24 hours and recheck</td>
+</tr>
+<tr>
+<td>Spend exceeds recharge</td>
+<td>Monthly billing or credit line</td>
+<td>Confirm billing cycle</td>
+</tr>
+<tr>
+<td>Minor difference (few dollars)</td>
+<td>Platform FX fluctuation</td>
+<td>Record as exchange variance</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Step 4: Collect and Verify Invoices</h2>
+<p><strong>Procedure:</strong></p>
+<p>Organize received invoices by account and verify:</p>
+<ul>
+<li>[ ] Invoice amount matches recharge record</li>
+<li>[ ] Invoice company name is correct</li>
+<li>[ ] Invoice date is after recharge date</li>
+<li>[ ] Invoice code and number are verifiable</li>
+<li>[ ] Corresponding spend details attached (if required)</li>
+</ul>
+<p><strong>Archive Organization:</strong></p>
+<p>Recommended folder structure:</p>
+<pre><code>2024 Ad Invoices/
+├── 01/
+│   ├── Meta_202401.pdf
+│   ├── Google_202401.pdf
+│   └── TikTok_202401.pdf
+├── 02/
+│   └── ...
+</code></pre>
+<hr />
+<h2>Step 5: Analyze and Resolve Discrepancies</h2>
+<p><strong>Resolution Process:</strong></p>
+<ol>
+<li><strong>Difference ≤ $10</strong>: Note in comments, proceed to close</li>
+<li><strong>Difference $10-$100</strong>: Contact agency for verification, retain communication records</li>
+<li><strong>Difference &gt; $100</strong>: Submit platform ticket or agency reconciliation request</li>
+</ol>
+<p><strong>Required Documentation:</strong></p>
+<ul>
+<li>Recharge screenshots/emails</li>
+<li>Platform spend backend screenshots</li>
+<li>Communication records with agency</li>
+<li>Discrepancy explanation document</li>
+</ul>
+<hr />
+<h2>Step 6: Complete Monthly Reconciliation Report</h2>
+<p>After completing the above steps, compile a monthly reconciliation summary including:</p>
+<ul>
+<li>Total recharge by account</li>
+<li>Total spend by account</li>
+<li>Ending balance summary</li>
+<li>Invoice receipt status</li>
+<li>Unexplained discrepancies</li>
+</ul>
+<blockquote>
+<p><strong>Recommendation:</strong> Complete previous month's reconciliation by the 10th to ensure closure within the financial settlement cycle.</p>
+</blockquote>
+<hr />
+<h2>FAQ</h2>
+<p><strong>Q: What if balance doesn't update after recharge?</strong></p>
+<p>Overseas platforms typically have a 5-30 minute arrival delay. Wait 30 minutes after recharge before checking balance.</p>
+<p><strong>Q: How to handle invoice amounts not matching recharge amounts?</strong></p>
+<p>Use platform actual spend as the basis. Invoice amounts may vary slightly due to exchange rates or fees—note this in financial comments.</p>
+<p><strong>Q: Any tools to reduce multi-account reconciliation workload?</strong></p>
+<p>Use Yiyu Media's multi-account management backend to view all account recharge, spend, and balance statuses in one place, reducing manual switching time.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-slate-400 text-sm">
+                &copy; 2026 以渔数媒 (YiYu Ads). All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
