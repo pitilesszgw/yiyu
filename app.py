@@ -71,6 +71,22 @@ def favicon():
 def index():
     return render_template('index.html')
 
+@app.route('/about')
+def about():
+    return render_template('company.html', page='about')
+
+@app.route('/contact')
+def contact():
+    return render_template('company.html', page='contact')
+
+@app.route('/privacy')
+def privacy():
+    return render_template('company.html', page='privacy')
+
+@app.route('/terms')
+def terms():
+    return render_template('company.html', page='terms')
+
 @app.route('/pricing')
 def pricing():
     return render_template('pricing.html')
