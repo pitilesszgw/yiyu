@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">海外广告账户资金管理清单：运营必须盯紧的6类核心指标</span>
+                    <span x-show="lang === 'en'" x-cloak>Overseas Ad Account Fund Management Checklist: 6 Key Metrics Operations Must Monitor</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-10-10</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="534" data-base-views="69">69</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu6870/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>一、账户余额预警机制</h2>
+<p>广告账户余额耗尽是导致Campaign中断的头号原因。运营团队应建立三级预警体系：</p>
+<ul>
+<li><strong>黄色预警</strong>：账户余额低于日均消耗的2倍，提前48小时通知充值负责人</li>
+<li><strong>橙色预警</strong>：余额低于日均消耗的1倍，触发财务审批加速流程</li>
+<li><strong>红色预警</strong>：余额低于日均消耗的0.5倍，立即暂停非核心Campaign并启动紧急充值</li>
+</ul>
+<p><strong>检查项</strong>：<br />
+- [ ] 确认各账户余额监控工具正常运行<br />
+- [ ] 验证预警消息能触达责任人（邮件+短信双通道）<br />
+- [ ] 记录最近一次因余额不足导致的投放中断时长</p>
+<h2>二、充值节奏规划</h2>
+<p>盲目充值和紧急充值都会造成资金效率损失。建议按以下节奏规划：</p>
+<p><strong>短周期账户（TikTok、Google Ads）</strong>：每周固定充值日，保持余额覆盖7-10天消耗量</p>
+<p><strong>长周期账户（Meta、Pinterest）</strong>：每两周评估一次，根据Campaign排期调整充值金额</p>
+<p><strong>执行步骤</strong>：<br />
+1. 每周期首日导出各平台消耗报表<br />
+2. 计算过去4周的日均消耗速率<br />
+3. 结合排期表预测未来2周消耗量<br />
+4. 提交充值申请，标注预计耗尽日期</p>
+<h2>三、消耗速率监控</h2>
+<p>同一账户内不同Campaign的消耗差异可能超过5倍。运营需每周核查以下异常：</p>
+<table>
+<thead>
+<tr>
+<th>异常类型</th>
+<th>判断标准</th>
+<th>处置方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>消耗骤降</td>
+<td>单日消耗低于均值60%</td>
+<td>检查是否撞Budget上限或触发审核</td>
+</tr>
+<tr>
+<td>消耗暴涨</td>
+<td>单日消耗超过均值150%</td>
+<td>立即排查是素材爆量还是作弊流量</td>
+</tr>
+<tr>
+<td>零消耗</td>
+<td>Campaign开启但无消耗</td>
+<td>核查出价、Audience或账户状态</td>
+</tr>
+</tbody>
+</table>
+<h2>四、多账户资金健康度评估</h2>
+<p>管理5个以上账户时，建议每周进行横向对比：</p>
+<p><strong>检查清单</strong>：<br />
+- [ ] 统计各账户本周消耗占总预算的比例<br />
+- [ ] 识别消耗占比低于5%或超过40%的异常账户<br />
+- [ ] 评估是否存在账户因余额不足被限流的情况<br />
+- [ ] 记录账户间调拨资金的频率和金额</p>
+<h2>五、财务对账SOP</h2>
+<p>月末对账是资金管理的闭环动作。标准流程如下：</p>
+<ol>
+<li><strong>导出账单</strong>：从各平台后台下载本期账单（注意时区与结算周期差异）</li>
+<li><strong>交叉核验</strong>：将平台账单与内部充值记录、消耗报表三方比对</li>
+<li><strong>差异追溯</strong>：对超过1%的差异项追查原因（如汇率波动、税费扣除）</li>
+<li><strong>生成台账</strong>：填写《广告资金月度台账》，财务与运营双向确认签字</li>
+<li><strong>归档备查</strong>：账单、对账记录保存至少12个月</li>
+</ol>
+<h2>六、风控检查项</h2>
+<p>资金管理中的风险往往藏在细节里。建议每月完成以下风控检查：</p>
+<p><strong>账户层面</strong>：<br />
+- [ ] 确认无异常IP地址访问账户<br />
+- [ ] 检查绑定信用卡/支付方式的账单地址<br />
+- [ ] 验证账户权限分配是否符合最小权限原则</p>
+<p><strong>资金层面</strong>：<br />
+- [ ] 盘点预付充值与消耗的实际差额<br />
+- [ ] 检查是否存在长期未消耗的账户余额<br />
+- [ ] 评估汇率波动对非美元账户的影响</p>
+<p><strong>合规层面</strong>：<br />
+- [ ] 确认各平台充值渠道符合企业财务制度<br />
+- [ ] 检查发票获取是否与充值周期匹配<br />
+- [ ] 留存资金审批的完整链路记录</p>
+<hr />
+<p><strong>运营提示</strong>：上述清单建议打印张贴于运营工位，每完成一项即打勾。连续3个月无预警级别事件，可适当放宽预警阈值；如出现重大异常，需立即启动复盘并更新检查标准。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>1. Account Balance Alert Mechanism</h2>
+<p>Empty ad account balance is the #1 cause of campaign interruptions. Operations teams should establish a three-tier alert system:</p>
+<ul>
+<li><strong>Yellow Alert</strong>: Balance below 2x daily spend, notify recharge responsible person 48 hours in advance</li>
+<li><strong>Orange Alert</strong>: Balance below 1x daily spend, trigger expedited financial approval process</li>
+<li><strong>Red Alert</strong>: Balance below 0.5x daily spend, immediately pause non-core campaigns and initiate emergency recharge</li>
+</ul>
+<p><strong>Checklist</strong>:<br />
+- [ ] Confirm balance monitoring tools are functioning properly<br />
+- [ ] Verify alert notifications reach responsible parties via both email and SMS<br />
+- [ ] Record recent downtime caused by insufficient balance</p>
+<h2>2. Recharge Rhythm Planning</h2>
+<p>Blind recharging and emergency recharging both cause capital efficiency loss. Plan according to these rhythms:</p>
+<p><strong>Short-cycle accounts (TikTok, Google Ads)</strong>: Fixed weekly recharge day, maintain balance covering 7-10 days of spend</p>
+<p><strong>Long-cycle accounts (Meta, Pinterest)</strong>: Evaluate bi-weekly, adjust recharge amount based on campaign schedule</p>
+<p><strong>Execution Steps</strong>:<br />
+1. Export spend reports from all platforms on the first day of each cycle<br />
+2. Calculate average daily spend rate over the past 4 weeks<br />
+3. Forecast next 2 weeks spend based on schedule<br />
+4. Submit recharge application with estimated depletion date</p>
+<h2>3. Spend Velocity Monitoring</h2>
+<p>Spend variation across campaigns in the same account can exceed 5x. Operations must verify weekly:</p>
+<table>
+<thead>
+<tr>
+<th>Anomaly Type</th>
+<th>Criteria</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sudden Drop</td>
+<td>Daily spend below 60% of average</td>
+<td>Check for budget cap or audit triggers</td>
+</tr>
+<tr>
+<td>Sudden Spike</td>
+<td>Daily spend exceeds 150% of average</td>
+<td>Immediately investigate creative breakout or fraudulent traffic</td>
+</tr>
+<tr>
+<td>Zero Spend</td>
+<td>Campaign live but no spend</td>
+<td>Verify bidding, audience, or account status</td>
+</tr>
+</tbody>
+</table>
+<h2>4. Multi-Account Fund Health Assessment</h2>
+<p>When managing 5+ accounts, conduct weekly horizontal comparison:</p>
+<p><strong>Checklist</strong>:<br />
+- [ ] Calculate each account's weekly spend as percentage of total budget<br />
+- [ ] Identify accounts with spend below 5% or above 40%<br />
+- [ ] Evaluate if any accounts are throttled due to insufficient balance<br />
+- [ ] Record frequency and amount of inter-account fund transfers</p>
+<h2>5. Financial Reconciliation SOP</h2>
+<p>Month-end reconciliation is the closing action of fund management. Standard process:</p>
+<ol>
+<li><strong>Export statements</strong>: Download current period statements from each platform (note timezone and billing cycle differences)</li>
+<li><strong>Cross-verify</strong>: Compare platform statements with internal recharge records and spend reports</li>
+<li><strong>Difference investigation</strong>: Trace causes for discrepancies over 1% (exchange rate fluctuations, tax deductions)</li>
+<li><strong>Generate ledger</strong>: Complete "Monthly Ad Fund Ledger," with dual confirmation from finance and operations</li>
+<li><strong>Archive for reference</strong>: Retain statements and reconciliation records for at least 12 months</li>
+</ol>
+<h2>6. Risk Control Checklist</h2>
+<p>Risks in fund management hide in details. Complete monthly risk control checks:</p>
+<p><strong>Account Level</strong>:<br />
+- [ ] Confirm no abnormal IP access to accounts<br />
+- [ ] Check billing address on linked cards/payment methods<br />
+- [ ] Verify account permission assignments follow least privilege principle</p>
+<p><strong>Fund Level</strong>:<br />
+- [ ] Reconcile actual difference between prepaid recharges and spend<br />
+- [ ] Check for long-term unspent account balances<br />
+- [ ] Evaluate impact of exchange rate fluctuations on non-USD accounts</p>
+<p><strong>Compliance Level</strong>:<br />
+- [ ] Confirm each platform recharge channel complies with enterprise financial policies<br />
+- [ ] Check if invoice acquisition matches recharge cycle<br />
+- [ ] Retain complete audit trail of fund approval</p>
+<hr />
+<p><strong>Operations Tip</strong>: Print and post this checklist at workstations. Check off each completed item. If no alert-level events occur for 3 consecutive months, alert thresholds can be appropriately relaxed; if major anomalies occur, immediately initiate review and update check standards.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
