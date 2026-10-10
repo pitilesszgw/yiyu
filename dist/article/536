@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">Google Ads 账户被封后，申诉前必须搞清的三件事</span>
+                    <span x-show="lang === 'en'" x-cloak>Three Things You Must Clarify Before Filing a Google Ads Account Suspension Appeal</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-10-11</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="536" data-base-views="80">80</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu5142/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <p>账户被封是出海投放中最让人头疼的问题之一。很多团队第一时间就提交申诉，结果石沉大海，反复申诉三四次还是被拒。问题往往不在于申诉次数不够，而在于根本没有搞清楚被封的真实原因。</p>
+<h2>结论先行：申诉成功的关键不是材料多，而是精准命中</h2>
+<p>申诉材料不需要堆砌大量文件，关键在于三点：<strong>违规原因对不对、整改动作有没有证据、下次防范机制靠不靠谱</strong>。很多运营人员把申诉当成“求情”，实际上 Google 的审核团队是在执行流程，他们需要看到的是你能解决问题的具体能力。</p>
+<h2>第一件事：确认违规类型，别猜原因</h2>
+<p>在准备任何申诉材料之前，第一步一定是登录 Google Ads 后台查看违规通知的具体描述。常见违规类型包括：</p>
+<ul>
+<li><strong>规避系统政策</strong>：比如试图通过更换域名、修改落地页绕过审核</li>
+<li><strong>虚假宣传或误导内容</strong>：夸大产品功效、虚构用户评价</li>
+<li><strong>品牌或商标侵权</strong>：素材中使用了未授权的第三方品牌元素</li>
+<li><strong>恶意软件或不安全跳转</strong>：落地页存在病毒或钓鱼风险</li>
+<li><strong>落地页失效或内容不相关</strong>：URL 无法访问或内容与广告承诺严重不符</li>
+</ul>
+<p>不同违规类型对应的申诉材料要求差异很大。比如品牌侵权需要提供商标授权证明，而落地页问题需要提交修复后的 URL 截图和时间戳。盲目提交申诉模板不仅无效，还可能被标记为“反复提交无效申诉”，拖累后续审核。</p>
+<h2>第二件事：证据要具体，整改要有时间线</h2>
+<p>申诉材料中最有说服力的部分不是文字说明，而是<strong>可验证的证据和明确的整改时间线</strong>。以落地页问题为例：</p>
+<p><strong>有效的证据形式</strong>：<br />
+- 修复后的页面截图（带 URL 和日期水印）<br />
+- 服务器访问日志证明页面已恢复正常<br />
+- 第三方检测工具（如 Google PageSpeed Insights）的合规报告</p>
+<p><strong>常见的无效证据</strong>：<br />
+- “我们已经整改了，请相信我们”这类主观陈述<br />
+- 截图没有时间或 URL，无法验证真实性<br />
+- 提交旧版页面截图，声称已经修复</p>
+<p>某工具类 App 团队曾因落地页无法访问被封号，运营人员直接提交了修复后的页面截图，但审核团队在第二次审核时发现截图中的 URL 与账户中登记的 URL 不一致，导致申诉被拒。<strong>证据必须与账户后台信息形成闭环</strong>，这是最容易忽略的细节。</p>
+<h2>第三件事：防范机制要写清楚，不然会被追问</h2>
+<p>申诉通过后，账户通常会有一个观察期，期间任何违规行为都会直接导致永久封禁。所以申诉材料中必须主动说明防范机制，而不是等审核团队追问。</p>
+<p>防范机制应该包含三个维度：</p>
+<p><strong>人员层面</strong>：谁负责素材审核，审核流程是什么，审批权限如何设置<br />
+<strong>技术层面</strong>：是否使用自动化工具检测关键词和落地页合规性<br />
+<strong>流程层面</strong>：新素材上线前的合规检查清单是否有更新</p>
+<p>不要写“以后会注意”这种空话。审核团队见过太多模板化的承诺，具体的操作流程才能体现你的整改诚意。</p>
+<h2>总结：申诉不是求情，是问题解决能力的证明</h2>
+<p>Google Ads 的账户申诉本质上是向审核团队证明：你已经识别了问题、理解了政策、完成了整改、建立了防范机制。与其花时间写情绪化的求情信，不如把精力放在核实违规原因、收集可验证证据、梳理整改流程上。</p>
+<p>如果你的账户因为政策违规被封，先停下来问自己三个问题：违规原因确认了吗？整改有证据吗？防范机制写具体了吗？把这三个问题回答清楚，申诉通过的概率会大幅提升。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <p>Account suspension is one of the most frustrating issues in overseas advertising. Many teams file appeals immediately without results, getting rejected two or three times in a row. The real problem is not the number of appeals submitted, but the lack of clarity on the actual violation reason.</p>
+<h2>Key Takeaway: Success Depends on Precision, Not Volume</h2>
+<p>A winning appeal doesn't require mountains of documentation. It requires three things: <strong>accurate violation identification, documented corrective actions, and credible prevention mechanisms</strong>. Many advertisers treat appeals as appeals for leniency, but Google's policy compliance team follows a process. What they need to see is your concrete ability to solve the problem.</p>
+<h2>Step One: Identify the Violation Type, Don't Guess</h2>
+<p>Before preparing any appeal materials, the first step is to check the suspension notice in your Google Ads account. Common violation categories include:</p>
+<ul>
+<li><strong>Circumventing systems</strong>: Using domain changes or modified landing pages to bypass review</li>
+<li><strong>Misleading content</strong>: Exaggerating product benefits or fabricating user testimonials</li>
+<li><strong>Brand or trademark infringement</strong>: Using unauthorized third-party brand elements in creatives</li>
+<li><strong>Malware or unsafe redirects</strong>: Landing pages containing viruses or phishing risks</li>
+<li><strong>Invalid landing pages or irrelevant content</strong>: URLs unreachable or page content mismatching ad promises</li>
+</ul>
+<p>Different violation types require vastly different appeal materials. Brand infringement needs trademark authorization documentation, while landing page issues require screenshots of corrected URLs with timestamps. Submitting generic appeal templates not only wastes effort but may be flagged as "repeated invalid submissions," slowing future reviews.</p>
+<h2>Step Two: Evidence Must Be Specific, With a Clear Timeline</h2>
+<p>The most persuasive part of an appeal isn't written explanations—it's <strong>verifiable evidence and a clear remediation timeline</strong>. For landing page issues specifically:</p>
+<p><strong>Effective evidence formats</strong>:<br />
+- Screenshots of corrected pages (with URL and date watermarks)<br />
+- Server access logs proving the page is restored<br />
+- Compliance reports from third-party tools like Google PageSpeed Insights</p>
+<p><strong>Common ineffective evidence</strong>:<br />
+- Subjective statements like "We've fixed it, please trust us"<br />
+- Screenshots without timestamps or URLs, making verification impossible<br />
+- Submitting old page screenshots claiming they're already corrected</p>
+<p>A utility app team once had their account suspended due to an unreachable landing page. The advertiser submitted screenshots of the corrected page, but the review team found the URL in the screenshots didn't match the URL registered in the account, leading to rejection. <strong>Evidence must form a closed loop with account backend information</strong>—this is the detail most easily overlooked.</p>
+<h2>Step Three: Prevention Mechanisms Must Be Specific, Not Vague</h2>
+<p>After appeal approval, accounts typically enter a probation period where any policy violation leads to permanent suspension. Therefore, appeals must proactively explain prevention mechanisms rather than waiting to be asked.</p>
+<p>Prevention mechanisms should cover three dimensions:</p>
+<p><strong>Personnel</strong>: Who is responsible for creative review, what is the review process, and how are approval permissions structured?<br />
+<strong>Technology</strong>: Are automated tools being used to detect keyword and landing page compliance?<br />
+<strong>Process</strong>: Has the pre-launch creative compliance checklist been updated?</p>
+<p>Avoid vague promises like "We'll be more careful next time." Policy reviewers have seen countless templated commitments. Only specific operational procedures demonstrate genuine remediation intent.</p>
+<h2>Conclusion: Appeals Are Problem-Solving Demonstrations, Not Petitions</h2>
+<p>Google Ads account appeals are essentially demonstrations to reviewers that you've identified the problem, understood the policy, completed remediation, and established prevention mechanisms. Rather than spending energy on emotional petitions, focus on verifying violation reasons, collecting verifiable evidence, and documenting remediation procedures.</p>
+<p>If your account is suspended for policy violations, stop and ask yourself three questions: Have I confirmed the violation reason? Do I have evidence of remediation? Have I specified prevention mechanisms? Answering these three questions clearly will significantly improve your appeal success rate.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
