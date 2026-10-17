@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">案例拆解：东南亚与拉美市场投放本地化常见误区</span>
+                    <span x-show="lang === 'en'" x-cloak>Case Study: Common Localization Mistakes in Southeast Asia &amp; LATAM Ad Campaigns</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-10-18</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="556" data-base-views="18">18</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu508/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>案例：某工具类 App 的拉美投放滑铁卢</h2>
+<p>今年 Q2，一家工具类 App 团队在巴西和印尼同步开启投放，预算各 5000 美元/天。两周后，印尼账户 CPA 稳定在 0.8 美元，而巴西账户 CPA 飙升至 2.3 美元，转化率不足印尼的三分之一。</p>
+<p>运营负责人调取后台数据后发现了问题所在：</p>
+<p><strong>巴西账户的素材全部沿用了英语版本，仅做了葡语翻译；支付入口链接到国际信用卡支付页面，而巴西 70% 用户习惯用 Boleto 和 Pix；落地页加载时间超过 8 秒（未做本地 CDN 部署）。</strong></p>
+<p>这不是能力问题，而是本地化的系统性缺失。下面拆解两个市场最常见的 5 类误区，以及具体的判断标准和处理动作。</p>
+<hr />
+<h2>误区一：翻译即本地化</h2>
+<h3>问题</h3>
+<p>直接用 DeepL 或 Google Translate 将英语素材翻成本地语言，是最高频的错误。机器翻译能解决词汇，但解决不了语境和表达习惯。</p>
+<h3>判断</h3>
+<p>检查素材是否出现以下情况：<br />
+- 敬语/称呼使用混乱（如印尼语中同时出现 "kamu" 和 "anda"，或不区分辈分）<br />
+- 葡语中动词时态和虚拟式使用不符合巴西口语习惯<br />
+- 印尼语广告语直译后语义模糊（如 "工具" 被译成 "par工具"）</p>
+<h3>处理动作</h3>
+<blockquote>
+<p>建立本地化评审清单：每条文案需经目标市场用户或母语员工审核，重点检查礼貌层级、口语化表达和双关语是否被误译。预算允许时，优先选择有生活经验的译者，而非仅持有证书的翻译人员。</p>
+</blockquote>
+<hr />
+<h2>误区二：文化符号直接套用</h2>
+<h3>问题</h3>
+<p>东南亚和拉美都有强烈的文化禁忌和审美偏好，沿用欧美素材往往适得其反。</p>
+<p><strong>印尼市场</strong>：绿色在部分地区与负面情绪关联；数字 7 在爪哇文化中有特殊含义。</p>
+<p><strong>巴西市场</strong>：紫色与丧葬文化关联；使用 OK 手势在部分地区可能引发误解。</p>
+<h3>判断</h3>
+<p>素材发布前，询问团队中是否有来自目标市场的成员，或委托本地创意机构做文化敏感性审查（Cultural Sensitivity Review）。</p>
+<h3>处理动作</h3>
+<p>建立文化禁忌清单并嵌入素材制作 SOP。巴西项目优先使用足球、桑巴音乐、社区聚会等元素；印尼市场可融入家庭场景、自然元素和幽默感。</p>
+<hr />
+<h2>误区三：忽视本地支付生态</h2>
+<h3>问题</h3>
+<p>这是导致高 CPA 但低付费转化的核心原因。巴西用户习惯 Boleto（银行账单支付）、Pix（即时支付）和本地电子钱包，而落地页若只展示 Visa/Mastercard 入口，大量用户会在支付页面流失。</p>
+<h3>判断</h3>
+<p>检查落地页支付方式是否覆盖目标市场主流渠道：<br />
+- 印尼：DANA、OVO、GoPay、Bank Transfer<br />
+- 越南：MoMo、ZaloPay、VNPay<br />
+- 巴西：Pix（首选）、Boleto、Parcelado（分期）<br />
+- 墨西哥：OXXO、SPEI、Serapay</p>
+<h3>处理动作</h3>
+<p>与本地化支付服务商（如 dLocal、Adyen）合作，确保落地页动态展示本地支付方式。广告账户的 Pixel 和转化事件需与本地支付流程打通，避免因支付页面跳转导致归因丢失。</p>
+<hr />
+<h2>误区四：投放时段沿用统一排期</h2>
+<h3>问题</h3>
+<p>东南亚与拉美分属不同 时区，沿用统一排期会导致预算集中消耗在低转化时段。</p>
+<p><strong>时差对照（以 UTC 为基准）</strong>：<br />
+- 印尼西部（WIB）：UTC+7，与北京相差 1 小时<br />
+- 巴西利亚（BRT）：UTC-3，与北京相差 11 小时<br />
+- 墨西哥城（CST）：UTC-6，与北京相差 14 小时</p>
+<h3>判断</h3>
+<p>查看广告平台分时段数据，确认高转化时段是否集中在当地时间 19:00-23:00（移动端用户活跃高峰）。若数据缺失，说明未做本地化时段优化。</p>
+<h3>处理动作</h3>
+<p>在广告平台设置分时段出价策略：本地高峰时段提升 20-30% 出价，非高峰时段降低出价或暂停。巴西市场尤其需要注意：若北京时间 20:00 开始投放，实际对应巴西利亚上午 9:00，非最佳时段。</p>
+<hr />
+<h2>误区五：素材风格一刀切</h2>
+<h3>问题</h3>
+<p>拉美用户对 UGC 风格（用户生成内容）接受度高，偏好真实感和互动性；东南亚用户对品牌感和信任背书需求更强。同一套素材风格难以兼顾。</p>
+<h3>判断</h3>
+<p>A/B 测试素材风格：<br />
+- 巴西：尝试真人出镜、口语化文案、快节奏剪辑<br />
+- 印尼：尝试生活化场景、幽默元素、简洁卖点</p>
+<p>若两组素材 CTR 差距超过 15%，说明素材风格需要差异化。</p>
+<h3>处理动作</h3>
+<p>按市场拆解素材库，建议比例为：<br />
+- 巴西：60% UGC 风格 + 30% 本地明星/KOL + 10% 品牌广告<br />
+- 印尼：40% 本地场景 + 40% 明星/KOL + 20% 幽默短剧</p>
+<hr />
+<h2>结果与建议</h2>
+<p>上述案例团队在调整后，巴西账户 CPA 两周内从 2.3 美元降至 1.1 美元，降幅超过 50%。核心改变并非大幅增加预算，而是：<strong>本地支付链路打通 + 素材本地化 + 时段优化</strong> 三项组合动作。</p>
+<p>本地化不是一次性工作，而是需要建立持续验证的闭环。建议每两周做一次本地市场用户访谈或问卷，每月底复盘 CPA 与 LTV 的匹配度，确保投放效率可持续。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Case: A Utility App's LATAM Campaign Failure</h2>
+<p>In Q2 this year, a utility app team launched simultaneous campaigns in Brazil and Indonesia with a daily budget of $5,000 each. Two weeks later, the Indonesian account maintained a stable CPA of $0.80, while the Brazilian account's CPA surged to $2.30—conversion rates were less than one-third of Indonesia's.</p>
+<p>After reviewing backend data, the operations lead identified the root causes:</p>
+<p><strong>The Brazilian campaign used English creatives with Portuguese translation only; the payment landing page linked to international credit card processing; and page load time exceeded 8 seconds (no local CDN deployment).</strong></p>
+<p>This wasn't a capability issue—it was a systematic failure in localization. Below, we break down the five most common localization pitfalls in these two markets, along with specific judgment criteria and action steps.</p>
+<hr />
+<h2>Mistake 1: Translation Equals Localization</h2>
+<h3>The Problem</h3>
+<p>Using DeepL or Google Translate to convert English creatives into local languages is the most frequent error. Machine translation handles vocabulary but fails at context and cultural nuance.</p>
+<h3>How to Identify</h3>
+<p>Check if your creatives exhibit:<br />
+- Inconsistent use of formal/informal address (e.g., mixing "kamu" and "anda" in Indonesian without proper hierarchy)<br />
+- Portuguese verb tenses and subjunctive mood that don't match Brazilian conversational habits<br />
+- Ambiguous translations (e.g., "tool" translated into nonsensical Indonesian)</p>
+<h3>Action Steps</h3>
+<blockquote>
+<p>Build a localization review checklist: every piece of copy should be reviewed by native speakers or users from the target market. Prioritize translators with living experience in the region over those with only certification credentials.</p>
+</blockquote>
+<hr />
+<h2>Mistake 2: Direct Transfer of Cultural Symbols</h2>
+<h3>The Problem</h3>
+<p>Both Southeast Asia and LATAM have strong cultural taboos and aesthetic preferences. Using Western creatives often backfires.</p>
+<p><strong>Indonesia</strong>: Green carries negative connotations in some regions; the number 7 holds special meaning in Javanese culture.</p>
+<p><strong>Brazil</strong>: Purple is associated with mourning; the OK hand gesture may cause offense in certain areas.</p>
+<h3>How to Identify</h3>
+<p>Before launching, consult team members from the target market or commission a Cultural Sensitivity Review from a local creative agency.</p>
+<h3>Action Steps</h3>
+<p>Embed a cultural taboo checklist into your creative production SOP. For Brazil, prioritize elements like soccer, samba music, and community gatherings; for Indonesia, incorporate family scenes, nature imagery, and humor.</p>
+<hr />
+<h2>Mistake 3: Ignoring Local Payment Ecosystems</h2>
+<h3>The Problem</h3>
+<p>This is the core reason for high CPA but low paid conversions. Brazilian users prefer Boleto (bank slip payment), Pix (instant payment), and local e-wallets. If the landing page only displays Visa/Mastercard options, many users will abandon at the payment stage.</p>
+<h3>How to Identify</h3>
+<p>Verify whether your landing page covers the dominant payment methods:<br />
+- Indonesia: DANA, OVO, GoPay, Bank Transfer<br />
+- Vietnam: MoMo, ZaloPay, VNPay<br />
+- Brazil: Pix (preferred), Boleto, Parcelado (installments)<br />
+- Mexico: OXXO, SPEI, Serapay</p>
+<h3>Action Steps</h3>
+<p>Partner with local payment providers (e.g., dLocal, Adyen) to dynamically display local payment methods. Ensure your ad account's Pixel and conversion events are integrated with the local payment flow to avoid attribution loss from payment page redirects.</p>
+<hr />
+<h2>Mistake 4: Uniform Scheduling Across Markets</h2>
+<h3>The Problem</h3>
+<p>Southeast Asia and LATAM span different time zones. Using uniform scheduling causes budgets to concentrate during low-conversion periods.</p>
+<p><strong>Time Zone Reference (relative to UTC)</strong>:<br />
+- Western Indonesia (WIB): UTC+7, 1 hour behind Beijing<br />
+- Brasília (BRT): UTC-3, 11 hours behind Beijing<br />
+- Mexico City (CST): UTC-6, 14 hours behind Beijing</p>
+<h3>How to Identify</h3>
+<p>Check your ad platform's hourly data to confirm whether high-conversion periods align with local peak hours of 19:00-23:00. If data is missing, localization scheduling hasn't been optimized.</p>
+<h3>Action Steps</h3>
+<p>Set up time-based bidding strategies in your ad platform: increase bids by 20-30% during local peak hours, lower bids or pause during off-peak periods. For Brazil specifically: if you start campaigns at Beijing time 20:00, that's actually 09:00 Brasília time—not optimal.</p>
+<hr />
+<h2>Mistake 5: One-Size-Fits-All Creative Style</h2>
+<h3>The Problem</h3>
+<p>Latin American users have high acceptance of UGC-style content, preferring authenticity and interactivity; Southeast Asian users have stronger needs for brand credibility and trust signals. One creative approach rarely serves both.</p>
+<h3>How to Identify</h3>
+<p>A/B test creative styles:<br />
+- Brazil: Try real-person testimonials, conversational copy, fast-paced editing<br />
+- Indonesia: Try everyday scenarios, humor, concise value propositions</p>
+<p>If CTR difference between variants exceeds 15%, creative styles need differentiation.</p>
+<h3>Action Steps</h3>
+<p>Build separate creative libraries by market. Suggested ratios:<br />
+- Brazil: 60% UGC style + 30% local celebrity/KOL + 10% brand ad<br />
+- Indonesia: 40% local scenarios + 40% celebrity/KOL + 20% comedic shorts</p>
+<hr />
+<h2>Results and Recommendations</h2>
+<p>After adjustments, the team's Brazilian CPA dropped from $2.30 to $1.10 within two weeks—a reduction exceeding 50%. The core changes weren't massive budget increases but rather a combination of: <strong>localized payment flow integration + creative localization + scheduling optimization</strong>.</p>
+<p>Localization isn't a one-time task—it requires building a continuous validation loop. We recommend conducting monthly user interviews or surveys in target markets and reviewing CPA-to-LTV alignment at month-end to ensure sustainable campaign efficiency.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
