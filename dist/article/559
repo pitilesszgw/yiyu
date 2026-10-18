@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">周报观察 | 本週账户管理新变化：当“人盯人”模式遇上系统化看板</span>
+                    <span x-show="lang === 'en'" x-cloak>Weekly Watch | This Week&#39;s Account Management Shift: Why Systematic Kanban Is Replacing Manual Tracking in Agency Account Opening</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-10-19</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="559" data-base-views="55">55</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu1861/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>本週观察：账户管理方式正在分化</h2>
+<p>本週，以渔收到多家出海企业的反馈，集中在代理开户服务的一个核心矛盾上：账户数量从 3-5 个扩展到 15-20 个甚至更多后，原有的“群聊+表格+记忆”模式开始失效。</p>
+<p>具体表现包括：运营人员需要同时在微信、邮件、Excel 表格之间反复切换，才能确认某个账户的开户进度、余额状态或充值记录；财务对账时，人工汇总的数据常常与平台实际消耗对不上；广告账户因余额不足被暂停时，往往是投手自己发现而非系统提前预警。</p>
+<p>这些问题的本质不是人的能力问题，而是工具与业务规模之间的错配。当账户数量较少时，人工管理尚可支撑；但当业务量增长到一定规模，系统化看板就从“可选”变成“必须”。</p>
+<h2>为什么代理开户服务需要看板思维</h2>
+<p>代理开户服务涉及多个环节的协同：客户需求对接、资质审核、平台提交、账户激活、充值打款、消耗监控、对账结算。传统模式下，这些环节的信息分散在不同的沟通记录中，缺乏统一的呈现窗口。</p>
+<p>系统化看板将这种线性流程拆解为可视化的状态卡片。以渔的账户管理看板采用典型的 Kanban 结构：</p>
+<table>
+<thead>
+<tr>
+<th>状态列</th>
+<th>包含内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>待提交</td>
+<td>客户资质文件、开户需求</td>
+</tr>
+<tr>
+<td>审核中</td>
+<td>平台审核进度</td>
+</tr>
+<tr>
+<td>已激活</td>
+<td>账户登录凭证、初始余额</td>
+</tr>
+<tr>
+<td>充值待确认</td>
+<td>打款凭证、到账核查</td>
+</tr>
+<tr>
+<td>正常投放</td>
+<td>消耗曲线、余额预警</td>
+</tr>
+<tr>
+<td>待对账</td>
+<td>本周期消耗明细</td>
+</tr>
+</tbody>
+</table>
+<p>每一张卡片对应一个账户的关键信息：所属平台、账户 ID、当前余额、责任人、下一步操作项。运营人员打开看板后，3 秒内可以判断全局状态，而不是花 10 分钟翻聊天记录。</p>
+<p>这种可视化的直接价值有两个：一是减少信息查询的沟通成本；二是让异常状态更容易被发现——比如某账户“充值待确认”超过 48 小时，或者某账户余额接近预警线但尚未触发通知。</p>
+<h2>本週案例：某工具类 App 的账户管理升级</h2>
+<p>本週，以渔服务的一个工具类 App 团队分享了他们的管理演进路径。</p>
+<p>该团队在出海初期使用简单的在线表格管理 5 个 Meta 广告账户，表格列包括账户名、余额、操作人。由于表格更新依赖人工手动填写，经常出现“填写滞后”——运营人员打完款后忘记更新表格，导致财务对账时发现数据差异。</p>
+<p>升级为系统化看板后，他们实现了充值记录与平台数据的自动同步。每当充值到账，系统自动更新卡片余额，财务人员无需逐个核对。同时，看板设置了余额低于阈值时的自动预警，相关责任人会在第一时间收到通知，而不是等到账户被暂停后再发现。</p>
+<p>该团队反馈，管理看板上线后，账户相关的信息查询时间从人均每天 40 分钟降低到 10 分钟以内，对账误差率从约 5% 降到接近零。</p>
+<h2>本週建议：三个可以立即落地的动作</h2>
+<p>针对正在经历类似痛点的出海团队，以渔建议从以下三个动作开始：</p>
+<p><strong>1. 盘点当前账户信息的管理入口</strong></p>
+<p>统计目前账户信息分散在哪些工具中（微信群、邮件、表格、本地文档），评估信息流转的瓶颈在哪里。这一步不需要系统改造，只需要一次彻底的现状梳理。</p>
+<p><strong>2. 建立最小化的状态追踪机制</strong></p>
+<p>不需要一开始就上完整的看板系统。可以先用共享表格建立简单的状态列：账户名、当前状态（开户中/正常/暂停）、余额、最近更新时间、责任运营。只要所有人都往同一个表格里更新，信息的集中度就会显著提升。</p>
+<p><strong>3. 设置关键节点的预警规则</strong></p>
+<p>根据业务量设定预警阈值：当账户余额低于一定金额时通知谁，当开户审核超过一定天数时触发跟进提醒。这些规则不需要复杂系统，一个简单的自动化工具（如 Zapier 或自有提醒系统）就可以实现。</p>
+<p>管理工具的选择不必一步到位，关键是让信息从分散走向集中，让状态从模糊走向透明。本週的变化正在于：越来越多的出海团队意识到，人工管理的上限已经在制约业务规模，而系统化看板是突破这一上限的直接路径。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>This Week's Observation: Account Management Approaches Are Diverging</h2>
+<p>This week, several overseas companies reported a core contradiction in agency account services: when account numbers expanded from 3-5 to 15-20 or more, the original "group chat + spreadsheet + memory" model began to fail. </p>
+<p>Specific manifestations include: operations staff needed to constantly switch between WeChat, email, and Excel sheets to confirm an account's opening progress, balance status, or recharge records; financial reconciliation often showed discrepancies between manually aggregated data and actual platform consumption; suspended accounts due to insufficient balance were often discovered by the media buyer themselves rather than by system alerts.</p>
+<p>The root cause is not about human capability but a mismatch between tools and business scale. When account volume is small, manual management can suffice; but when operations reach a certain scale, systematic Kanban boards shift from "optional" to "essential."</p>
+<h2>Why Agency Account Services Need Kanban Thinking</h2>
+<p>Agency account services involve coordination across multiple stages: client requirement alignment, qualification review, platform submission, account activation, recharge processing, consumption monitoring, and reconciliation. In traditional models, information about these stages scatters across different communication records, lacking a unified display window.</p>
+<p>Systematic Kanban boards transform this linear process into visual status cards. Yiyu's account management board adopts a typical Kanban structure:</p>
+<table>
+<thead>
+<tr>
+<th>Status Column</th>
+<th>Content Included</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pending Submission</td>
+<td>Client qualification documents, account opening requirements</td>
+</tr>
+<tr>
+<td>Under Review</td>
+<td>Platform review progress</td>
+</tr>
+<tr>
+<td>Activated</td>
+<td>Account credentials, initial balance</td>
+</tr>
+<tr>
+<td>Recharge Pending Confirmation</td>
+<td>Payment proof, account verification</td>
+</tr>
+<tr>
+<td>Active Campaign</td>
+<td>Consumption curves, balance alerts</td>
+</tr>
+<tr>
+<td>Pending Reconciliation</td>
+<td>Current period consumption details</td>
+</tr>
+</tbody>
+</table>
+<p>Each card represents key information for an account: platform, account ID, current balance, responsible person, next action item. When operations staff open the board, they can assess overall status within 3 seconds instead of spending 10 minutes scrolling through chat history.</p>
+<p>The direct value of this visualization is twofold: reducing communication costs for information queries, and making abnormal status easier to detect—such as an account stuck in "Recharge Pending Confirmation" for over 48 hours, or an account balance approaching alert threshold without triggering notifications.</p>
+<h2>This Week's Case: A Utility App Team's Account Management Upgrade</h2>
+<p>This week, a utility app team served by Yiyu shared their management evolution path.</p>
+<p>During their early overseas stages, this team managed 5 Meta ad accounts using simple online spreadsheets with columns including account name, balance, and operator. Since spreadsheet updates relied on manual entry, "update delays" frequently occurred—when staff completed payments, they often forgot to update the spreadsheet, causing data discrepancies during financial reconciliation.</p>
+<p>After upgrading to systematic Kanban boards, they achieved automatic synchronization between recharge records and platform data. When recharge arrived, the system automatically updated card balances, eliminating the need for financial staff to manually verify each account. Meanwhile, the board set automatic alerts when balances fell below thresholds, notifying responsible parties immediately rather than discovering suspended accounts after the fact.</p>
+<p>The team reported that after the management board went live, account-related information query time dropped from 40 minutes per person daily to under 10 minutes, with reconciliation error rates declining from approximately 5% to near zero.</p>
+<h2>This Week's Recommendations: Three Actions for Immediate Implementation</h2>
+<p>For overseas teams experiencing similar pain points, Yiyu recommends starting with these three actions:</p>
+<p><strong>1. Audit Current Account Information Management Entry Points</strong></p>
+<p>Identify where account information currently disperses (WeChat groups, emails, spreadsheets, local documents) and evaluate bottlenecks in information flow. This step requires no system transformation—only a thorough status quo review.</p>
+<p><strong>2. Establish a Minimal Status Tracking Mechanism</strong></p>
+<p>No need for a complete Kanban system from day one. Start with shared spreadsheets featuring simple status columns: account name, current status (opening/normal/suspended), balance, last update time, responsible operator. As long as everyone updates the same spreadsheet, information centralization improves significantly.</p>
+<p><strong>3. Set Alert Rules for Key Nodes</strong></p>
+<p>Establish alert thresholds based on business volume: who to notify when account balance falls below a certain amount, when to trigger follow-ups if account review exceeds certain days. These rules require no complex systems—a simple automation tool can implement them.</p>
+<p>Tool selection doesn't need to be perfect from the start. The key is transitioning information from scattered to centralized, making status from vague to transparent. This week's change: increasingly, overseas teams recognize that manual management ceilings are constraining business scale, and systematic Kanban boards represent the direct path to breaking through those limits.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
