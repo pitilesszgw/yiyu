@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">多账户投放团队账户分层管理SOP：3步搭建高效账户架构</span>
+                    <span x-show="lang === 'en'" x-cloak>Multi-Account Ad Management SOP: A 3-Step Framework for High-Performance Teams</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-10-20</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="562" data-base-views="49">49</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu8604/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>适用场景</h2>
+<p>当你的团队同时运营 5 个以上广告账户时，账户之间的预算分配、素材复用、充值节奏、对账口径如果不统一，就会出现「哪个账户该投什么」的混乱状态。本文提供一套可直接落地的账户分层管理 SOP。</p>
+<hr />
+<h2>第一步：确定账户分级标准</h2>
+<p>账户分级是分层管理的基础。建议按照<strong>投放目的</strong>和<strong>历史表现</strong>两个维度进行分类。</p>
+<h3>按投放目的分级</h3>
+<table>
+<thead>
+<tr>
+<th>级别</th>
+<th>账户类型</th>
+<th>典型用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A 级</td>
+<td>核心增长账户</td>
+<td>主产品线、主力市场，追求规模与 ROI 平衡</td>
+</tr>
+<tr>
+<td>B 级</td>
+<td>测试探索账户</td>
+<td>新市场验证、新产品测试，允许适度亏损</td>
+</tr>
+<tr>
+<td>C 级</td>
+<td>品牌展示账户</td>
+<td>品牌曝光、活动引流，考核指标以 CPM 为主</td>
+</tr>
+<tr>
+<td>D 级</td>
+<td>渠道补充账户</td>
+<td>特定渠道或平台补充投放，预算较小</td>
+</tr>
+</tbody>
+</table>
+<h3>按历史表现动态调整</h3>
+<p>每月根据以下指标对账户进行评分：</p>
+<ul>
+<li>ROAS（广告支出回报率）</li>
+<li>CPA（单次获客成本）</li>
+<li>消耗增长率</li>
+<li>素材更新频率</li>
+</ul>
+<p><strong>评分结果用于决定次月预算倾斜比例。</strong> 例如，A 级账户若连续两个月 ROAS 下降超过 20%，自动降为 B 级，原预算的 30% 释放给新测试账户。</p>
+<hr />
+<h2>第二步：明确分工与权限配置</h2>
+<h3>角色分工建议</h3>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>主要职责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>账户管理员</td>
+<td>负责开户、充值、权限分配，日常监控余额预警</td>
+</tr>
+<tr>
+<td>投放运营</td>
+<td>负责素材准备、投放设置、A/B 测试、效果分析</td>
+</tr>
+<tr>
+<td>财务对账</td>
+<td>负责月度账单核对、消耗数据汇总、成本分析</td>
+</tr>
+<tr>
+<td>风控监察</td>
+<td>负责异常消耗监控、违规预警、合规审查</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>注意</strong>：对于 Meta、Google、TikTok 等主流平台，建议至少配置 2 名以上运营人员可交叉登录同一账户，防止人员变动导致账户失管。</p>
+</blockquote>
+<h3>权限配置原则</h3>
+<ul>
+<li>充值操作需要双人确认（避免单人误操作或资金风险）</li>
+<li>素材上传权限可下放至投放运营，暂停/删除权限仅限账户管理员</li>
+<li>财务报表仅对财务对账和风控监察开放</li>
+</ul>
+<hr />
+<h2>第三步：建立日常运营执行清单</h2>
+<h3>每日执行（SOP-Daily）</h3>
+<ol>
+<li><strong>余额检查</strong>：登录各平台后台，确认 A、B 级账户余额充足，C、D 级账户余额低于阈值时触发预警</li>
+<li><strong>消耗监控</strong>：对比昨日实际消耗与计划消耗，偏差超过 ±15% 需排查原因</li>
+<li><strong>素材状态</strong>：检查在投素材的审核状态，被拒稿的素材需立即替换</li>
+</ol>
+<h3>每周执行（SOP-Weekly）</h3>
+<ol>
+<li><strong>账户表现复盘</strong>：汇总各账户核心指标（ROAS、CPA、消耗量），输出周报</li>
+<li><strong>预算调整</strong>：根据上周表现调整下周预算分配，A 级账户优先保障，B、C 级动态调节</li>
+<li><strong>素材迭代</strong>：每个账户至少更新 2-3 套新素材进行测试</li>
+</ol>
+<h3>每月执行（SOP-Monthly）</h3>
+<ol>
+<li><strong>账户分级复审</strong>：根据月度数据重新评估账户级别，调整分工与预算</li>
+<li><strong>充值对账</strong>：核对平台账单与团队内部记录，确保充值金额、消耗金额、余额三账一致</li>
+<li><strong>风控审计</strong>：检查是否存在异常 IP 登录、违规素材投放、超额消耗等问题</li>
+</ol>
+<hr />
+<h2>常见问题与处理方式</h2>
+<p><strong>Q：账户分级后，B 级账户测试效果一直不好怎么办？</strong></p>
+<p>建议设定 60 天观察期。测试期内若 CPA 持续高于目标值 2 倍以上，且无明确优化空间，可考虑关闭该账户，将预算转移至其他有潜力的测试组。</p>
+<p><strong>Q：多账户之间素材如何避免重复投放？</strong></p>
+<p>建立素材库台账，记录每套素材已投放的账户、日期、效果数据。投放前需在台账中检索，避免同素材在同市场同期投放造成内部竞争。</p>
+<hr />
+<h2>结语</h2>
+<p>账户分层管理的核心目标是<strong>让资源投入与投放目标相匹配</strong>。通过分级标准、分工明确、执行清单三步走，团队可以显著减少管理内耗，把更多精力放在优化效果上。建议先用本文的 SOP 在 1-2 个账户上试跑，验证后再全面推行。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>When to Use This SOP</h2>
+<p>When your team operates 5 or more ad accounts simultaneously, the lack of standardization in budget allocation, creative reuse, recharge timing, and reconciliation can create chaos. This article provides a ready-to-implement SOP for multi-account management.</p>
+<hr />
+<h2>Step 1: Define Account Classification Standards</h2>
+<p>Account classification is the foundation. We recommend classifying accounts based on two dimensions: <strong>投放目的</strong> (campaign objective) and <strong>历史表现</strong> (historical performance).</p>
+<h3>Classification by Campaign Objective</h3>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Account Type</th>
+<th>Typical Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Core Growth Account</td>
+<td>Primary product lines, key markets—balancing scale and ROI</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Testing &amp; Exploration Account</td>
+<td>New market validation, new product tests—losses acceptable</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Brand Awareness Account</td>
+<td>Brand exposure, campaign drives—CPM as primary KPI</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Supplementary Channel Account</td>
+<td>Niche platforms or channels—smaller budgets</td>
+</tr>
+</tbody>
+</table>
+<h3>Dynamic Adjustment by Performance</h3>
+<p>Monthly scoring based on:</p>
+<ul>
+<li>ROAS (Return on Ad Spend)</li>
+<li>CPA (Cost Per Acquisition)</li>
+<li>Spend growth rate</li>
+<li>Creative update frequency</li>
+</ul>
+<p><strong>Score results determine next-month budget allocation.</strong> For example, if an A-level account's ROAS drops more than 20% for two consecutive months, it automatically downgrades to B-level, with 30% of its budget released to new testing accounts.</p>
+<hr />
+<h2>Step 2: Clarify Division of Responsibilities and Access Control</h2>
+<h3>Recommended Role Allocation</h3>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Primary Responsibilities</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Account Admin</td>
+<td>Account setup, recharge, access allocation, balance monitoring</td>
+</tr>
+<tr>
+<td>Media Buyer</td>
+<td>Creative preparation, campaign setup, A/B testing, performance analysis</td>
+</tr>
+<tr>
+<td>Finance Reconciler</td>
+<td>Monthly reconciliation, spend data aggregation, cost analysis</td>
+</tr>
+<tr>
+<td>Risk Controller</td>
+<td>Anomaly monitoring, policy violation alerts, compliance review</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note</strong>: For major platforms like Meta, Google, and TikTok, ensure at least two media buyers can cross-access each account to prevent account lockout due to personnel changes.</p>
+</blockquote>
+<h3>Access Control Principles</h3>
+<ul>
+<li>Recharge operations require dual confirmation to prevent errors or fund risks</li>
+<li>Creative upload permissions can be delegated to media buyers; pause/delete permissions reserved for account admins</li>
+<li>Financial reports accessible only to finance and risk control roles</li>
+</ul>
+<hr />
+<h2>Step 3: Establish Daily Operations Checklist</h2>
+<h3>Daily Execution (SOP-Daily)</h3>
+<ol>
+<li><strong>Balance Check</strong>: Log into each platform backend to confirm A and B accounts have sufficient balance; trigger alerts when C and D account balances fall below threshold</li>
+<li><strong>Spend Monitoring</strong>: Compare yesterday's actual spend vs. planned spend; investigate if deviation exceeds ±15%</li>
+<li><strong>Creative Status</strong>: Check ad review status; immediately replace any disapproved creatives</li>
+</ol>
+<h3>Weekly Execution (SOP-Weekly)</h3>
+<ol>
+<li><strong>Account Performance Review</strong>: Compile key metrics (ROAS, CPA, spend volume) for each account; generate weekly report</li>
+<li><strong>Budget Adjustment</strong>: Adjust next-week budget allocation based on previous week's performance; prioritize A-level accounts, dynamically adjust B and C levels</li>
+<li><strong>Creative Iteration</strong>: Upload at least 2-3 new creative sets for testing per account</li>
+</ol>
+<h3>Monthly Execution (SOP-Monthly)</h3>
+<ol>
+<li><strong>Account Classification Review</strong>: Re-evaluate account levels based on monthly data; adjust responsibilities and budgets accordingly</li>
+<li><strong>Reconciliation</strong>: Cross-check platform statements with internal records to ensure recharge amount, spend amount, and balance are consistent</li>
+<li><strong>Risk Audit</strong>: Check for abnormal IP logins, non-compliant creatives, or overspend issues</li>
+</ol>
+<hr />
+<h2>Common Issues and Solutions</h2>
+<p><strong>Q: What if a B-level testing account consistently underperforms?</strong></p>
+<p>Set a 60-day observation period. If CPA remains 2x above target throughout the testing phase with no clear optimization path, consider shutting it down and reallocating budget to other promising tests.</p>
+<p><strong>Q: How to avoid duplicate creative delivery across accounts?</strong></p>
+<p>Build a creative library tracker documenting which creatives have run on which accounts, dates, and performance data. Search the tracker before launching to prevent internal competition from same creatives in the same market.</p>
+<hr />
+<h2>Final Thoughts</h2>
+<p>The core goal of multi-account management is <strong>aligning resource investment with campaign objectives</strong>. Through the three-step approach—classification standards, clear responsibilities, and execution checklists—your team can significantly reduce management overhead and focus more energy on optimizing performance. We recommend piloting this SOP on 1-2 accounts first, then rolling out across the board once validated.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
