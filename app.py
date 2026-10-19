@@ -71,6 +71,10 @@ def favicon():
 def index():
     return render_template('index.html')
 
+@app.route('/yiyu')
+def yiyu_landing():
+    return render_template('yiyu.html')
+
 @app.route('/about')
 def about():
     return render_template('company.html', page='about')
