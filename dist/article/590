@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">出海广告合规巡检 SOP：从一次账户受限到批量风控拦截的排查全过程</span>
+                    <span x-show="lang === 'en'" x-cloak>Compliance Inspection SOP for Overseas Ads: From One Restricted Account to Batch Risk-Control Prevention</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-10-29</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="590" data-base-views="26">26</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu5024/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>案例开场：一夜之间三条广告账户被限流</h2>
+<p>某工具类 App 的投放团队在周一早上的例会上发现异常：主力 Meta 广告账户的消耗从日均 800 美元掉到不足 200 美元，而后新建的两个备用账户完全无法过审。素材库里最近一周上线了 12 条新视频，其中 5 条使用了“100% 消除”“官方唯一授权”这类绝对化表述，落地页还挂了未经授权的第三方 logo。</p>
+<p>问题看似是“素材被拒”，实际排查后发现三层问题叠加：</p>
+<ol>
+<li><strong>表层</strong>：新素材触发了平台的夸大宣传与误导性声明规则。</li>
+<li><strong>中层</strong>：备用账户因为与受限账户共享同一支付方式和设备指纹，被关联审查。</li>
+<li><strong>底层</strong>：该团队从没有做过素材合规预审，充值与账户额度也没有做风险隔离，一旦主力账户受限，备用账户无弹药可打。</li>
+</ol>
+<p>如果只换素材重投，问题会在下一次审核中重复出现。这次我们按巡检 SOP 走了一遍。</p>
+<h2>第一步：判断是“素材问题”还是“账户问题”</h2>
+<p>拿到受限通知后，不要立刻改素材重投。先用 15 分钟做三件事：</p>
+<ul>
+<li>查通知原文：区分「广告被拒（Ad rejected）」与「账户受限（Account restricted）」。前者是单条素材问题，后者会冻结整个账户的投放、充值与编辑能力。</li>
+<li>定位被拒素材编号：导出最近 7 天、14 天、30 天的素材审核记录，看是否集中在同一个表达模式上。</li>
+<li>看拒审理由归类：夸大宣传 / 误导性声明 / 个人属性 / 品牌与商标 / 无效落地页。归类清晰后才知道该改哪一类。</li>
+</ul>
+<blockquote>
+<p>小技巧：把平台拒审理由做成一张“拒审理由—素材类型—改法”的映射表，团队后续自查直接对照，比每次凭感觉改效率高得多。</p>
+</blockquote>
+<h2>第二步：素材与落地页自查清单</h2>
+<p>该团队把 12 条新素材全部拉出来逐条过筛，最终 5 条被拒素材集中在三类高危表达：</p>
+<table>
+<thead>
+<tr>
+<th>高危项</th>
+<th>本次踩雷示例</th>
+<th>合规改法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>绝对化用语</td>
+<td>“100% 消除”“最佳”“第一”</td>
+<td>改为可量化但不绝对的效果描述，如“平均减少 XX% 操作步骤”</td>
+</tr>
+<tr>
+<td>未经证实的对比</td>
+<td>“比竞品快 10 倍”</td>
+<td>删除对比，或补充有来源的测试条件与时间</td>
+</tr>
+<tr>
+<td>品牌与商标</td>
+<td>落地页出现第三方 logo 与“官方授权”字样</td>
+<td>换成自有品牌视觉，授权文件留档</td>
+</tr>
+</tbody>
+</table>
+<p>另外两条素材本身没问题，但落地页里嵌了误导性倒计时、强制弹窗跳转，被判为「无效落地页」。</p>
+<p>巡检清单建议固定成 6 项，逐条打勾：宣传表述是否有绝对化词、效果承诺是否有数据支撑、对比是否可溯源、品牌素材是否已获授权、落地页是否与广告承诺一致、弹窗与跳转是否存在诱导行为。</p>
+<h2>第三步：账户分层与充值风控动作</h2>
+<p>素材问题解决后，账户侧的隔离才是避免“全盘皆输”的关键。该团队后续做了三项调整：</p>
+<ul>
+<li><strong>账户分层</strong>：按“主力 / 测试 / 备用”三级划分，每个账户绑定独立的管理员邮箱、付款方式与操作环境，禁止跨账户共享设备和登录凭证。</li>
+<li><strong>充值隔离</strong>：主力账户维持 3～5 天消耗量的余额，测试账户按小额多次充值，备用账户只作为应急，不做常规投放。</li>
+<li><strong>余额预警</strong>：消耗达到账户余额的 60% / 80% 时分别触发提醒，余额低于阈值且账户处于审核观察期时，禁止自动充值。</li>
+</ul>
+<p>第三点尤其重要。案例中团队原本配置了“余额不足自动充值”，主力账户受限后自动扣款失败并触发了平台风控，进一步延长了恢复时间。观察期账户关闭自动充值，是一条简单但有效的硬规则。</p>
+<h2>第四步：结果与 SOP 固化</h2>
+<p>执行完整套巡检动作后：</p>
+<ul>
+<li>5 条违规素材按合规版本重剪过审，通过率恢复；</li>
+<li>主力账户申诉材料补齐了授权与数据来源文件，一周内解除限制；</li>
+<li>新建的备用账户成功投放，团队不再出现“主力挂了就断档”的情况。</li>
+</ul>
+<p>更重要的是流程被固化下来，成为周度例行动作：</p>
+<ol>
+<li><strong>周一：素材预审</strong>——本期所有新素材过一遍 6 项清单，不过审不上线。</li>
+<li><strong>周三：账户健康检查</strong>——查消耗异常、拒审理由分布、账户状态标签。</li>
+<li><strong>周五：余额与额度对账</strong>——核对消耗、充值记录与账户余额，确认无重复扣费或漏记。</li>
+<li><strong>每月：落地页与授权文件复核</strong>——清理过期授权、失效链接与过时的宣传表述。</li>
+</ol>
+<h2>一点短评</h2>
+<p>大多数团队把合规当成“被拒之后再改”，成本是账户受限期间损失的流量和素材产能。合规巡检真正省钱的地方在于：把拒审理由的分布变化当作早期信号——某一类拒审理由连续两周上升，通常意味着团队最近的素材风格或落地页结构正在系统性偏移，比等到账户被封再反应要早得多。</p>
+<p>对多账户、多地区的出海团队来说，账户分层 + 充值隔离 + 余额预警这三件事，本质上是在用运营冗余换合规缓冲，成本远低于一次账户冻结的代价。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Case Opening: Three Ad Accounts Restricted Overnight</h2>
+<p>At Monday's routine meeting, the acquisition team of a tool-based app noticed something odd: spend on the main Meta ad account had dropped from a daily average of $800 to under $200, and two freshly created backup accounts could not pass review at all. Twelve new videos had gone live in the previous week; five of them used absolute claims such as "100% eliminates" and "the only officially authorized", and the landing pages carried third-party logos without authorization.</p>
+<p>The problem looked like "a rejected creative", but the real investigation uncovered three overlapping layers:</p>
+<ol>
+<li><strong>Surface level</strong>: new creatives triggered rules against exaggerated claims and misleading statements.</li>
+<li><strong>Middle layer</strong>: the backup accounts shared the same payment method and device fingerprint as the restricted account, so they were pulled into a linked review.</li>
+<li><strong>Root level</strong>: the team had never pre-screened creatives for compliance, and there was no risk isolation between top-ups and account limits — once the main account was restricted, the backups had no ammunition to run with.</li>
+</ol>
+<p>Simply replacing creatives and relaunching would only repeat the failure. This time, the team ran the full inspection SOP.</p>
+<h2>Step 1: Determine Whether It Is a Creative Issue or an Account Issue</h2>
+<p>When a restriction notice arrives, do not immediately rewrite creatives and relaunch. Spend 15 minutes on three things:</p>
+<ul>
+<li>Read the notification verbatim: distinguish "Ad rejected" from "Account restricted". The former is a single creative problem; the latter freezes the entire account's ability to run, top up and edit.</li>
+<li>Identify the rejected creative IDs: export review records for the last 7, 14 and 30 days to see whether rejections cluster around one pattern.</li>
+<li>Categorize the rejection reasons: exaggerated claims / misleading statements / personal attributes / brand and trademarks / invalid landing page. Clear categorization tells you what to fix.</li>
+</ul>
+<blockquote>
+<p>Tip: build a mapping table of "rejection reason — creative type — compliant rewrite". The team then self-checks against it instead of guessing, which is far more efficient.</p>
+</blockquote>
+<h2>Step 2: Creative and Landing-Page Self-Check List</h2>
+<p>The team pulled all 12 new creatives and screened them one by one. The five rejections clustered into three high-risk categories:</p>
+<table>
+<thead>
+<tr>
+<th>Risk item</th>
+<th>Example from this case</th>
+<th>Compliant rewrite</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Absolute wording</td>
+<td>"100% eliminates", "best", "No.1"</td>
+<td>Use quantifiable but non-absolute phrasing, e.g. "cuts the workflow to XX% fewer steps on average"</td>
+</tr>
+<tr>
+<td>Unverified comparisons</td>
+<td>"10x faster than competitors"</td>
+<td>Remove the comparison, or add test conditions, timeframe and a verifiable source</td>
+</tr>
+<tr>
+<td>Brand and trademarks</td>
+<td>Third-party logos and "officially authorized" on the landing page</td>
+<td>Use own-brand visuals only; keep authorization documents on file</td>
+</tr>
+</tbody>
+</table>
+<p>Two other creatives were clean, but their landing pages embedded misleading countdown timers and forced pop-up redirects, which were flagged as "invalid landing page".</p>
+<p>A good inspection list should settle into six fixed items: no absolute wording in claims, evidence behind every performance promise, traceable comparisons, authorized brand assets, landing page consistent with the ad message, and no deceptive pop-ups or redirects.</p>
+<h2>Step 3: Account Tiering and Top-Up Risk Controls</h2>
+<p>Once the creative issues were resolved, account-side isolation became the key to avoiding a total shutdown. The team made three adjustments:</p>
+<ul>
+<li><strong>Account tiering</strong>: separate accounts into "main / test / backup", each with its own admin email, payment method and operating environment. Never share devices or login credentials across accounts.</li>
+<li><strong>Top-up isolation</strong>: the main account keeps 3–5 days of spend as buffer, test accounts are topped up in small amounts, and backup accounts serve emergency use only rather than routine campaigns.</li>
+<li><strong>Balance alerts</strong>: trigger alerts when spend reaches 60% and 80% of account balance; block auto top-ups when balance falls below the threshold while the account is under review observation.</li>
+</ul>
+<p>The third point matters most here. The team had originally enabled "auto top-up when balance is low". After the main account was restricted, the automatic charge failed and triggered platform risk control, further delaying recovery. Turning off auto top-ups on accounts in observation is a simple but effective hard rule.</p>
+<h2>Step 4: Results and SOP Standardization</h2>
+<p>After running the full inspection:</p>
+<ul>
+<li>the five non-compliant creatives were recut into compliant versions and passed review, restoring approval rates;</li>
+<li>the appeal for the main account was completed with authorization and data-source documentation, and the restriction was lifted within a week;</li>
+<li>the new backup account went live successfully, and the team no longer experienced a blackout whenever the main account went down.</li>
+</ul>
+<p>More importantly, the process was standardized into weekly routine actions:</p>
+<ol>
+<li><strong>Monday: creative pre-screening</strong> — every new creative passes the six-item checklist; nothing ships without a pass.</li>
+<li><strong>Wednesday: account health check</strong> — inspect spend anomalies, rejection-reason distribution and account status labels.</li>
+<li><strong>Friday: balance and reconciliation</strong> — reconcile spend, top-up records and account balances to catch duplicate charges or missing entries.</li>
+<li><strong>Monthly: landing page and authorization review</strong> — clear expired authorizations, dead links and outdated claims.</li>
+</ol>
+<h2>A Short Comment</h2>
+<p>Most teams treat compliance as something to fix after a rejection, and pay for it in lost traffic and creative capacity during the restriction. The real savings from compliance inspection come from treating shifts in rejection-reason distribution as an early signal: when one rejection category rises two weeks in a row, it usually means the team's creative style or landing-page structure is drifting systematically — far earlier than an account ban would reveal it.</p>
+<p>For teams running multiple accounts across multiple markets, account tiering plus top-up isolation plus balance alerts is essentially buying operational redundancy with a compliance buffer, at a cost far below a single account freeze.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
