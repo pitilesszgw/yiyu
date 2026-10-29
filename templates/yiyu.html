@@ -174,6 +174,8 @@
         .submit-button:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(93, 31, 222, 0.28); }
         .submit-button:disabled { opacity: 0.65; cursor: wait; transform: none; box-shadow: none; }
         .form-status { min-height: 20px; margin: -8px 0 0; color: var(--green); font-size: 12px; text-align: center; }
+        .lead-fallback { min-height: 44px; margin: -8px auto 0; padding: 8px 16px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--purple); font-size: 13px; cursor: pointer; }
+        .lead-fallback:hover { background: var(--purple-soft); }
         .privacy-note { display: flex; justify-content: center; align-items: center; gap: 7px; margin-top: -10px; color: #aaa4b2; font-size: 11px; }
         .footer { padding: 34px 40px 70px; border-top: 1px solid var(--line); text-align: center; }
         .footer .brand { justify-content: center; }
@@ -307,21 +309,21 @@
             <h2>好方案，从了解您开始。</h2>
             <p class="form-intro">填写以下信息，方便我们为您提供针对性的沟通。</p>
 
-            <form class="lead-form" id="leadForm" action="https://docs.google.com/forms/d/e/1FAIpQLScjINC9CbqMsOR3sbCdIb-lFAT80P395F_kjyaL4M-QBjLTNw/formResponse" method="post" target="googleFormSink" novalidate>
+            <form class="lead-form" id="leadForm" action="/api/lead" method="post" novalidate>
                 <div class="field-row">
                     <div class="field">
                         <label for="name">您的称呼 <span class="required">*</span></label>
-                        <input id="name" name="entry.659206793" autocomplete="name" placeholder="请输入您的姓名" required>
+                        <input id="name" name="entry.659206793" autocomplete="name" placeholder="请输入您的姓名" maxlength="100" required>
                     </div>
                     <div class="field">
                         <label for="phone">手机号码 <span class="required">*</span></label>
-                        <input id="phone" name="entry.649232157" type="tel" inputmode="tel" autocomplete="tel" placeholder="请输入手机号码" minlength="6" required>
+                        <input id="phone" name="entry.649232157" type="tel" inputmode="tel" autocomplete="tel" placeholder="请输入手机号码" minlength="6" maxlength="32" required>
                     </div>
                 </div>
 
                 <div class="field">
                     <label for="company">公司 / 品牌名称 <span class="optional">选填</span></label>
-                    <input id="company" name="entry.1259853372" autocomplete="organization" placeholder="请输入公司或品牌名称">
+                    <input id="company" name="entry.1259853372" autocomplete="organization" placeholder="请输入公司或品牌名称" maxlength="200">
                 </div>
 
                 <fieldset>
@@ -336,7 +338,7 @@
 
                 <div class="field">
                     <label for="details">补充说明 <span class="optional">选填</span></label>
-                    <textarea id="details" name="entry.853679754" placeholder="例如：感兴趣的功能、使用场景或其他需求…"></textarea>
+                    <textarea id="details" name="entry.853679754" placeholder="例如：感兴趣的功能、使用场景或其他需求…" maxlength="2000"></textarea>
                 </div>
 
                 <label class="consent">
@@ -346,12 +348,12 @@
 
                 <button class="submit-button" type="submit"><span>提交需求，开启沟通</span><span aria-hidden="true">→</span></button>
                 <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+                <button class="lead-fallback" id="leadWechatFallback" type="button" aria-haspopup="dialog" aria-controls="wechatDialog" hidden>改用微信咨询 ↗</button>
                 <p class="privacy-note">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" stroke="currentColor" stroke-width="2"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                     您的信息仅用于产品咨询沟通
                 </p>
             </form>
-            <iframe name="googleFormSink" title="Google 表单提交结果" hidden></iframe>
         </section>
 
         <footer class="footer">
@@ -387,46 +389,68 @@
         const status = document.querySelector('#formStatus');
         const submitButton = form.querySelector('.submit-button');
         const submitLabel = submitButton.querySelector('span');
-        const googleFormSink = document.querySelector('[name="googleFormSink"]');
+        const leadWechatFallback = document.querySelector('#leadWechatFallback');
         const wechatContactButton = document.querySelector('#wechatContactButton');
         const wechatDialog = document.querySelector('#wechatDialog');
         const wechatDialogClose = wechatDialog.querySelector('.qr-dialog-close');
-        let submissionPending = false;
+        let dialogTrigger = wechatContactButton;
 
-        wechatContactButton.addEventListener('click', () => wechatDialog.showModal());
+        [wechatContactButton, leadWechatFallback].forEach((button) => {
+            button.addEventListener('click', () => {
+                dialogTrigger = button;
+                wechatDialog.showModal();
+            });
+        });
         wechatDialogClose.addEventListener('click', () => wechatDialog.close());
         wechatDialog.addEventListener('click', (event) => {
             const bounds = wechatDialog.getBoundingClientRect();
             const insideDialog = event.clientX >= bounds.left && event.clientX <= bounds.right && event.clientY >= bounds.top && event.clientY <= bounds.bottom;
             if (!insideDialog) wechatDialog.close();
         });
-        wechatDialog.addEventListener('close', () => wechatContactButton.focus());
+        wechatDialog.addEventListener('close', () => dialogTrigger.focus());
 
-        form.addEventListener('submit', (event) => {
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            if (submitButton.disabled) return;
             if (!form.checkValidity()) {
-                event.preventDefault();
                 form.reportValidity();
                 status.textContent = '请先补全必填信息。';
                 status.style.color = '#d43b60';
                 return;
             }
 
-            submissionPending = true;
             submitButton.disabled = true;
+            form.setAttribute('aria-busy', 'true');
+            leadWechatFallback.hidden = true;
             submitLabel.textContent = '正在提交…';
             status.textContent = '正在安全提交您的需求，请稍候。';
             status.style.color = '';
-        });
-
-        googleFormSink.addEventListener('load', () => {
-            if (!submissionPending) return;
-
-            submissionPending = false;
-            form.reset();
-            submitButton.disabled = false;
-            submitLabel.textContent = '提交需求，开启沟通';
-            status.textContent = '提交成功，我们会尽快与您联系。';
-            status.style.color = '';
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 8000);
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new URLSearchParams(new FormData(form)),
+                    signal: controller.signal,
+                });
+                const result = await response.json();
+                if (!response.ok || result.ok !== true) {
+                    throw new Error(result.message || '暂未确认提交结果，请勿重复提交，建议通过微信联系我们。');
+                }
+                form.reset();
+                status.textContent = '提交成功，我们会尽快与您联系。';
+            } catch (error) {
+                status.textContent = error.name === 'AbortError' || error instanceof TypeError || error instanceof SyntaxError
+                    ? '暂未确认提交结果，请勿重复提交，建议通过微信联系我们。'
+                    : error.message;
+                status.style.color = '#d43b60';
+                leadWechatFallback.hidden = false;
+            } finally {
+                clearTimeout(timer);
+                submitButton.disabled = false;
+                form.removeAttribute('aria-busy');
+                submitLabel.textContent = '提交需求，开启沟通';
+            }
         });
     </script>
 </body>

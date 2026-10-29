@@ -47,6 +47,8 @@ def add_header(response):
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
     response.headers['Cache-Control'] = 'public, max-age=0'
+    if request.path == '/api/lead':
+        response.headers['Cache-Control'] = 'no-store'
     return response
 
 
@@ -74,6 +76,50 @@ def index():
 @app.route('/yiyu')
 def yiyu_landing():
     return render_template('yiyu.html')
+
+@app.route('/api/lead', methods=['POST'])
+def submit_lead():
+    def result(payload, status=200):
+        response = jsonify(payload)
+        response.status_code = status
+        response.headers['Cache-Control'] = 'no-store'
+        return response
+
+    if request.headers.get('Origin') not in (None, request.host_url.rstrip('/')):
+        return result({'ok': False, 'message': '请从官网提交需求。'}, 403)
+    if request.mimetype != 'application/x-www-form-urlencoded':
+        return result({'ok': False, 'message': '提交格式不正确，请刷新页面后重试。'}, 415)
+    if len(request.get_data()) > 32768:
+        return result({'ok': False, 'message': '填写内容过长，请精简后重试。'}, 413)
+    fields = {
+        'entry.659206793': 100,
+        'entry.649232157': 32,
+        'entry.1259853372': 200,
+        'entry.1105577049': 20,
+        'entry.853679754': 2000,
+    }
+    data = {key: request.form.get(key, '').strip() for key in fields}
+    if any(len(data[key]) > limit for key, limit in fields.items()):
+        return result({'ok': False, 'message': '填写内容过长，请精简后重试。'}, 400)
+    if (not data['entry.659206793'] or len(data['entry.649232157']) < 6
+            or data['entry.1105577049'] not in ('了解产品', '预约演示', '获取报价', '合作咨询')
+            or request.form.get('consent') != 'on'):
+        return result({'ok': False, 'message': '请补全称呼、有效联系电话并勾选信息使用同意。'}, 400)
+    data.update({'fvv': '1', 'pageHistory': '0', 'entry.1105577049_sentinel': ''})
+    uncertain = {'ok': False, 'message': '暂未确认提交结果，请勿重复提交，建议通过微信联系我们。'}
+    try:
+        upstream = requests.post(
+            'https://docs.google.com/forms/d/e/1FAIpQLScjINC9CbqMsOR3sbCdIb-lFAT80P395F_kjyaL4M-QBjLTNw/formResponse?hl=en',
+            data=data, headers={'Accept-Language': 'en-US,en;q=0.9'}, timeout=(2, 4),
+        )
+        confirmed = re.search(r'''<div\b[^>]*class=["'][^"']*\bvHW8K\b[^"']*["'][^>]*>\s*Your response has been recorded\.''', upstream.text, re.I)
+        if upstream.status_code != 200 or not confirmed:
+            return result(uncertain, 502)
+        return result({'ok': True})
+    except requests.Timeout:
+        return result(uncertain, 504)
+    except requests.RequestException:
+        return result(uncertain, 502)
 
 @app.route('/about')
 def about():
