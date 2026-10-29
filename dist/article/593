@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">多账户投放团队账户分层管理SOP：从账户分组到充值对账</span>
+                    <span x-show="lang === 'en'" x-cloak>Account Segmentation SOP for Multi-Account Advertising Teams: From Structure to Reconciliation</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-10-30</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="593" data-base-views="42">42</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu8770/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h1>多账户投放团队如何做账户分层管理</h1>
+<p>账户数量增加后，投放团队常见的问题不是“账户不够用”，而是账户用途不清、权限混乱、预算互相挤占、充值记录无法核对。多账户分层管理的目标，是让运营人员快速判断每个账户负责什么、由谁管理、异常后找谁处理。</p>
+<blockquote>
+<p>提醒：账户分层用于内部运营和资产管理，不应通过开设多个账户规避平台审核、封禁或广告政策。</p>
+</blockquote>
+<h2>第一步：先按业务任务建立账户分层</h2>
+<p>不要只按平台或开户时间给账户分类。建议从五个维度建立标签：投放目标、国家或地区、产品线、漏斗阶段、风险状态。例如：</p>
+<ul>
+<li><strong>A类：核心增长账户</strong>——承担主要转化目标，预算稳定，优先保障余额与素材更新。</li>
+<li><strong>B类：测试账户</strong>——用于新素材、新受众或新地区测试，设定明确止损条件。</li>
+<li><strong>C类：再营销账户</strong>——承接已有流量，重点控制频次和成本。</li>
+<li><strong>D类：观察账户</strong>——近期低量或暂停，保留数据，避免随意启用。</li>
+</ul>
+<p>可采用统一命名：<code>平台-产品-地区-漏斗-负责人-状态</code>，如<code>Meta-工具App-US-付费-运营A-增长</code>。名称应体现用途，而不是只显示一串数字。</p>
+<h2>第二步：建立账户台账与权限规则</h2>
+<p>台账至少记录账户ID、平台、地区、目标、负责人、代理或开户主体、余额、充值日期、当前投放状态和月度预算。账户超过一定数量后，建议用共享看板管理，并设置更新责任人。</p>
+<p>权限遵循“最小必要”原则：</p>
+<ol>
+<li>投手可调整广告、素材和预算；</li>
+<li>财务可查看余额、充值及账单，通常不修改投放；</li>
+<li>管理者查看整体数据和审批大额调整；</li>
+<li>离职或转岗人员当天撤销权限，并完成交接。</li>
+</ol>
+<p>对高预算账户启用双重确认，避免误关停、误改落地页或重复提交充值。</p>
+<h2>第三步：给预算、充值和余额设置分级规则</h2>
+<p>预算不能平均分配，应按账户层级制定额度与补充机制。核心增长账户采用滚动预算；测试账户设置单次测试上限和止损线；再营销账户按可承受获客成本控制；观察账户默认不自动追加。</p>
+<p>财务可建立三级预警：余额低于未来若干天计划消耗量时提醒；触及预警线时由负责人评估；临近停投线时停止新增预算并复核。具体天数和金额应结合日均消耗、账期及回款周期配置，避免使用固定阈值套用所有团队。</p>
+<p>充值前核对币种、账户主体和付款信息；充值后登记流水、发票或账单编号，并在投放平台确认到账。自动充值应设置单次上限和余额上限，同时保留人工审批节点。</p>
+<h2>第四步：按账户层级管理素材与实验</h2>
+<p>不同层级使用不同素材策略。增长账户保留经过验证的素材方向，但持续更新版本；测试账户每次只改变一个主要变量，如素材、受众或落地页；再营销账户重点区分新客与老客素材；观察账户不占用日常素材产能。</p>
+<p>建立素材命名规则：<code>卖点-形式-版本-日期-适用账户</code>。实验开始前写明目标、预算、观察周期和停止条件。某素材在一两个测试账户表现不佳时，不应直接判定为无效素材，还需检查受众规模、落地页和追踪链路。</p>
+<h2>第五步：用固定节奏处理健康度与异常</h2>
+<p>每日检查账户消耗、转化、余额、拒审和追踪异常；每周复盘预算分配、账户分层及负责人变化；每月完成平台账单、内部充值记录与业务订单的对账。</p>
+<p>可设置异常处理顺序：</p>
+<ol>
+<li>确认账户余额、投放状态与平台通知；</li>
+<li>检查素材审核、落地页、追踪事件和受众设置；</li>
+<li>判断是单账户问题、素材问题还是账户层级设置错误；</li>
+<li>临时限制预算或暂停相关账户；</li>
+<li>记录原因、处理人、恢复时间和后续预防措施。</li>
+</ol>
+<p>对核心账户拒审、余额异常、追踪中断或成本突增，可建立即时通知机制。</p>
+<h2>第六步：用对账结果反向优化分层</h2>
+<p>财务对账不能只核对“充值了多少”，还要验证资金最终投向了哪些账户和产品线。将账单消耗与内部订单、CRM线索或实际转化进行匹配，识别充值未消耗、跨账户混记、币种差异及重复计费。</p>
+<p>某跨境电商团队通过统一台账发现，部分低量测试账户长期占用管理时间，但有效转化有限。团队将其调整为观察账户，停止自动充值，并把释放的预算转向核心市场。这个调整不应只看单月ROI，还应结合学习周期、素材储备和新品上线计划。</p>
+<h2>落地检查清单</h2>
+<p>正式运行前，确认以下事项已经完成：账户标签清晰、负责人唯一、权限最小化、预算有上限、充值有流水、异常有通知、账单能按账户和产品线追溯。分层管理不是一次建表，而是一套持续维护的运营流程。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h1>How Advertising Teams Can Segment and Manage Multiple Ad Accounts</h1>
+<p>As the number of advertising accounts grows, common problems are no longer a lack of accounts. The real challenges are unclear account purposes, messy access permissions, competing budgets, and recharge records that cannot be reconciled. Effective account segmentation helps teams quickly identify what each account is for, who manages it, and who should respond when something goes wrong.</p>
+<blockquote>
+<p>Account segmentation is intended for internal operations and asset management. It should not be used to create multiple accounts to bypass platform reviews, suspensions, or advertising policies.</p>
+</blockquote>
+<h2>Step 1: Segment Accounts by Business Purpose</h2>
+<p>Do not classify accounts only by platform or opening date. Use five dimensions: campaign objective, country or region, product line, funnel stage, and risk status. A practical structure could include:</p>
+<ul>
+<li><strong>Tier A: Core growth accounts</strong> — responsible for primary conversion goals, with stable budgets and priority balance and creative support.</li>
+<li><strong>Tier B: Test accounts</strong> — used for new creatives, audiences, or markets, with clear spending limits and stop-loss rules.</li>
+<li><strong>Tier C: Remarketing accounts</strong> — designed to re-engage existing traffic while controlling frequency and acquisition cost.</li>
+<li><strong>Tier D: Observation accounts</strong> — low-volume or paused accounts retained for reporting but not actively operated.</li>
+</ul>
+<p>Adopt a consistent naming convention, such as <code>Platform-Product-Region-Funnel-Owner-Status</code>. The name should communicate the account’s purpose rather than display only an account number.</p>
+<h2>Step 2: Build a Register and Apply Access Controls</h2>
+<p>The account register should include the account ID, platform, region, objective, owner, agency or legal entity, balance, top-up date, status, and monthly budget. Once the account portfolio becomes large, maintain it in a shared dashboard and assign responsibility for keeping it current.</p>
+<p>Follow the principle of least privilege:</p>
+<ol>
+<li>Media buyers can modify campaigns, creatives, and budgets.</li>
+<li>Finance staff can view balances, top-ups, and invoices but normally cannot change campaigns.</li>
+<li>Managers can review performance and approve significant changes.</li>
+<li>Access for departing or transferred employees should be revoked on the same day, followed by a documented handover.</li>
+</ol>
+<p>Use dual approval for high-budget accounts to prevent accidental shutdowns, incorrect landing-page changes, or duplicate top-up requests.</p>
+<h2>Step 3: Set Tier-Based Budget, Recharge, and Balance Rules</h2>
+<p>Budgets should not be distributed equally. Core growth accounts can use rolling budgets, while test accounts require per-test caps and stop-loss criteria. Remarketing budgets should reflect the team’s acceptable acquisition cost, and observation accounts should not receive automatic budget increases.</p>
+<p>Create three balance alert levels. The first reminds the owner when the remaining balance is unlikely to cover planned spending. The second requires an owner review when a predefined threshold is reached. The third triggers a spending pause and a balance check before more funds are approved. Exact thresholds should reflect average daily spend, payment terms, and cash-flow cycles rather than a universal fixed value.</p>
+<p>Before topping up an account, verify the currency, legal entity, and payment details. After the transaction, record the transaction reference, invoice or receipt number, and confirmation that the funds appeared in the platform. Automated recharge should include both per-transaction and balance ceilings, while retaining a manual approval step.</p>
+<h2>Step 4: Manage Creatives and Experiments by Tier</h2>
+<p>Each tier requires a different creative approach. Growth accounts should maintain proven directions while consistently introducing new versions. In test accounts, change only one major variable at a time, such as creative, audience, or landing page. Remarketing accounts need distinct messaging for new and returning customers, while observation accounts should not consume routine creative production capacity.</p>
+<p>Use a naming format such as <code>Value proposition-Format-Version-Date-Applicable account</code>. Before launch, document the objective, budget, observation period, and stopping criteria. Poor performance in one or two test accounts does not automatically prove that a creative is ineffective. Audience size, landing-page quality, and tracking accuracy should also be reviewed.</p>
+<h2>Step 5: Establish a Routine for Account Health and Incident Handling</h2>
+<p>Check daily consumption, conversions, balances, rejections, and tracking issues. Review budget allocation, account tiers, and ownership changes weekly. Complete platform billing, internal recharge, and business-order reconciliation monthly.</p>
+<p>Use a consistent incident response sequence:</p>
+<ol>
+<li>Confirm the account balance, delivery status, and platform notifications.</li>
+<li>Review creative approvals, landing pages, tracking events, and audience settings.</li>
+<li>Determine whether the issue is isolated to one account or caused by a creative or account-tier configuration.</li>
+<li>Temporarily limit the budget or pause affected delivery where necessary.</li>
+<li>Record the cause, owner, resolution time, and preventive action.</li>
+</ol>
+<p>Immediate notifications are recommended for rejected ads on core accounts, abnormal balances, tracking interruptions, or sudden cost increases.</p>
+<h2>Step 6: Use Reconciliation to Improve Segmentation</h2>
+<p>Financial reconciliation should verify not only how much was deposited, but also where the funds were spent. Match platform spending with internal orders, CRM leads, or actual conversions, and identify unspent funds, mixed account records, currency differences, and duplicate charges.</p>
+<p>For example, one cross-border e-commerce team found that several low-volume test accounts were consuming management time without generating meaningful conversions. The team moved them to observation status, disabled automatic top-ups, and reallocated part of the budget to priority markets. This decision should consider learning periods, creative inventory, and product-launch plans rather than relying on monthly ROI alone.</p>
+<h2>Implementation Checklist</h2>
+<p>Before the framework goes live, confirm that every account has a clear tier, a named owner, limited access, a budget ceiling, a recharge record, an incident alert path, and billing traceability by account and product line. Account segmentation is not a one-time spreadsheet exercise. It is an operational process that must be reviewed and maintained as the team, product portfolio, and media strategy change.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
