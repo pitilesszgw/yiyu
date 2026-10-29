@@ -108,6 +108,7 @@
         h2 { margin: 16px 0 0; font-size: 30px; letter-spacing: -0.04em; }
         .form-intro { margin: 10px 0 30px; color: #8c8595; font-size: 13px; }
         .lead-form { display: grid; gap: 22px; }
+        .lead-form[hidden] { display: none; }
         .field-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
         .field { display: grid; gap: 9px; }
         .field label, fieldset legend { font-size: 13px; font-weight: 750; }
@@ -174,8 +175,14 @@
         .submit-button:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(93, 31, 222, 0.28); }
         .submit-button:disabled { opacity: 0.65; cursor: wait; transform: none; box-shadow: none; }
         .form-status { min-height: 20px; margin: -8px 0 0; color: var(--green); font-size: 12px; text-align: center; }
-        .lead-fallback { min-height: 44px; margin: -8px auto 0; padding: 8px 16px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--purple); font-size: 13px; cursor: pointer; }
-        .lead-fallback:hover { background: var(--purple-soft); }
+        .lead-fallback, .success-contact { min-height: 44px; margin: -8px auto 0; padding: 8px 16px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--purple); font-size: 13px; cursor: pointer; }
+        .lead-fallback:hover, .success-contact:hover { background: var(--purple-soft); }
+        .lead-success { margin-top: 24px; padding: 32px 22px; border: 1px solid #b8dfcd; border-radius: 20px; background: #effaf4; text-align: center; }
+        .success-icon { display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; margin-bottom: 16px; border-radius: 50%; background: #16734f; color: #fff; }
+        .lead-success h3 { margin: 0 0 12px; color: #155d42; font-size: 28px; line-height: 1.3; }
+        .lead-success p { margin: 0; color: #245d48; font-size: 16px; line-height: 1.7; }
+        .lead-success .success-note { margin-top: 10px; color: #526d60; font-size: 13px; }
+        .success-contact { margin: 22px auto 0; }
         .privacy-note { display: flex; justify-content: center; align-items: center; gap: 7px; margin-top: -10px; color: #aaa4b2; font-size: 11px; }
         .footer { padding: 34px 40px 70px; border-top: 1px solid var(--line); text-align: center; }
         .footer .brand { justify-content: center; }
@@ -354,6 +361,13 @@
                     您的信息仅用于产品咨询沟通
                 </p>
             </form>
+            <div class="lead-success" id="leadSuccess" role="status" aria-labelledby="leadSuccessTitle" aria-describedby="leadSuccessMessage leadSuccessNote" tabindex="-1" hidden>
+                <span class="success-icon" aria-hidden="true"><svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <h3 id="leadSuccessTitle">提交成功！</h3>
+                <p id="leadSuccessMessage">您的需求已收到，我们会尽快与您联系。</p>
+                <p class="success-note" id="leadSuccessNote">请留意您填写的联系电话，无需重复提交。</p>
+                <button class="success-contact" id="leadSuccessWechat" type="button" aria-haspopup="dialog" aria-controls="wechatDialog">微信联系，继续沟通 ↗</button>
+            </div>
         </section>
 
         <footer class="footer">
@@ -390,12 +404,14 @@
         const submitButton = form.querySelector('.submit-button');
         const submitLabel = submitButton.querySelector('span');
         const leadWechatFallback = document.querySelector('#leadWechatFallback');
+        const leadSuccess = document.querySelector('#leadSuccess');
+        const leadSuccessWechat = document.querySelector('#leadSuccessWechat');
         const wechatContactButton = document.querySelector('#wechatContactButton');
         const wechatDialog = document.querySelector('#wechatDialog');
         const wechatDialogClose = wechatDialog.querySelector('.qr-dialog-close');
         let dialogTrigger = wechatContactButton;
 
-        [wechatContactButton, leadWechatFallback].forEach((button) => {
+        [wechatContactButton, leadWechatFallback, leadSuccessWechat].forEach((button) => {
             button.addEventListener('click', () => {
                 dialogTrigger = button;
                 wechatDialog.showModal();
@@ -411,7 +427,7 @@
 
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
-            if (submitButton.disabled) return;
+            if (submitButton.disabled || form.hidden) return;
             if (!form.checkValidity()) {
                 form.reportValidity();
                 status.textContent = '请先补全必填信息。';
@@ -438,7 +454,11 @@
                     throw new Error(result.message || '暂未确认提交结果，请勿重复提交，建议通过微信联系我们。');
                 }
                 form.reset();
-                status.textContent = '提交成功，我们会尽快与您联系。';
+                form.hidden = true;
+                document.querySelector('.form-intro').hidden = true;
+                leadSuccess.hidden = false;
+                leadSuccess.focus({ preventScroll: true });
+                leadSuccess.scrollIntoView({ block: 'center', behavior: 'auto' });
             } catch (error) {
                 status.textContent = error.name === 'AbortError' || error instanceof TypeError || error instanceof SyntaxError
                     ? '暂未确认提交结果，请勿重复提交，建议通过微信联系我们。'
