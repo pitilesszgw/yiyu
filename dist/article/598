@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">月底对不上：海外广告充值、消耗与发票如何统一对账</span>
+                    <span x-show="lang === 'en'" x-cloak>When the Numbers Don’t Match: Reconciling Overseas Ad Payments, Spend, and Invoices</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-11-01</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="598" data-base-views="88">88</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu1493/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>案例现场：支付成功，不代表账已经对齐</h2>
+<p>某跨境电商团队同时使用 Meta、Google 和 TikTok 广告，部分账户由代理商管理。每月结算日，财务发现一笔银行集合扣款，金额与平台账单不一致；投放团队查看后台，又发现部分余额、赠金和退款记录没有出现在代理商发来的对账单中。</p>
+<p>以下数字用于演示对账流程，并非行业基准：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th style="text-align: right;">金额（美元等值）</th>
+<th>财务初步判断</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>银行本期实际扣款</td>
+<td style="text-align: right;">86,200</td>
+<td>包含两笔跨月支付</td>
+</tr>
+<tr>
+<td>平台账单消耗</td>
+<td style="text-align: right;">85,400</td>
+<td>尚未扣除账户返点</td>
+</tr>
+<tr>
+<td>发票列示金额</td>
+<td style="text-align: right;">84,900</td>
+<td>口径可能不含税</td>
+</tr>
+<tr>
+<td>期末账户余额</td>
+<td style="text-align: right;">3,600</td>
+<td>含赠金及未消耗余额</td>
+</tr>
+</tbody>
+</table>
+<p>如果直接把“充值金额、消耗金额、发票金额”放进同一列，差异就无法解释。判断的关键不是立即补一笔账，而是先区分<strong>资金流、消耗和开票</strong>三种口径。</p>
+<h2>先查差异来自哪里</h2>
+<p>团队按以下顺序排查：</p>
+<ol>
+<li><strong>确认账户范围</strong>：逐个核对广告账户 ID、币种、付款主体和账期，区分平台直付、代理商充值与信用卡自动扣款。</li>
+<li><strong>核对付款时间</strong>：银行扣款日不一定等于平台入账日，跨月扣款应进入“在途款”，不能直接计入本期消耗。</li>
+<li><strong>拆分金额构成</strong>：消耗需区分媒体实际扣费、平台服务费、税费、账户返点和无效退款；赠金不是现金充值。</li>
+<li><strong>统一汇率</strong>：平台按原币结算，银行可能提供结算币种换算。应明确采用付款日汇率、平台入账日汇率还是财务期末汇率，并保持全月一致。</li>
+<li><strong>检查发票规则</strong>：确认发票金额对应含税或未税金额、冲销记录及调整单。代理商发票还可能包含服务费，不能与媒体消耗直接相等。</li>
+</ol>
+<p>排查后发现：银行多出的部分包含次月账单预扣款；平台消耗尚未扣除账户返点；发票采用未税口径；另有少量跨币种入账产生的汇兑尾差。</p>
+<h2>一张对账表，连接投放与财务</h2>
+<p>建议建立三层台账，而不是只保留平台截图。</p>
+<h3>1. 充值资金台账</h3>
+<p>记录账户、付款主体、付款币种、付款金额、银行流水号、平台入账金额、入账日期及未消耗余额。同一笔集合付款必须拆分到各账户，并保留分摊依据。</p>
+<h3>2. 广告消耗台账</h3>
+<p>按日获取各平台账单，至少包含展示、点击、媒体费用、服务费、税费、返点、退款和赠金消耗。代理商数据应与平台后台抽样复核，不能只依赖代理发来的汇总表。</p>
+<h3>3. 发票与差异台账</h3>
+<p>每张发票关联付款批次和广告账户，标注含税、未税、冲销及调整状态。差异不要只写“余额不符”，而应归入跨月入账、汇率尾差、返点待确认、发票口径不同或金额错误等具体原因。</p>
+<blockquote>
+<p>推荐核对公式：期初现金余额 + 本期充值 ± 在途款调整 - 本期现金消耗 ± 退款与返点 = 期末现金余额。</p>
+</blockquote>
+<h2>异常处理 SOP</h2>
+<ul>
+<li>金额在容差内但原因不明：暂挂差异，不直接做费用调整。</li>
+<li>平台账单与后台不符：要求代理商提供原始账单，并按账户抽样核验。</li>
+<li>发票未到：记录未开票消耗，避免期末收入与成本期间错配。</li>
+<li>跨月扣款：转入次月对账批次，并保留银行流水与平台入账凭证。</li>
+<li>账户返点或赠金待确认：单独列示，不提前冲减现金消耗。</li>
+<li>付款失败或余额不足：立即停止新增充值，核查限额、主体和支付方式，避免广告中断后再补账。</li>
+</ul>
+<h2>处理结果与月度复盘</h2>
+<p>完成调整后，上述案例形成三份可追踪结果：银行扣款与入账批次对应，跨月款项转入在途款；消耗按媒体费、税费、返点分别入账；发票与付款主体、账期及含税口径匹配。期末不再要求“充值等于消耗”，而是让每个差异都有来源、有凭证、有责任人。</p>
+<p>这套方法也适合多账户管理：投放团队关注账户余额与消耗，财务关注付款和发票，代理商则承担原始账单补充责任。每月固定对账日锁定数据，次月初再处理跨月尾差，能显著减少反复补表和误调整账。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Case Snapshot: A Successful Payment Does Not Mean the Books Match</h2>
+<p>A cross-border e-commerce team advertises across Meta, Google, and TikTok, with some accounts funded through an agency. At the monthly close, finance finds that a consolidated bank debit does not match the platform invoices. Meanwhile, the media team notices that balances, promotional credits, and refunds are missing from the agency’s statement.</p>
+<p>The figures below illustrate the reconciliation process and are not industry benchmarks:</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th style="text-align: right;">USD-equivalent Amount</th>
+<th>Initial Assessment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bank debit during the period</td>
+<td style="text-align: right;">86,200</td>
+<td>Includes two payments belonging to the next billing cycle</td>
+</tr>
+<tr>
+<td>Platform-reported ad spend</td>
+<td style="text-align: right;">85,400</td>
+<td>Does not yet reflect account rebates</td>
+</tr>
+<tr>
+<td>Invoice amount</td>
+<td style="text-align: right;">84,900</td>
+<td>May be presented on a tax-exclusive basis</td>
+</tr>
+<tr>
+<td>Ending account balance</td>
+<td style="text-align: right;">3,600</td>
+<td>Includes promotional credits and unspent funds</td>
+</tr>
+</tbody>
+</table>
+<p>Putting the payment, spend, and invoice amounts into the same column does not resolve the difference. The first step is to distinguish three accounting views: <strong>cash movement, advertising consumption, and invoicing</strong>.</p>
+<h2>Identify the Source of the Difference</h2>
+<p>The team follows a structured review process:</p>
+<ol>
+<li><strong>Confirm the account scope.</strong> Match every ad account ID, currency, legal payer, and billing period. Separate platform-direct payments, agency-funded accounts, and credit-card autopayments.</li>
+<li><strong>Check payment timing.</strong> The bank debit date may differ from the platform posting date. A payment crossing a month boundary belongs in a prepayment or in-transit schedule rather than current-period spend.</li>
+<li><strong>Break down the charges.</strong> Distinguish media spend, platform fees, taxes, rebates, invalid-traffic refunds, and promotional credits. Credits are not cash deposits.</li>
+<li><strong>Standardize exchange rates.</strong> Platforms may settle in local currency, while the bank charges in another currency. The team must select one consistent basis—such as payment-date, posting-date, or period-end exchange rates—and apply it throughout the close.</li>
+<li><strong>Review invoice rules.</strong> Determine whether invoices include tax, and account for credit notes and adjustments. An agency invoice may also contain management fees and therefore should not be compared directly with media spend.</li>
+</ol>
+<p>In this case, the excess bank debit relates to the following month’s prepaid billing, platform spend has not yet been reduced by rebates, invoices use a tax-exclusive basis, and a small foreign-exchange difference comes from cross-currency postings.</p>
+<h2>One Ledger Connecting Media and Finance</h2>
+<p>Instead of retaining screenshots, the team creates three linked schedules.</p>
+<h3>1. Payment and Funding Ledger</h3>
+<p>Record the ad account, payer, payment currency, bank amount, transaction reference, platform-posted amount, posting date, and remaining cash balance. Split every consolidated payment across accounts using a documented allocation method.</p>
+<h3>2. Advertising Spend Ledger</h3>
+<p>Export daily platform reports covering media costs, service fees, taxes, rebates, refunds, and promotional-credit usage. Agency summaries should be sampled against platform records; the agency statement should not be the only source of truth.</p>
+<h3>3. Invoice and Variance Ledger</h3>
+<p>Link each invoice to a payment batch and ad account. Identify whether the amount is tax-inclusive or tax-exclusive, and record credit notes and adjustments. A variance should have a specific reason, such as a cross-month posting, exchange-rate rounding, pending rebate, invoice-basis difference, or billing error—not simply “balance mismatch.”</p>
+<blockquote>
+<p>Recommended reconciliation formula: Opening cash balance + Current-period funding ± In-transit adjustments - Current-period cash spend ± Refunds and rebates = Closing cash balance.</p>
+</blockquote>
+<h2>Exception-Handling SOP</h2>
+<ul>
+<li>If an amount falls within tolerance but remains unexplained, hold it as an open variance rather than forcing an adjustment.</li>
+<li>If the agency statement conflicts with platform data, request the underlying invoices and sample the accounts directly.</li>
+<li>If invoices are still outstanding, record the uninvoiced consumption to avoid period mismatches.</li>
+<li>If a payment crosses the month-end, move it into the next reconciliation batch while retaining the bank and platform records.</li>
+<li>Keep pending rebates and promotional credits separate from cash-funded spend.</li>
+<li>If a payment fails or the balance is insufficient, pause new funding immediately and check account limits, payer entities, and payment methods. This prevents delivery disruptions from being discovered only after reconciliation.</li>
+</ul>
+<h2>Resolution and Monthly Review</h2>
+<p>After adjustment, the case produces three traceable outcomes: the bank debit is matched to the relevant funding batches, including the amount moved to the next period; spend is recorded separately across media, fees, taxes, and rebates; and invoices align with the correct payer, billing period, and tax basis. The close no longer assumes that funding must equal spend. Instead, every variance has an owner, supporting evidence, and clear treatment.</p>
+<p>The same process supports multi-account operations. The media team owns balances and consumption, finance owns payments and invoices, and the agency provides source billing support. Locking the data on a fixed monthly reconciliation date and clearing cross-month residuals early in the following month reduces spreadsheet rework and prevents incorrect adjustments.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
