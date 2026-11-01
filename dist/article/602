@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">出海广告合规巡检 SOP：账户、素材、充值与对账检查清单</span>
+                    <span x-show="lang === 'en'" x-cloak>Overseas Ad Compliance Inspection SOP: Account, Creative, Payment and Reconciliation Checklist</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-11-02</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="602" data-base-views="10">10</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu8988/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>一、巡检前先建立合规基线</h2>
+<p>合规巡检不能只看广告素材，还要同时核对广告账户、落地页、充值主体和财务记录。建议建立一张“市场—平台—产品—账户”对照表，注明投放国家、目标受众、行业资质、适用政策及责任人。</p>
+<p>首次建档时完成以下检查：</p>
+<ul>
+<li>[ ] 广告账户名称、投放主体、付款主体及合同主体保持一致</li>
+<li>[ ] 企业验证资料真实、清晰且在有效期内，管理员权限与联系方式可追溯</li>
+<li>[ ] 官网或落地页提供隐私政策、服务条款、Cookie说明及必要的退出机制</li>
+<li>[ ] 金融、医疗、保健、招聘、信贷、游戏等行业已取得当地要求的许可或披露文件</li>
+<li>[ ] 促销期限、价格、币种、库存及退款规则与广告表述一致</li>
+</ul>
+<p>资料应由广告、财务和法务分别确认，避免出现“素材已通过、落地页却缺少披露”的断层。</p>
+<h2>二、每日投放前检查清单</h2>
+<h3>1. 账户与权限</h3>
+<ul>
+<li>[ ] 登录邮箱、手机号和双重验证状态正常</li>
+<li>[ ] 管理员、投手及代理商权限按岗位分配，离职人员已移出</li>
+<li>[ ] 查看平台审核提醒、账户质量提示和拒审记录</li>
+<li>[ ] 确认预算异常、转化量突增及地域集中投放是否合理</li>
+</ul>
+<p>若出现“账户受限”或“疑似异常”提示，先暂停扩大投放，保存截图和时间线，再通过官方申诉渠道提交真实材料。不要通过新建账户、切换支付方式等方式规避审核。</p>
+<h3>2. 广告素材与落地页</h3>
+<p>逐条检查广告标题、图片、视频、文案、按钮和最终落地页，重点排查：</p>
+<ul>
+<li>[ ] 是否存在虚假承诺、绝对化用语或无法证明的效果保证</li>
+<li>[ ] 是否暗示用户个人健康、财务状况、种族等敏感属性</li>
+<li>[ ] 前后对比图、客户评价及用户证言是否获得授权并注明典型结果</li>
+<li>[ ] 商标、音乐、人物肖像、图片和第三方内容是否具备商业使用权</li>
+<li>[ ] 价格优惠、免费试用、订阅周期和自动续费规则是否清晰</li>
+<li>[ ] 落地页内容是否与广告承诺一致，表单收集的数据是否有明确用途</li>
+</ul>
+<p>涉及健康、减肥、理财或就业广告时，应由当地合规人员复核，不能仅依赖平台机器审核。</p>
+<h2>三、充值与支付链路检查</h2>
+<p>充值是账户运营中最容易出现主体错配的环节。付款前核对币种、税费、到账金额、发票抬头及退款规则；付款后确认余额已到账、充值记录可下载，并由经办人与复核人分别确认。</p>
+<p>重点标记以下情况：</p>
+<ul>
+<li>[ ] 使用个人账户、员工账户或与投放主体无关的银行卡付款</li>
+<li>[ ] 充值金额明显超过已审批预算</li>
+<li>[ ] 连续向多个账户快速充值或频繁更换付款方式</li>
+<li>[ ] 充值成功但平台余额未同步，或出现无法解释的扣除</li>
+</ul>
+<p>支付异常时，先核对订单号、平台账单和银行流水，再联系平台及支付服务商处理。保留审批单、付款凭证、聊天记录和到账截图，避免仅凭截图对账。</p>
+<h2>四、每周与每月对账</h2>
+<h3>每周操作检查</h3>
+<ul>
+<li>[ ] 对比投放计划、平台消耗和账户余额</li>
+<li>[ ] 检查被拒素材、异常跳转、落地页失效及表单故障</li>
+<li>[ ] 抽查高消耗广告的授权文件、承诺内容和受众定向</li>
+<li>[ ] 清理已失效的优惠券、旧价格和过期活动页面</li>
+</ul>
+<h3>每月财务复核</h3>
+<p>将平台账单、充值订单、银行或支付机构流水、广告消耗及代理商服务费按月份勾稽。单独列出退款、拒付、税费、汇率差异和平台返点，不直接用银行总支出代替广告消耗。</p>
+<p>同时输出三项内部指标：巡检问题关闭率、重复问题数量和平均整改时长。发现同类问题反复出现时，应修改素材模板、审批流程或账户操作规范，而不是反复人工补救。</p>
+<h2>五、异常处置与复盘</h2>
+<p>建议按“发现—止损—核实—申诉—复盘”执行：记录时间、受影响账户、广告ID和金额；暂停相关广告；核对原始证据；通过官方渠道申诉；修复后进行小规模复投并持续观察。</p>
+<p>所有审核结果、授权证明和沟通记录应集中归档，并设置保留期限。平台政策会更新，当地法律也存在地区差异，因此巡检清单至少每季度复核一次；高风险行业应提高复核频率，必要时咨询目标市场的专业法律顾问。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>1. Establish a Compliance Baseline</h2>
+<p>An effective inspection covers not only creatives, but also ad accounts, landing pages, payment entities, and financial records. Create a market-platform-product-account register showing target countries, audiences, licensing requirements, applicable policies, and responsible owners.</p>
+<p>Before the first campaign, verify the following:</p>
+<ul>
+<li>[ ] The ad account, advertiser, payer, and contracting entity are consistent</li>
+<li>[ ] Business verification documents are authentic, legible, and current</li>
+<li>[ ] The website or landing page includes privacy, terms, cookie disclosures, and relevant opt-out mechanisms</li>
+<li>[ ] Required licenses or disclosures are available for regulated sectors such as finance, healthcare, employment, and gaming</li>
+<li>[ ] Prices, currencies, inventory, promotion dates, and refund terms match the ads</li>
+</ul>
+<p>Advertising, finance, and legal teams should approve their respective areas. This prevents approved creative from linking to a landing page with missing disclosures.</p>
+<h2>2. Daily Pre-Launch Checklist</h2>
+<h3>Account and Access</h3>
+<ul>
+<li>[ ] Login credentials, phone numbers, and two-factor authentication work correctly</li>
+<li>[ ] Access is assigned by role, and former employees or inactive partners have been removed</li>
+<li>[ ] Review policy notices, account-quality warnings, and rejected ads</li>
+<li>[ ] Investigate unusual budget changes, conversion spikes, or excessive geographic concentration</li>
+</ul>
+<p>If an account restriction or suspicious activity warning appears, stop scaling the campaign, preserve screenshots and a timeline, and submit genuine supporting documents through official appeal channels. Do not create replacement accounts or change payment methods to bypass review.</p>
+<h3>Creative and Landing Page</h3>
+<p>Review every headline, image, video, caption, call-to-action, and final landing page. Check whether the content:</p>
+<ul>
+<li>[ ] Makes unsupported promises, absolute claims, or guaranteed outcomes</li>
+<li>[ ] Implies sensitive personal attributes such as health, financial status, ethnicity, or religion</li>
+<li>[ ] Uses before-and-after images, testimonials, or endorsements without authorization and typical-result disclaimers</li>
+<li>[ ] Uses trademarks, music, likenesses, or third-party assets without commercial rights</li>
+<li>[ ] Clearly states prices, free-trial terms, subscription periods, and automatic renewal rules</li>
+<li>[ ] Matches the landing page and explains the purpose of collected form data</li>
+</ul>
+<p>Health, weight-loss, finance, and employment ads should receive local compliance review rather than relying solely on automated platform moderation.</p>
+<h2>3. Payment and Recharge Controls</h2>
+<p>Before paying, confirm the currency, taxes, expected credit, invoice details, and refund rules. After payment, verify that the balance has arrived and is downloadable. Require separate confirmation from the operator and reviewer.</p>
+<p>Escalate the following:</p>
+<ul>
+<li>[ ] Payment comes from a personal, employee, or unrelated bank account</li>
+<li>[ ] The recharge amount exceeds the approved budget</li>
+<li>[ ] Multiple accounts are funded rapidly or payment methods change frequently</li>
+<li>[ ] The payment succeeds but the platform balance does not update, or unexplained deductions appear</li>
+</ul>
+<p>For payment issues, reconcile the transaction ID, platform invoice, and bank or payment-provider statement before contacting support. Keep approval forms, receipts, chat records, and credit screenshots as supporting evidence.</p>
+<h2>4. Weekly and Monthly Reconciliation</h2>
+<h3>Weekly Review</h3>
+<ul>
+<li>[ ] Reconcile campaign plans, platform spend, and account balances</li>
+<li>[ ] Review rejected creative, broken redirects, failed landing pages, and form errors</li>
+<li>[ ] Sample high-spend campaigns for authorization documents, claims, and audience settings</li>
+<li>[ ] Remove expired promotions, outdated prices, and inactive landing pages</li>
+</ul>
+<h3>Monthly Finance Review</h3>
+<p>Reconcile platform invoices, recharge orders, bank or provider statements, ad spend, and agency fees. Report refunds, chargebacks, taxes, exchange-rate differences, and platform credits separately. Do not use total bank expenditure as a substitute for advertising spend.</p>
+<p>Track three internal metrics: issue-closure rate, recurring issue count, and average remediation time. Repeated problems should lead to changes in creative templates, approval workflows, or account procedures.</p>
+<h2>5. Incident Response and Review</h2>
+<p>Use a five-step process: identify, contain, verify, appeal, and review. Record the time, affected accounts, ad IDs, and financial exposure; pause relevant campaigns; verify the original evidence; appeal through official channels; and relaunch gradually after remediation.</p>
+<p>Centralize audit results, authorizations, and correspondence with defined retention periods. Review the checklist at least quarterly because platform policies and local laws change. Increase the frequency for high-risk industries and obtain professional legal advice for the target market where needed.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
