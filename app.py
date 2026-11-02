@@ -93,18 +93,28 @@ def submit_lead():
         return result({'ok': False, 'message': '填写内容过长，请精简后重试。'}, 413)
     fields = {
         'entry.659206793': 100,
-        'entry.649232157': 32,
+        'entry.649232157': 64,
         'entry.1259853372': 200,
         'entry.1105577049': 20,
         'entry.853679754': 2000,
     }
     data = {key: request.form.get(key, '').strip() for key in fields}
-    if any(len(data[key]) > limit for key, limit in fields.items()):
+    city = request.form.get('company_city', '').strip()
+    if len(city) > 100 or any(len(data[key]) > limit for key, limit in fields.items()):
         return result({'ok': False, 'message': '填写内容过长，请精简后重试。'}, 400)
-    if (not data['entry.659206793'] or len(data['entry.649232157']) < 6
+    contact_type = request.form.get('contact_type', 'phone')
+    contact = data['entry.649232157']
+    if (not data['entry.659206793'] or contact_type not in ('phone', 'wechat', 'telegram')
+            or len(contact) < (6 if contact_type == 'phone' else 1)
+            or (contact_type == 'phone' and len(contact) > 32)
             or data['entry.1105577049'] not in ('了解产品', '预约演示', '获取报价', '合作咨询')
             or request.form.get('consent') != 'on'):
-        return result({'ok': False, 'message': '请补全称呼、有效联系电话并勾选信息使用同意。'}, 400)
+        return result({'ok': False, 'message': '请补全称呼、选择并填写一种联系方式，并勾选信息使用同意。'}, 400)
+    if contact_type != 'phone':
+        data['entry.649232157'] = ('微信号' if contact_type == 'wechat' else 'TG号') + '：' + contact
+    if city:
+        details = data['entry.853679754']
+        data['entry.853679754'] = '公司所在城市：' + city + ('\n补充说明：' + details if details else '')
     data.update({'fvv': '1', 'pageHistory': '0', 'entry.1105577049_sentinel': ''})
     uncertain = {'ok': False, 'message': '暂未确认提交结果，请勿重复提交，建议通过微信联系我们。'}
     try:

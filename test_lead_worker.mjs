@@ -53,6 +53,65 @@ test("a loaded HTTP 200 validation/login page never counts as saved", async (t) 
   }
 });
 
+test("one contact is enough and its type is recorded", async (t) => {
+  for (const [type, contact, expected] of [
+    ["phone", "+86 13800000000", "+86 13800000000"],
+    ["wechat", "wxid_demo", "微信号：wxid_demo"],
+    ["telegram", "@demo", "TG号：@demo"],
+  ]) {
+    const mock = t.mock.method(globalThis, "fetch", async (_url, options) => {
+      const posted = new URLSearchParams(options.body);
+      assert.equal(posted.get("entry.649232157"), expected);
+      assert.equal(posted.has("contact_type"), false);
+      return new Response(confirmation);
+    });
+    assert.equal((await submitLead(request({ ...valid, contact_type: type, "entry.649232157": contact }))).status, 200);
+    mock.mock.restore();
+  }
+});
+
+test("invalid contacts never reach Google", async (t) => {
+  const mock = t.mock.method(globalThis, "fetch", async () => { throw new Error("must not send"); });
+  for (const type of ["phone", "wechat", "telegram", "unknown", "toString", ""]) {
+    for (const contact of ["", " ", "a".repeat(65)]) {
+      assert.equal((await submitLead(request({ ...valid, contact_type: type, "entry.649232157": contact }))).status, 400);
+    }
+  }
+  for (const type of ["unknown", "toString", ""]) {
+    assert.equal((await submitLead(request({ ...valid, contact_type: type }))).status, 400);
+  }
+  assert.equal((await submitLead(request({ ...valid, contact_type: "phone", "entry.649232157": "1".repeat(33) }))).status, 400);
+  assert.equal(mock.mock.callCount(), 0);
+});
+
+test("optional city preserves company and details", async (t) => {
+  for (const [city, details, expected] of [
+    [undefined, "说明", "说明"],
+    ["   ", "说明", "说明"],
+    [" 杭州 ", "说明", "公司所在城市：杭州\n补充说明：说明"],
+    ["深圳", "", "公司所在城市：深圳"],
+    ["a".repeat(100), "a".repeat(2000), `公司所在城市：${"a".repeat(100)}\n补充说明：${"a".repeat(2000)}`],
+  ]) {
+    const mock = t.mock.method(globalThis, "fetch", async (_url, options) => {
+      const posted = new URLSearchParams(options.body);
+      assert.equal(posted.get("entry.853679754"), expected);
+      assert.equal(posted.get("entry.1259853372"), "");
+      assert.equal(posted.has("company_city"), false);
+      return new Response(confirmation);
+    });
+    const data = { ...valid, "entry.1259853372": "", "entry.853679754": details };
+    if (city !== undefined) data.company_city = city;
+    assert.equal((await submitLead(request(data))).status, 200);
+    mock.mock.restore();
+  }
+});
+
+test("oversized city never reaches Google", async (t) => {
+  const mock = t.mock.method(globalThis, "fetch", async () => { throw new Error("must not send"); });
+  assert.equal((await submitLead(request({ ...valid, company_city: "a".repeat(101) }))).status, 400);
+  assert.equal(mock.mock.callCount(), 0);
+});
+
 test("upstream HTTP errors and network failures do not report success", async (t) => {
   const mock = t.mock.method(globalThis, "fetch", async () => new Response(confirmation, { status: 500 }));
   assert.equal((await submitLead(request())).status, 502);

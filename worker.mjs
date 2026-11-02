@@ -2,7 +2,7 @@ const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScjINC9CbqMsOR3sbCdIb
 const INTERESTS = ["了解产品", "预约演示", "获取报价", "合作咨询"];
 const FIELDS = {
   "entry.659206793": 100,
-  "entry.649232157": 32,
+  "entry.649232157": 64,
   "entry.1259853372": 200,
   "entry.1105577049": 20,
   "entry.853679754": 2000,
@@ -36,9 +36,21 @@ export async function submitLead(request) {
     }
     data.set(name, value);
   }
-  if (!data.get("entry.659206793") || data.get("entry.649232157").length < 6 ||
+  const contactType = input.get("contact_type") ?? "phone";
+  const city = (input.get("company_city") || "").trim();
+  if (city.length > 100) {
+    return json({ ok: false, message: "填写内容过长，请精简后重试。" }, 400);
+  }
+  const contact = data.get("entry.649232157");
+  if (!data.get("entry.659206793") || !["phone", "wechat", "telegram"].includes(contactType) ||
+      contact.length < (contactType === "phone" ? 6 : 1) || (contactType === "phone" && contact.length > 32) ||
       !INTERESTS.includes(data.get("entry.1105577049")) || input.get("consent") !== "on") {
-    return json({ ok: false, message: "请补全称呼、有效联系电话并勾选信息使用同意。" }, 400);
+    return json({ ok: false, message: "请补全称呼、选择并填写一种联系方式，并勾选信息使用同意。" }, 400);
+  }
+  if (contactType !== "phone") data.set("entry.649232157", `${contactType === "wechat" ? "微信号" : "TG号"}：${contact}`);
+  if (city) {
+    const details = data.get("entry.853679754");
+    data.set("entry.853679754", `公司所在城市：${city}${details ? `\n补充说明：${details}` : ""}`);
   }
   data.set("fvv", "1");
   data.set("pageHistory", "0");
