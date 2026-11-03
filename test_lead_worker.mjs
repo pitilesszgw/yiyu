@@ -85,16 +85,17 @@ test("invalid contacts never reach Google", async (t) => {
 });
 
 test("optional city preserves company and details", async (t) => {
-  for (const [city, details, expected] of [
-    [undefined, "说明", "说明"],
-    ["   ", "说明", "说明"],
-    [" 杭州 ", "说明", "公司所在城市：杭州\n补充说明：说明"],
-    ["深圳", "", "公司所在城市：深圳"],
-    ["a".repeat(100), "a".repeat(2000), `公司所在城市：${"a".repeat(100)}\n补充说明：${"a".repeat(2000)}`],
+  for (const [city, details] of [
+    [undefined, "说明"],
+    ["   ", "说明"],
+    [" 杭州 ", "说明"],
+    ["深圳", ""],
+    ["a".repeat(100), "a".repeat(2000)],
   ]) {
     const mock = t.mock.method(globalThis, "fetch", async (_url, options) => {
       const posted = new URLSearchParams(options.body);
-      assert.equal(posted.get("entry.853679754"), expected);
+      assert.equal(posted.get("entry.562954983"), (city || "").trim());
+      assert.equal(posted.get("entry.853679754"), details);
       assert.equal(posted.get("entry.1259853372"), "");
       assert.equal(posted.has("company_city"), false);
       return new Response(confirmation);

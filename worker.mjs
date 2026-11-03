@@ -48,10 +48,7 @@ export async function submitLead(request) {
     return json({ ok: false, message: "请补全称呼、选择并填写一种联系方式，并勾选信息使用同意。" }, 400);
   }
   if (contactType !== "phone") data.set("entry.649232157", `${contactType === "wechat" ? "微信号" : "TG号"}：${contact}`);
-  if (city) {
-    const details = data.get("entry.853679754");
-    data.set("entry.853679754", `公司所在城市：${city}${details ? `\n补充说明：${details}` : ""}`);
-  }
+  data.set("entry.562954983", city);
   data.set("fvv", "1");
   data.set("pageHistory", "0");
   data.set("entry.1105577049_sentinel", "");

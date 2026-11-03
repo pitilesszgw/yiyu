@@ -56,13 +56,14 @@ class LeadFormTests(unittest.TestCase):
     @patch('app.requests.post')
     def test_optional_city_preserves_company_and_details(self, post):
         post.return_value = Mock(status_code=200, text='<div class="vHW8K">Your response has been recorded.</div>')
-        for city, details, expected in [(None, '说明', '说明'), ('   ', '说明', '说明'), (' 杭州 ', '说明', '公司所在城市：杭州\n补充说明：说明'), ('深圳', '', '公司所在城市：深圳'), ('a' * 100, 'a' * 2000, '公司所在城市：' + 'a' * 100 + '\n补充说明：' + 'a' * 2000)]:
+        for city, details in [(None, '说明'), ('   ', '说明'), (' 杭州 ', '说明'), ('深圳', ''), ('a' * 100, 'a' * 2000)]:
             data = {**self.data, 'entry.1259853372': '测试公司', 'entry.853679754': details}
             if city is not None:
                 data['company_city'] = city
             self.assertEqual(self.client.post('/api/lead', data=data).status_code, 200)
             posted = post.call_args.kwargs['data']
-            self.assertEqual(posted['entry.853679754'], expected)
+            self.assertEqual(posted['entry.562954983'], (city or '').strip())
+            self.assertEqual(posted['entry.853679754'], details)
             self.assertEqual(posted['entry.1259853372'], '测试公司')
             self.assertNotIn('company_city', posted)
 

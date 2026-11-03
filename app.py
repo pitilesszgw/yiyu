@@ -112,9 +112,7 @@ def submit_lead():
         return result({'ok': False, 'message': '请补全称呼、选择并填写一种联系方式，并勾选信息使用同意。'}, 400)
     if contact_type != 'phone':
         data['entry.649232157'] = ('微信号' if contact_type == 'wechat' else 'TG号') + '：' + contact
-    if city:
-        details = data['entry.853679754']
-        data['entry.853679754'] = '公司所在城市：' + city + ('\n补充说明：' + details if details else '')
+    data['entry.562954983'] = city
     data.update({'fvv': '1', 'pageHistory': '0', 'entry.1105577049_sentinel': ''})
     uncertain = {'ok': False, 'message': '暂未确认提交结果，请勿重复提交，建议通过微信联系我们。'}
     try:
