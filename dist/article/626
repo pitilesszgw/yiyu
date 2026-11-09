@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">周报观察｜TikTok Shop 新品冷启动，素材池别急着做大</span>
+                    <span x-show="lang === 'en'" x-cloak>Weekly Watch: Building a TikTok Shop Creative Pool for New Product Launches</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-11-10</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="626" data-base-views="12">12</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu9076/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>本周观察：新品上线后，团队最缺的不是素材数量</h2>
+<p>本周观察到，不少 TikTok Shop 团队在新品上线前集中制作大量短视频，希望靠素材数量覆盖流量。然而素材越多，标签越难统一：同一个产品可能同时讲折扣、使用场景、安装演示和用户口碑，预算与受众反馈也难以归因。</p>
+<p>真正影响冷启动效率的，是素材池能否回答三个问题：什么卖点值得讲、哪种表达适合当前人群、哪些内容可以继续放大。冷启动阶段应先建立小而清晰的测试机制，再逐步扩充素材，而不是先囤积成百条视频。</p>
+<h2>先搭骨架：把卖点拆成可测试的内容单元</h2>
+<p>建议首轮围绕 3至5 个核心卖点建立素材矩阵，每个卖点至少覆盖两类表达：</p>
+<ul>
+<li><strong>痛点型</strong>：放大使用前的困扰，适合功能明确、痛点容易理解的新品。</li>
+<li><strong>演示型</strong>：直接展示操作过程或前后差异，重点是画面清晰和动作可复现。</li>
+<li><strong>场景型</strong>：呈现产品在特定时间、地点或人群中的使用方式。</li>
+<li><strong>证据型</strong>：补充用户评价、质检过程、包装细节或服务说明，但必须取得真实素材授权。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>内容单元</th>
+<th>推荐素材</th>
+<th>主要观察项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>核心功能</td>
+<td>口播演示、问题解决短视频</td>
+<td>点击率、商品页停留</td>
+</tr>
+<tr>
+<td>使用场景</td>
+<td>场景剧情、UGC 短视频</td>
+<td>完播率、加购率</td>
+</tr>
+<tr>
+<td>购买理由</td>
+<td>对比讲解、细节特写</td>
+<td>商品点击与成交</td>
+</tr>
+<tr>
+<td>信任背书</td>
+<td>用户反馈、开箱质检</td>
+<td>转化率、退款反馈</td>
+</tr>
+</tbody>
+</table>
+<p>每条素材只承担一个主要任务。例如演示安装流程的视频，不应同时加入限时折扣、店铺公告和多个产品卖点。信息越集中，越容易判断用户究竟被哪个卖点打动。</p>
+<h2>再做分层：素材池要区分测试款、迭代款和放量款</h2>
+<p>新品第一批素材建议保持轻量，可先准备 12至20 条，覆盖不同卖点、开头方式和内容形式。测试款负责获取信号，迭代款负责修正脚本，验证有效的方向再进入放量阶段。</p>
+<p>具体执行时，可采用以下节奏：</p>
+<ol>
+<li>同一卖点制作多个开头，避免受众差异被误判为创意差异。</li>
+<li>首屏在前两秒呈现结果、问题或利益点，减少品牌片式铺垫。</li>
+<li>同一广告组内保持受众、出价和落地页条件相对一致。</li>
+<li>当某类素材在足够曝光后仍表现突出，再增加预算，而不是因偶然点击立即复制。</li>
+<li>对高点击低转化素材，重点检查展示与落地页是否一致；对低点击素材，则优先改写开头和卖点。</li>
+</ol>
+<p>素材命名也值得统一。例如使用“功能—场景—版本—日期”的格式，方便团队快速找到原始素材、对应脚本和测试结果。</p>
+<h2>一个真实运营提醒：素材跑得动，不代表素材合规</h2>
+<p>TikTok Shop 素材常涉及夸大功效、绝对化表述、用户评价授权和促销信息。某跨境团队曾将达人视频中的口头反馈直接剪入广告，导致原始语境与广告内容不一致。这类素材即使短期获得点击，也可能增加拒审、投诉或退货风险。</p>
+<p>建议在素材进入测试池前完成三项检查：商品名称与链接是否一致；演示效果是否基于真实使用；字幕、口播和画面中是否存在平台限制或无法证明的表述。达人素材还要留存授权记录，避免二次投放时出现使用范围争议。</p>
+<h2>本周建议：用一张表决定下一批素材</h2>
+<p>素材负责人每天不需要只看消耗和成交，还应记录四个字段：用户停留发生在哪一秒、哪个卖点被点击、评论区集中提出什么问题、落地页在哪一步流失。把这些反馈回填到素材矩阵后，再决定下一批制作方向。</p>
+<p>新品冷启动的核心并不是追求一次性命中，而是尽快建立可复制的测试路径。高转化素材来自清晰卖点、真实表达、稳定测试与合规审核的共同作用，而不是素材数量本身。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>This Week’s Signal: A New Product Does Not Need More Creatives—It Needs Better-Organized Testing</h2>
+<p>This week’s observation is that many TikTok Shop teams prepare a large volume of short-form videos before launching a new product, hoping that more content will cover more of the traffic. However, a larger library can make attribution harder. The same product may introduce discounts, use cases, installation steps, and customer feedback within the same campaign, making it difficult to determine which message is driving results.</p>
+<p>The real constraint during a cold launch is whether the creative pool can answer three questions: which selling point deserves attention, which presentation fits the target audience, and which videos should be scaled. Teams should establish a small, controlled testing process before expanding the library rather than producing hundreds of videos in advance.</p>
+<h2>Build the Framework First: Turn Selling Points into Testable Units</h2>
+<p>For the first round, select three to five core selling points and cover at least two creative approaches for each one:</p>
+<ul>
+<li><strong>Pain-point content:</strong> dramatize a problem the audience faces before using the product.</li>
+<li><strong>Demonstration content:</strong> show the operation or before-and-after result clearly and reproducibly.</li>
+<li><strong>Scenario content:</strong> demonstrate how the product fits a specific time, location, or customer group.</li>
+<li><strong>Proof content:</strong> use genuine reviews, quality-control footage, packaging details, or service information, with appropriate authorization.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Content unit</th>
+<th>Recommended format</th>
+<th>Key metric</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Core feature</td>
+<td>Verbal demonstration, problem-solution video</td>
+<td>Click-through rate, product-page engagement</td>
+</tr>
+<tr>
+<td>Use case</td>
+<td>Scenario story, UGC video</td>
+<td>Completion rate, add-to-cart rate</td>
+</tr>
+<tr>
+<td>Purchase rationale</td>
+<td>Comparison, detail close-up</td>
+<td>Product clicks, conversion</td>
+</tr>
+<tr>
+<td>Trust signal</td>
+<td>Customer feedback, unboxing, quality check</td>
+<td>Conversion, refund feedback</td>
+</tr>
+</tbody>
+</table>
+<p>Give each video one primary task. An installation demonstration, for example, should not also introduce a limited-time discount, a store announcement, and several unrelated benefits. Concentrated messaging makes performance easier to interpret.</p>
+<h2>Add Layers: Separate Test, Iteration, and Scale Creatives</h2>
+<p>A practical first batch can contain 12 to 20 videos across different selling points, opening hooks, and formats. Test creatives generate signals, iteration creatives refine the winning script, and only validated approaches move into the scaling stage.</p>
+<p>A workable cadence is straightforward:</p>
+<ol>
+<li>Create multiple openings for the same selling point so that audience differences are not mistaken for creative differences.</li>
+<li>Present the result, problem, or benefit within the first two seconds instead of opening with a long brand introduction.</li>
+<li>Keep audience, bid, and landing-page conditions relatively consistent within each test group.</li>
+<li>Increase investment only after a format has accumulated sufficient delivery and continues to outperform alternatives—not after one isolated click.</li>
+<li>If clicks are healthy but conversion is weak, review the gap between the ad promise and the landing page. If engagement is weak, revise the opening and selling point first.</li>
+</ol>
+<p>Use a consistent naming convention such as “feature—scenario—version—date.” This makes it easier for the team to trace every final edit back to its source footage, script, and test record.</p>
+<h2>Operational Risk: Performance Does Not Replace Compliance</h2>
+<p>TikTok Shop creatives frequently touch on exaggerated claims, absolute statements, customer-review authorization, and promotional information. One cross-border team reused a creator’s verbal feedback in an advertisement without preserving the original context. Even if the edit initially generated clicks, the mismatch could increase rejection, complaint, or return risks.</p>
+<p>Before a creative enters the testing pool, check three things: whether the product name matches the linked listing, whether the demonstration reflects actual use, and whether captions, voice-over, or visuals contain claims that cannot be substantiated. Keep authorization records for creator content, especially when it will be reused in paid campaigns.</p>
+<h2>This Week’s Recommendation: Let Feedback Determine the Next Production Batch</h2>
+<p>Creative owners should track more than spend and revenue. Record where viewers remain engaged, which selling point drives the click, what questions appear repeatedly in comments, and where visitors leave the product page. Feed these observations back into the creative matrix and use them to brief the next batch.</p>
+<p>The purpose of a cold launch is not to find one perfect video immediately. It is to establish a repeatable testing path as quickly as possible. Strong performance comes from a clear selling point, authentic presentation, controlled testing, and compliance review—not from the size of the creative library.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
