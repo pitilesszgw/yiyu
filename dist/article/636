@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">出海广告合规巡检 SOP：6 个高频问题的判断与处置动作</span>
+                    <span x-show="lang === 'en'" x-cloak>Overseas Ads Compliance Audit SOP: 6 High-Frequency Issues and How to Resolve Them</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-11-13</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="636" data-base-views="24">24</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu998/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <p>做海外投放，账户被限制、素材被拒审、充值款迟迟不到账，是最耗时的三类“隐形故障”。它们很少在出问题时被提前发现，往往等到投放中断、结算对不上才集中爆发。下面 6 个问题来自出海广告投放团队的真实日常，答案都给出明确判断和动作，可直接改写成巡检 SOP。</p>
+<h2>一、账户与素材层面的高频问题</h2>
+<p><strong>Q1：广告账户突然被封停或进入“受限投放”状态，第一步做什么？</strong></p>
+<p>判断：先不要盲目充值，也不要立刻换代理重开账户。第一步是取证——保存系统封控提示截图、受影响广告 ID、最后一次正常投放时间。第二步是判断性质：额度限制（余额不足/支付方式触发）、内容审核（单条素材被否）、风险封控（整个账户被标记）三者处置路径完全不同。</p>
+<p>动作顺序建议为：截图留证 → 查余额与支付方式 → 排查近期变更（是否新增了落地页域名、是否改了投放定向、是否更换了主体信息）→ 在申诉通道提交一次简短说明（说明业务真实性、付款主体与投放目的）→ 同步排查同主体下其他账户是否被连带。多数“莫名其妙”限制其实来自一个被忽略的改动点，比如新接入了一个低信誉跳转域名。</p>
+<p><strong>Q2：素材拒审率从 20% 突然涨到 60%，怎么快速定位原因？</strong></p>
+<p>判断：拒审率上升，通常不是单条素材的问题，而是“素材模板 + 落地页 + 受众”三者中至少一项出现了系统不喜欢的信号。最常见的三个诱因：</p>
+<ol>
+<li>过度承诺类文案（“100% 有效”“稳赚”“官方唯一”）；</li>
+<li>前后端不一致（素材讲海外品牌，落地页却是国内域名或中文客服）；</li>
+<li>素材复用同一批主体素材，同一账号短时间高频提交同一文案与画面。</li>
+</ol>
+<p>动作：把最近 7 天被拒素材按文案关键词聚类，找出重复出现的敏感词；随机抽 3 条拒审素材的落地页，检查域名注册时间、跳转层级、是否含诱导下载/订阅；再把拒审素材的定向与通过素材做对比。如果问题集中在“相似度”，就换首帧与口播；如果集中在文案，就替换表述并删除绝对化用词。某工具类 App 在做完这三步后，发现根因是落地页换成了新注册的域名，问题当天解决。</p>
+<p><strong>Q3：同一个投放主体开了十几个广告账户，如何避免被系统判定为关联滥用？</strong></p>
+<p>判断：多账户本身不违规，触发风控的是“可关联的技术特征”。登录环境、付款主体、素材指纹、跳转域名高度重合，比数量本身更容易被标记。</p>
+<p>动作：</p>
+<ul>
+<li>账户分组：按业务线/国家/预算分为 3–5 组，每组 1–3 个账户，避免单组账户数过多；</li>
+<li>环境隔离：不同组使用不同设备与网络环境，禁止同一浏览器会话登录多个账户；</li>
+<li>支付隔离：尽量使用不同主体的付款方式与不同邮箱域名；</li>
+<li>素材区分：同组内避免批量套用完全相同的视频与文案，首帧与配音做差异化；</li>
+<li>操作节奏：提交预算、修改定向等关键操作错开时间，不要多账号同时同秒操作。</li>
+</ul>
+<h2>二、钱与账的问题</h2>
+<p><strong>Q4：充值到账慢、余额显示与消耗对不上，对账从哪里入手？</strong></p>
+<p>判断：先区分是“到账延迟”还是“账实不符”。方法是拉两份数据做交叉：广告后台的可用余额与消耗曲线，以及支付渠道的充值流水（含手续费、汇率、退款）。差额通常来自三类：汇率与手续费、充值在途、退款或失败扣款被静默扣回。</p>
+<p>动作建议：建立一张最小对账表，字段包含充值单号、到账时间、币种、汇率、手续费、后台余额快照、差异原因、处理状态。每周固定时点（建议周一上午）导出余额与消耗快照，与充值流水逐单勾稽。差异单不要先归为“平台问题”，先按订单号在支付渠道查状态，确认是失败扣回还是在途。某跨境电商团队把对账从“月底补”改为“周一晨检”，当月才发现两笔自动续费被重复扣，避免了后续账户余额被抽干导致的断投。</p>
+<p><strong>Q5：找代理代充、返点、返现分享在群里，这算合规操作吗？</strong></p>
+<p>判断：合规风险集中在两点——一是资金链路不透明导致无法自证业务真实性；二是代充行为违反多数支付渠道与平台的用户协议，可能触发账户审查。判断标准很简单：钱从哪来、能不能开票、能不能在后台查到充值记录、有没有第三方代持主体。</p>
+<p>动作：只走可追溯的正规充值通道，保留订单与凭证；返点以合同或正规服务发票形式体现，不要以“群内红包/个人转账”结算；避免同一支付工具账户为多个广告主充值。财务与投放之间要有一张“充值—投放—主体”的对应关系表，审计与申诉时能一键拿出。</p>
+<h2>三、巡检 SOP 怎么固化下来</h2>
+<p><strong>Q6：巡检到底该做什么、多久做一次、出问题升级给谁？</strong></p>
+<p>判断：巡检不是每天把所有系统看一遍，而是分层。日常层（每日 15 分钟）看账户状态与余额；周期层（每周）看拒审率、CPI 与消耗波动、素材复用度、充值对账；月度层看主体合规资料是否过期（营业执照、授权书、域名备案、隐私政策）。</p>
+<p>一份可直接使用的周巡检清单：</p>
+<ul>
+<li>账户状态：正常/受限/封停数量，受限账户是否已建单跟进；</li>
+<li>余额：低于安全线（如日均消耗 × 3 天）的账户列表；</li>
+<li>素材：拒审率、拒审文案聚类结果、重复提交条数；</li>
+<li>对账：本周充值单勾稽结果与差异单；</li>
+<li>多账户：新增账户的环境、支付、素材是否与既有账户重合；</li>
+<li>资料：主体证件、落地页域名与隐私政策有效期。</li>
+</ul>
+<p>升级路径写死在文档里：余额低于安全线 → 通知投放负责人当天处理；单账户受限 → 2 小时内提交申诉并同步客户；同主体 2 个以上账户同时受限 → 立即升级至合规负责人并暂停该主体全部充值。某出海游戏团队把“安全线”定义成日均消耗的 3 倍后，再没出现过余额断档导致的停投。</p>
+<p>最后提醒一句：巡检真正的价值不是“记录没问题”，而是把证据链提前准备好。截图、订单号、素材版本、主体资料，都是账户被封时唯一能帮客户快速恢复投放的东西。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <p>In overseas ad buying, three “invisible failures” eat the most time: account restrictions, rejected creatives, and top-ups that never land. They rarely surface before the damage — usually everything breaks at once when a campaign stops or settlement won't reconcile. The six questions below come from real day-to-day operations in overseas ad teams, and each answer includes a clear verdict and a concrete action, so you can convert them straight into an audit SOP.</p>
+<h2>1. Account and creative issues</h2>
+<p><strong>Q1: An ad account is suddenly restricted or suspended — what is the first step?</strong></p>
+<p>Verdict: Don't top up blindly, and don't rush to spin up replacement accounts through another agency. First, collect evidence: screenshot the restriction notice, note the affected ad IDs and the last normal delivery time. Second, classify the incident: quota/limit (insufficient balance, payment method flagged), content review (a single creative rejected), or risk control (the entire account is flagged). Each path requires a different response.</p>
+<p>Recommended sequence: screenshot → check balance and payment method → review recent changes (a new landing-page domain? new targeting? an updated business entity?) → submit one concise appeal stating business legitimacy, paying entity, and campaign purpose → simultaneously check whether other accounts under the same entity were affected. Most “unexplained” restrictions trace back to one overlooked change, such as a newly added low-reputation redirect domain.</p>
+<p><strong>Q2: Creative rejection rate jumps from 20% to 60% — how do you find the root cause fast?</strong></p>
+<p>Verdict: A rising rejection rate is rarely about one creative. It is at least one of three signals: creative template, landing page, or audience. The three most common triggers are:</p>
+<ol>
+<li>Over-promising copy (“100% effective,” “guaranteed returns,” “the only official…”);</li>
+<li>Front-end/back-end mismatch (the video promotes an overseas brand while the landing page uses a domestic domain or Chinese-language support);</li>
+<li>Batch reuse of the same body creative and copy, submitted repeatedly in a short window.</li>
+</ol>
+<p>Actions: cluster the last seven days of rejected creatives by copy keywords and find recurring sensitive terms; randomly pull three rejected landing pages and check domain registration age, redirect depth, and whether they push aggressive download/subscribe prompts; then compare targeting between rejected and approved creatives. If the pattern points to similarity, change the first frame and voiceover; if it points to copy, rewrite and strip absolute claims. A productivity app resolved this on the same day after the three checks — the root cause was a landing page moved to a newly registered domain.</p>
+<p><strong>Q3: We run a dozen-plus ad accounts under one entity — how do we avoid being flagged for abusive duplication?</strong></p>
+<p>Verdict: Multiple accounts are not a violation. What triggers risk control is technically linkable signals — login environment, paying entity, creative fingerprints, and redirect domain overlap — more than account count itself.</p>
+<p>Actions:</p>
+<ul>
+<li>Group accounts: 3–5 groups split by business line, country, and budget, with 1–3 accounts each;</li>
+<li>Isolate environments: different device and network per group; never log into multiple accounts from one browser session;</li>
+<li>Isolate payments: prefer different payment methods and email domains per group;</li>
+<li>Differentiate creatives: avoid reusing identical video and copy within a group; vary first frame and voiceover;</li>
+<li>Stagger operations: don't submit budgets or edit targeting across accounts in the same second.</li>
+</ul>
+<h2>2. Money and reconciliation</h2>
+<p><strong>Q4: Top-ups arrive late and balances don't match spend — where do we start reconciling?</strong></p>
+<p>Verdict: First distinguish “delayed arrival” from “mismatch.” Pull two datasets and cross-check them: available balance and spend curves from the ad platform, and top-up statements from the payment channel (including fees, FX, refunds). Gaps usually come from three sources: FX and fees, top-ups still in transit, and refunds or failed charges silently deducted.</p>
+<p>Actions: build a minimal reconciliation table with top-up order number, arrival time, currency, FX rate, fee, backend balance snapshot, reason for difference, and status. Fix a weekly snapshot slot (Monday morning works well) to export balances and spend, then reconcile line by line against top-up statements. Don't write off differences as “a platform issue” before checking the order status with the payment provider — it may be a failed charge clawback or an in-flight transfer. A cross-border e-commerce team moved reconciliation from “end of month” to “Monday morning checks” and caught two duplicate auto-debits in the same month, avoiding a drained balance and a campaign stoppage.</p>
+<p><strong>Q5: Is agency-assisted top-up, rebate, and cashback shared in a chat group compliant?</strong></p>
+<p>Verdict: The compliance risk sits in two things: an opaque money trail that makes business legitimacy impossible to prove, and top-ups through third parties that violate most payment-provider and platform user agreements and can trigger account review. The test is simple: where did the money come from, can you invoice it, is it traceable in the ad platform, and is any third party holding the entity? Actions: use only traceable channels and keep order records; structure rebates through a contract or a proper service invoice rather than group red packets or personal transfers; avoid one payment account topping up for multiple advertisers. Keep a “top-up — spend — entity” mapping table between finance and the buying team so audits and appeals are one click away.</p>
+<h2>3. Locking the audit into an SOP</h2>
+<p><strong>Q6: What should the audit cover, how often, and who owns escalation?</strong></p>
+<p>Verdict: Auditing isn't staring at every system daily — it's layered. Daily layer (15 minutes): account status and balance. Weekly layer: rejection rate, CPI and spend volatility, creative reuse, top-up reconciliation. Monthly layer: whether entity documentation has expired (business license, authorization letter, domain records, privacy policy).</p>
+<p>A weekly checklist you can use as is:</p>
+<ul>
+<li>Account status: count of normal/restricted/suspended accounts, and whether each restriction has a ticket;</li>
+<li>Balance: accounts below the safety line (e.g., 3× average daily spend);</li>
+<li>Creatives: rejection rate, keyword clustering of rejected copy, count of duplicate submissions;</li>
+<li>Reconciliation: this week's matched top-ups and the difference list;</li>
+<li>Multi-account: whether new accounts overlap existing ones on environment, payment, or creative;</li>
+<li>Documentation: validity of entity papers, landing-page domains, and privacy policy.</li>
+</ul>
+<p>Write the escalation path into the document: balance below the safety line → notify the buying owner same day; a single account restricted → submit appeal within 2 hours and inform the client; two or more accounts under one entity restricted simultaneously → escalate immediately to the compliance owner and pause all top-ups for that entity. A mobile game publisher that defined its safety line as 3× average daily spend has not had a balance-driven delivery stop since.</p>
+<p>One closing note: the real value of auditing isn't recording “all good.” It's having the evidence chain prepared in advance. Screenshots, order numbers, creative versions, entity documents — these are the only things that help a client resume delivery quickly when an account is restricted.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
