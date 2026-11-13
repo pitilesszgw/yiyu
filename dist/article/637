@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">企业级海外广告资金管理怎么做：用7组指标管住账户余额与投放风险</span>
+                    <span x-show="lang === 'en'" x-cloak>How to Manage Enterprise Overseas Advertising Funds: 7 Metrics for Account Balance and Spend Risk</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-11-14</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="637" data-base-views="47">47</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu4034/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>一次余额预警，暴露了资金管理的三个盲区</h2>
+<p>某跨境电商团队同时运营12个Meta广告账户和5个Google Ads账户，媒体账户分布在美元、欧元和日元结算体系。某周一早班，投放同事发现两个欧洲账户的“今日消耗”明显下降，但广告后台没有暂停提示。</p>
+<p>运营人员最初判断为素材衰退，检查后才发现：两个账户的可用余额均低于日均消耗的0.8倍，且前一周已有两笔自动充值因银行维护失败。财务系统显示“已充值”，媒体后台却显示“未到账”。如果等到投放停摆后再处理，预计会损失半天有效投放窗口。</p>
+<p>这不是单纯的后台充值问题，而是企业缺少统一的资金视图：预算计划、媒体余额、充值在途、失败支付和账户消耗没有放在同一张表中。</p>
+<h2>7组指标：先判断资金是否安全，再判断能否支撑投放</h2>
+<h3>1. 余额覆盖率与预计可用天数</h3>
+<p>余额覆盖率＝媒体可用余额÷未来7日计划消耗。管理时不宜只看总余额，还要按平台、币种、账户和广告系列拆分。</p>
+<p>对于日消耗波动较大的团队，可同时关注“最坏情景余额”：按近14天日均消耗的1.3倍计算，扣除在途充值后还能支撑多少天。设置三级预警通常比固定金额更实用：覆盖未来3天为红色，3至5天为黄色，5天以上为绿色。阈值应结合充值时效调整，而非直接套用行业标准。</p>
+<h3>2. 消耗速率与账户间预算偏移</h3>
+<p>消耗速率反映账户实际花钱是否偏离计划。需要区分两种情况：整体消耗下降但账户预算占比稳定，通常是流量或素材问题；消耗正常、余额下降过快，则可能是预算集中、重复规则或异常扣费。</p>
+<p>企业还应监控单账户消耗占比。若一个账户占用了大部分预算，却只贡献有限转化，就需要检查是否存在投放结构失衡，不能简单通过“补充余额”处理。</p>
+<h3>3. 充值在途金额与到账时效</h3>
+<p>已提交充值不等于资金已经可用。至少应记录申请时间、支付完成时间、媒体到账时间、预计生效时间和失败原因四类节点。</p>
+<p>对于依赖银行转账、国际信用卡或第三方支付的服务商，充值到账周期可能受工作日、时区、汇率和风控审核影响。设置“在途超时”指标，比月底统一核对更早发现问题。</p>
+<h3>4. 充值失败率与资金异常事件</h3>
+<p>失败率不能只按次数计算，还应观察失败金额和重复发生次数。同一笔失败被重复提交、多个账户同时触发限额、扣款成功但到账失败，都应进入异常队列。</p>
+<p>企业可为高价值账户保留备用支付方式，但备用方式必须同步监控额度、手续费和到账周期，避免“名义有额度、实际无法付款”。</p>
+<h3>5. 对账差异率</h3>
+<p>媒体账单、财务流水和内部预算台账应按日核对。对账差异率＝未匹配金额÷当期消耗总额。日常重点检查三类差异：媒体已扣款但财务未入账、充值已到账但台账未更新、汇率或手续费造成的金额偏差。</p>
+<p>小额差异可以按周期汇总处理，但重复出现的差异必须追到具体账户和订单。尤其在多币种场景中，应固定汇率口径，并单独列示平台费用、税费与退款。</p>
+<h3>6. 闲置资金占比与资金周转效率</h3>
+<p>余额过高同样会占用现金流。需要观察各账户超过预计消耗周期30天的余额占比，并结合未来预算计划判断是合理储备，还是账户分配不合理。</p>
+<p>如果多个账户长期保留大量余额，同时其他账户频繁触发余额预警，通常说明预算分配和充值节奏没有联动。</p>
+<h3>7. 投放稳定性与资金事件关联度</h3>
+<p>除ROAS、CPA等效果指标外，还应记录因余额、支付审核或账户限制造成的损失投放时长。复盘时将“本可投放但未获得展示”的时间段，与资金事件日志对照，才能判断问题究竟来自预算、素材还是账户限制。</p>
+<h2>把指标接进日常SOP</h2>
+<ul>
+<li><strong>每日</strong>：系统刷新平台余额与消耗，筛选预计可用不足3天的账户；</li>
+<li><strong>每周</strong>：复核预算分配、充值在途金额和账户消耗占比；</li>
+<li><strong>每月</strong>：完成媒体账单、财务流水与内部台账三方对账；</li>
+<li><strong>触发异常时</strong>：先确认余额与支付状态，再核查素材、竞价、落地页和账户限制，避免误判。</li>
+</ul>
+<p>上述案例中，团队首先暂停对低余额账户继续追加预算，同时将失败的充值订单重新提交并启用备用支付方式；随后按账户消耗能力重新分配日预算，而不是平均补款。48小时内，两个账户恢复到正常消耗节奏；次月对账差异也得到单独处理。</p>
+<p>以渔数媒将这些指标整合到多账户余额、充值记录与预警流程中，帮助企业把“余额是否够用”转化为可监控、可追责的日常运营机制。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>A Balance Alert Revealed Three Blind Spots in Fund Management</h2>
+<p>A cross-border e-commerce team was managing 12 Meta Ads accounts and 5 Google Ads accounts across USD, EUR, and JPY settlement systems. On Monday morning, the media team noticed that spend had fallen noticeably on two European accounts, even though neither campaign showed a pause status.</p>
+<p>The initial assumption was that creative performance was deteriorating. After reviewing the accounts, however, the team found that the available balance on both accounts was less than 0.8 times their average daily spend. Two earlier automatic top-ups had also failed because of scheduled bank maintenance. The finance system recorded the transactions as funded, while the ad platforms showed no funds received. Waiting until campaigns stopped delivering could have cost the team half a day of valuable delivery time.</p>
+<p>The underlying issue was not the top-up feature itself. It was the absence of a unified view of planned budgets, media balances, payments in transit, failed transactions, and account-level spending.</p>
+<h2>7 Metric Groups: Assess Fund Safety Before Delivery Capacity</h2>
+<h3>1. Balance Coverage and Estimated Days of Availability</h3>
+<p>Balance coverage is calculated as available media balance divided by planned spend over the next seven days. Instead of monitoring only the total balance, teams should break it down by platform, currency, account, and campaign.</p>
+<p>For accounts with volatile daily spend, a conservative measure can also be applied. Calculate worst-case balance using 1.3 times the average daily spend over the previous 14 days, then subtract payments in transit to estimate how many days the account can remain funded.</p>
+<p>A three-tier alert is often more useful than a fixed monetary threshold: red for less than three days of coverage, yellow for three to five days, and green for more than five days. These thresholds should reflect actual top-up lead times rather than being copied blindly from industry benchmarks.</p>
+<h3>2. Burn Rate and Budget Deviation Across Accounts</h3>
+<p>Burn rate shows whether actual spending is deviating from the plan. Two patterns require different responses. If overall spend declines while each account maintains a stable share of the budget, the issue is more likely related to traffic, creative, or bidding. If spend remains normal but account balances decline too quickly, the team should investigate budget concentration, duplicated rules, or unusual deductions.</p>
+<p>The share of spend concentrated in each account also matters. If one account consumes most of the budget but contributes limited conversions, the issue may be structural imbalance. Adding more balance in that case would not solve the problem.</p>
+<h3>3. Payments in Transit and Funding Lead Time</h3>
+<p>A submitted top-up is not the same as available funds. At minimum, the system should record the submission time, payment completion time, platform crediting time, expected activation time, and failure reason.</p>
+<p>Funding cycles may be affected by bank holidays, time zones, foreign-exchange processing, and risk reviews, especially when transfers, international cards, or third-party payment services are involved. A timeout metric for payments in transit identifies problems earlier than waiting for the month-end reconciliation.</p>
+<h3>4. Top-Up Failure Rate and Funding Exceptions</h3>
+<p>Failure rate should be evaluated by both transaction count and amount. Repeated submissions of the same failed payment, simultaneous limits across multiple accounts, and successful charges that do not appear on the media platform should all enter an exception queue.</p>
+<p>High-value accounts may have backup payment methods, but each method should be monitored for available credit, fees, and funding lead time. A backup method that cannot actually process a payment creates false confidence rather than operational resilience.</p>
+<h3>5. Reconciliation Variance</h3>
+<p>Media billing reports, finance transactions, and internal budget ledgers should be reconciled daily. Reconciliation variance is calculated as unmatched amounts divided by total spend during the period.</p>
+<p>Three difference types deserve priority: charges reflected by the media platform but not booked by finance, balances credited by the platform but not updated internally, and amount differences caused by exchange rates or fees.</p>
+<p>Small differences can be aggregated and processed within a defined cycle, but recurring differences must be traced to specific accounts and transactions. In multi-currency operations, teams should standardize the exchange-rate method and present platform fees, taxes, and refunds separately.</p>
+<h3>6. Idle Funds and Capital Turnover</h3>
+<p>Excess balances also tie up working capital. Monitor the proportion of each account’s balance that remains above its expected spend horizon by more than 30 days, then compare it with the forward budget plan.</p>
+<p>If several accounts retain large balances for long periods while others repeatedly trigger low-balance alerts, the root cause is usually a disconnect between budget allocation and the top-up schedule.</p>
+<h3>7. Delivery Stability and Its Connection to Funding Events</h3>
+<p>Alongside ROAS, CPA, and other performance metrics, teams should track delivery time lost because of low balances, payment reviews, or account restrictions. When reviews are conducted, funding event logs should be compared with periods that were eligible to deliver but received no impressions.</p>
+<p>This comparison helps determine whether underperformance is related to budget availability, creative quality, bidding, or account restrictions.</p>
+<h2>Connecting the Metrics to a Daily Operating SOP</h2>
+<ul>
+<li><strong>Daily:</strong> Refresh platform balances and spend, then flag accounts with less than three days of expected coverage.</li>
+<li><strong>Weekly:</strong> Review budget allocation, payments in transit, and the share of spend concentrated in each account.</li>
+<li><strong>Monthly:</strong> Complete a three-way reconciliation across media invoices, finance records, and internal ledgers.</li>
+<li><strong>When an exception occurs:</strong> Verify balances and payment status before checking creative, bids, landing pages, and account restrictions.</li>
+</ul>
+<p>In this case, the team paused additional budget increases for the low-balance accounts, resubmitted the failed payment orders, and enabled a backup payment method. It then redistributed daily budgets according to each account’s spending capacity instead of adding equal amounts everywhere. Within 48 hours, normal delivery resumed on the affected accounts. The next monthly review also resolved recurring reconciliation differences separately.</p>
+<p>Yiyu Digital Media integrates these metrics into multi-account balance management, top-up records, and alerting workflows, helping enterprises turn the question “Is the balance sufficient?” into a measurable and accountable daily operating process.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>

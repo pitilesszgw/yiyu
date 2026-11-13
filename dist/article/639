@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            行业洞察
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Insights
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">Meta 广告素材复盘：能跑不等于能卖，三步识别真实转化能力</span>
+                    <span x-show="lang === 'en'" x-cloak>Meta Ad Creative Review: Winning Clicks Do Not Always Mean Winning Sales</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-11-14</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="639" data-base-views="79">79</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu438/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <blockquote>
+<p><strong>明确结论：Meta 广告素材“能跑”，只说明它获得了平台分发和点击；只有“能卖”，才说明它带来了有效转化与利润。</strong></p>
+<p>很多团队会把高点击率素材直接判定为赢家，但点击只是进入成交链路的第一步。素材承诺了什么、落地页交付了什么、最终赚了什么，必须分开复盘。</p>
+</blockquote>
+<h2>第一步：先判断素材是否真的“能跑”</h2>
+<p>“能跑”至少应同时满足三个条件：</p>
+<ul>
+<li><strong>点击不是偶然峰值</strong>：核心人群、多个地区或相邻定向中，点击率表现相对稳定。</li>
+<li><strong>不是只跑某一种版位</strong>：自动版位出现波动时，要拆分 Reels、Feeds、Stories 等位置观察，不要用账户总数据掩盖问题。</li>
+<li><strong>账户没有干扰信号</strong>：预算频繁调整、余额不足、支付异常或审核限制，都可能中断学习，而不是素材本身失效。</li>
+</ul>
+<p>某工具类 App 曾发现，一条视频的点击率明显高于其他素材，但转化几乎没有变化。进一步拆分后，高点击集中在 Reels，停留意图偏弱；如果只看账户平均 CTR，这条素材很容易被误判为爆款。</p>
+<p>因此，复盘表里不要只放“素材评分”。至少记录：<strong>展现、点击率、落地页浏览率、注册或加购率，以及对应版位</strong>。</p>
+<h2>第二步：再检查流量进来后能不能“接住”</h2>
+<p>高点击后低转化，通常不能只归因于素材。</p>
+<h3>1. 素材承诺与落地页不一致</h3>
+<p>广告强调“免费试用”，落地页却要求先绑定支付方式；素材展示快速交付，页面却解释十几步流程，都会消耗点击后的信任。文案和页面应围绕同一个使用场景、优惠条件与行动指令。</p>
+<h3>2. 转化事件定义过宽</h3>
+<p>把页面停留、发起结算和完成付款混在一起，会让报表看起来热闹，却无法判断问题发生在哪一环。更实用的做法是按“有效访问—开始转化—完成转化—退款/取消”逐层排查。</p>
+<h3>3. 流量结构与产品匹配度不足</h3>
+<p>某跨境电商团队用同一张折扣图测试多个国家，表面点击率相近，实际加购率差异明显。原因是图中产品、退款政策和物流时效与当地用户预期不匹配。复盘时需要同时对照国家、版位和商品，而不是只按素材名称分组。</p>
+<h2>第三步：最后用经营结果判断“能卖”</h2>
+<p>真正值得放大的素材，应能把广告数据连接到财务结果。</p>
+<p>建议至少计算：</p>
+<ul>
+<li><strong>单次有效转化成本</strong>：剔除重复、测试和明显无效流量后，看获客成本是否符合产品承受能力。</li>
+<li><strong>毛利与投放上限</strong>：商品毛利、佣金和优惠成本必须覆盖获客支出，避免“转化不错、订单亏损”。</li>
+<li><strong>退款与取消率</strong>：退款会反向影响实际成交质量，只看付款事件可能高估素材价值。</li>
+<li><strong>回收周期</strong>：高客单价产品即使转化率不高，也可能具备利润空间；低客单价产品则更依赖转化效率。</li>
+</ul>
+<p>复盘时，可以把素材分为三类：<strong>高点击低转化</strong>，优先修正承诺与落地页；<strong>低点击高转化</strong>，保留卖点并测试开头钩子；<strong>高点击高转化且毛利健康</strong>，再考虑扩大预算。预算扩张应逐步进行，避免大幅修改导致重新进入学习阶段。</p>
+<h2>一张表完成素材复盘</h2>
+<p>建议使用以下字段建立周报：</p>
+<table>
+<thead>
+<tr>
+<th>素材主题</th>
+<th>核心卖点</th>
+<th>主要版位</th>
+<th style="text-align: right;">CTR</th>
+<th style="text-align: right;">转化率</th>
+<th style="text-align: right;">有效转化成本</th>
+<th style="text-align: right;">退款率</th>
+<th>毛利结果</th>
+<th>下一步动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>痛点演示</td>
+<td>节省操作时间</td>
+<td>Reels</td>
+<td style="text-align: right;">高</td>
+<td style="text-align: right;">低</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">低</td>
+<td>待验证</td>
+<td>检查落地页承诺</td>
+</tr>
+<tr>
+<td>用户证言</td>
+<td>真实使用反馈</td>
+<td>Feeds</td>
+<td style="text-align: right;">中</td>
+<td style="text-align: right;">高</td>
+<td style="text-align: right;">合理</td>
+<td style="text-align: right;">正常</td>
+<td>可放大</td>
+<td>测试新钩子与定向</td>
+</tr>
+</tbody>
+</table>
+<p>素材复盘不是评选“最好看的广告”，而是识别链路中最弱的一环。<strong>能跑解决的是流量问题，能卖解决的是承接与利润问题。</strong>只有两者同时成立，素材才值得进入下一轮预算测试。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <blockquote>
+<p><strong>Clear conclusion: A Meta ad creative that “performs” has only earned distribution and clicks; it becomes truly “profitable” when it generates qualified conversions and positive margins.</strong></p>
+<p>Many teams label a high-click creative as a winner without reviewing what happens after the click. The creative promise, landing-page experience, and commercial outcome must be evaluated separately.</p>
+</blockquote>
+<h2>Step 1: Establish Whether the Creative Actually Performs</h2>
+<p>A scalable creative should meet three conditions:</p>
+<ul>
+<li><strong>Its clicks are not an isolated spike:</strong> Click-through rates remain relatively stable across core audiences, adjacent markets, or related targeting groups.</li>
+<li><strong>Its performance is not confined to one placement:</strong> Break down Reels, Feeds, and Stories when automatic placements produce volatility. Account-level averages can hide weak performance.</li>
+<li><strong>The account has no disruptive signals:</strong> Frequent budget changes, insufficient balance, payment issues, or policy restrictions may interrupt delivery regardless of creative quality.</li>
+</ul>
+<p>A tool app once identified a video with a substantially higher CTR than its other creatives, although conversion performance barely changed. The high-click segment was concentrated in Reels, where visit intent was weaker. Based only on blended CTR, the team could easily have misclassified the video as a winner.</p>
+<p>Creative reviews should therefore include more than a subjective quality score. Track <strong>impressions, CTR, landing-page-view rate, signup or add-to-cart rate, and placement</strong>.</p>
+<h2>Step 2: Check Whether the Traffic Can Be Converted</h2>
+<p>High clicks followed by weak conversions should not automatically be blamed on the ad.</p>
+<h3>Match the Creative Promise with the Landing Page</h3>
+<p>If an ad promises a free trial while the landing page requires payment details, or highlights fast delivery while the page explains a lengthy process, user trust will erode after the click. The ad and landing page should align on the use case, offer, and next action.</p>
+<h3>Define Conversion Events Precisely</h3>
+<p>Combining page views, checkout starts, and completed purchases makes reporting look busy but obscures where the funnel breaks. Review the journey in stages: <strong>qualified visit, conversion started, conversion completed, and refund or cancellation</strong>.</p>
+<h3>Consider Audience and Market Fit</h3>
+<p>A cross-border e-commerce team tested one discount design across several countries. CTR looked similar, but add-to-cart rates varied significantly because the product, refund policy, and delivery expectations did not match local user needs. Reviews should compare creative, country, placement, and product—not just creative names.</p>
+<h2>Step 3: Determine Whether the Creative Actually Sells</h2>
+<p>A creative worth scaling should connect advertising metrics with financial outcomes.</p>
+<p>Review the following:</p>
+<ul>
+<li><strong>Cost per qualified conversion:</strong> Remove duplicates, test traffic, and clearly invalid activity before comparing acquisition cost with product tolerance.</li>
+<li><strong>Gross margin and spending limit:</strong> Product margin, platform fees, and discount costs must cover acquisition expenses. Strong conversion volume can still produce unprofitable orders.</li>
+<li><strong>Refund and cancellation rates:</strong> Refunds reduce realized revenue and may cause a creative to appear more efficient than it really is.</li>
+<li><strong>Payback period:</strong> A high-ticket product can remain viable with lower conversion rates, while a low-ticket product depends more heavily on conversion efficiency.</li>
+</ul>
+<p>Classify creatives into three groups. <strong>High click, low conversion</strong> indicates a mismatch that may require better alignment between the ad and landing page. <strong>Low click, high conversion</strong> suggests preserving the offer while testing a new opening hook. <strong>High click, high conversion, and healthy margin</strong> identifies the strongest candidates for gradual budget expansion. Avoid large simultaneous changes, as these can disrupt the platform’s learning process.</p>
+<h2>A Practical Weekly Creative Review</h2>
+<table>
+<thead>
+<tr>
+<th>Creative angle</th>
+<th>Core promise</th>
+<th>Main placement</th>
+<th style="text-align: right;">CTR</th>
+<th style="text-align: right;">Conversion rate</th>
+<th style="text-align: right;">Qualified CPA</th>
+<th style="text-align: right;">Refund rate</th>
+<th>Margin outcome</th>
+<th>Next action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Problem demonstration</td>
+<td>Saves operating time</td>
+<td>Reels</td>
+<td style="text-align: right;">High</td>
+<td style="text-align: right;">Low</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">Low</td>
+<td>Unverified</td>
+<td>Review landing-page alignment</td>
+</tr>
+<tr>
+<td>Customer testimonial</td>
+<td>Real user feedback</td>
+<td>Feeds</td>
+<td style="text-align: right;">Medium</td>
+<td style="text-align: right;">High</td>
+<td style="text-align: right;">Acceptable</td>
+<td style="text-align: right;">Normal</td>
+<td>Scalable</td>
+<td>Test new hooks and targeting</td>
+</tr>
+</tbody>
+</table>
+<p>Creative review is not a contest for the most attractive ad. It is a method for identifying the weakest link in the conversion journey. <strong>Performance solves traffic acquisition; selling power depends on conversion and profitability.</strong> A creative should move into further budget testing only when both conditions are met.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
