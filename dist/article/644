@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">AI 广告文案如何避免同质化：素材测试与去重运营清单</span>
+                    <span x-show="lang === 'en'" x-cloak>How to Avoid Generic AI Ad Copy: A Creative Testing and De-duplication Checklist</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-11-16</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="644" data-base-views="74">74</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu1487/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>先判断：你的 AI 文案是否真的“同质化”</h2>
+<p>同质化不只是句式相似，还包括卖点重复、用户场景雷同、CTA 单一，以及不同广告账户使用相同素材时引发的审核风险。</p>
+<p>运营开始前，可先检查以下项目：</p>
+<ul>
+<li>同一产品的 10 条文案是否都在强调“省时、便捷、品质好”。</li>
+<li>不同受众是否拿到了完全相同的痛点和证据。</li>
+<li>Meta、TikTok、Google 等渠道是否直接复用了同一段主文案。</li>
+<li>素材是否有用户评论、产品演示、使用前后对比或具体场景。</li>
+<li>AI 生成内容是否未经人工校对便进入投放。</li>
+</ul>
+<p>若答案多为“是”，问题通常出在输入端，而不是继续更换 AI 工具。</p>
+<h2>素材建库：给 AI 喂什么，决定文案能写什么</h2>
+<h3>1. 建立品牌事实表</h3>
+<p>不要只告诉模型“写一条高级感文案”。应整理并维护可核验的信息，包括：</p>
+<ul>
+<li>产品功能、适用人群与不适合的人群；</li>
+<li>已验证的卖点，以及不能出现的绝对化表述；</li>
+<li>品牌语气、常用词和禁用词；</li>
+<li>价格、优惠条件、售后政策等事实信息；</li>
+<li>真实客户反馈，但需隐去个人身份信息。</li>
+</ul>
+<p>事实表应注明更新时间和负责人，避免旧价格或失效活动被 AI 写入广告。</p>
+<h3>2. 按“人群—场景—证据”拆任务</h3>
+<p>同一产品至少可以从多个维度生成素材。例如，某工具类 App 可分别围绕“首次使用”“工作切换”“多人协作”建立场景库；某跨境电商团队则可按“预算敏感”“重视物流”“需要批量采购”拆分卖点。</p>
+<p>每个任务只要求模型突出一个核心变量。这样既能减少句式雷同，也能方便后续判断哪类文案真正带来了有效转化。</p>
+<h3>3. 提供原始素材，而非只给关键词</h3>
+<p>将产品截图、演示步骤、用户评论节选、FAQ 和竞品差异表放入素材库。涉及用户反馈时，要去除姓名、邮箱、订单号等可识别信息。上传前还应确认素材授权范围，避免把第三方评论直接用于商业广告。</p>
+<h2>提示词流程：从“一次生成”改成“分阶段生产”</h2>
+<h3>4. 用三层提示词控制输出</h3>
+<p>第一层固定品牌规则，第二层设定受众与场景，第三层要求格式和长度。例如：</p>
+<blockquote>
+<p>你是品牌文案编辑。依据已提供的产品事实，面向第一次使用产品的用户，生成一条适合短视频口播的文案。只使用一个明确卖点，包含具体场景和自然行动引导，不使用夸张承诺，不添加资料中不存在的数据。</p>
+</blockquote>
+<h3>5. 要求模型提供多个差异化方向</h3>
+<p>不要要求“生成 20 条”，而应让模型先给出 5 个不同角度，再分别扩写。可限定方向包括问题切入、场景演示、用户证言、对比说明和异议处理。再要求每条文案采用不同的开头结构、证据方式和 CTA，避免只是替换同义词。</p>
+<h3>6. 增加去重检查项</h3>
+<p>上线前检查标题、首句、卖点顺序和 CTA 是否与近 30 天素材重复。批量管理多个账户时，还要检查不同主页、同一受众和相似落地页之间的素材撞车。可以使用文本相似度工具辅助标记，但最终判断应由投放运营完成。</p>
+<h2>上线前审核：AI 只能起草，不能直接发布</h2>
+<h3>7. 执行四项人工复核</h3>
+<ul>
+<li><strong>事实复核</strong>：功能、价格、活动期限和效果描述是否准确；</li>
+<li><strong>合规复核</strong>：是否出现“最佳、第一、保证见效”等无法证明的表述；</li>
+<li><strong>平台复核</strong>：是否符合对应广告平台的敏感行业、误导行为和落地页规范；</li>
+<li><strong>品牌复核</strong>：语气是否符合品牌，句子是否自然，有无明显 AI 痕迹。</li>
+</ul>
+<p>尤其不要让模型自行补充用户数量、转化率、节省比例或竞品数据。需要数据时，应引用已确认的内部记录，并标注统计周期。</p>
+<h3>8. 把长文拆成渠道化版本</h3>
+<p>同一信息可以跨渠道复用，但不能原文复制。Meta 广告可保留场景钩子与利益点；TikTok 更适合口语化、节奏明确的口播开头；Google 展示广告需控制长度，并确保标题与落地页信息一致。渠道化改写不是简单缩短，而是让表达方式适配用户的浏览行为。</p>
+<h2>测试与迭代：别让模型同时改掉所有变量</h2>
+<h3>9. 一次只测试一个主要变量</h3>
+<p>可固定受众、预算和落地页，只替换文案角度；也可保持文案不变，测试不同视觉素材。不要同时更换文案、画面、CTA 和受众，否则即使数据变化，也难以判断原因。</p>
+<p>测试结果应记录素材 ID、AI 版本、提示词版本、投放渠道和修改日期。这样团队才能复用有效输入，而不是每次从头猜。</p>
+<h3>10. 定期回写失败原因</h3>
+<p>将低质量素材标记为“卖点重复、场景模糊、CTA 不清晰”或“平台审核风险”，并回写到提示词和素材库。连续出现的失败类型，应转化为新的品牌约束。例如，多条素材因优惠条件不完整被拒，就应在事实表中增加活动有效期和适用条件。</p>
+<h3>11. 建立账号级发布检查</h3>
+<p>多账户投放前，由运营与账户负责人确认素材是否重复使用、主页是否一致、授权是否覆盖。涉及充值、预算调整和批量上架时，应保留操作记录与审批链路，避免因素材冲突或账户操作集中而触发不必要的风控。</p>
+<h2>每周 30 分钟去重复盘</h2>
+<p>每周从跑量素材和低效素材中各抽取一组，检查：是否出现相同开头、相似证据、重复 CTA，以及不同账户是否存在同素材同步发布。复盘输出三类结果：保留的有效角度、需要重写的素材、应补充的事实材料。</p>
+<p>避免同质化的关键，不是让 AI 写得更“花哨”，而是把真实信息、清晰场景和可验证证据放进流程。模型负责扩展表达，运营负责判断差异；素材库负责沉淀事实，测试记录负责解释结果。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>First, Diagnose What “Generic” Actually Means</h2>
+<p>Creative homogenization is not limited to similar wording. It also appears through repeated selling points, identical use cases, uniform calls to action, and duplicated assets running across multiple ad accounts.</p>
+<p>Before generating new copy, review the following:</p>
+<ul>
+<li>Do 10 ads for the same product all emphasize speed, convenience, or quality?</li>
+<li>Are different audiences receiving the same pain points and evidence?</li>
+<li>Is the same primary copy reused across Meta, TikTok, Google, and other channels?</li>
+<li>Do assets include customer feedback, product demonstrations, before-and-after comparisons, or concrete usage scenarios?</li>
+<li>Is AI-generated copy being published without human review?</li>
+</ul>
+<p>If most answers are “yes,” the problem is usually the input. Switching to another AI tool will not fix a weak creative workflow.</p>
+<h2>Build a Creative Library: Better Inputs Produce Better Copy</h2>
+<h3>1. Create a Brand Fact Sheet</h3>
+<p>Do not simply ask a model to write “in a premium tone.” Maintain verifiable information covering:</p>
+<ul>
+<li>Product features, suitable users, and unsuitable users;</li>
+<li>Validated selling points and claims that must not be made;</li>
+<li>Brand voice, preferred terminology, and prohibited wording;</li>
+<li>Pricing, promotions, refund terms, and other commercial facts;</li>
+<li>Authentic customer feedback with all identifying information removed.</li>
+</ul>
+<p>Each update should include a date and an owner. This prevents expired promotions or outdated prices from entering live ads.</p>
+<h3>2. Break Assignments into Audience–Scenario–Evidence Tasks</h3>
+<p>A product should have multiple creative angles. A utility app, for example, may build separate scenarios around first-time use, switching between tasks, and team collaboration. A cross-border e-commerce team may organize messages around budget-conscious shoppers, buyers focused on delivery, or wholesale customers.</p>
+<p>Give each generation task one primary variable. This reduces repetition and makes performance easier to interpret.</p>
+<h3>3. Feed the Model Source Material</h3>
+<p>Provide product screenshots, demonstration steps, approved customer comments, FAQs, and a verified comparison table. Remove names, email addresses, order numbers, and other identifying details from customer feedback. Confirm usage rights before adding any third-party content to the creative library.</p>
+<h2>Production Workflow: Move Beyond One-Shot Generation</h2>
+<h3>4. Use a Three-Layer Prompt Structure</h3>
+<p>The first layer defines brand rules, the second specifies audience and scenario, and the third controls format and length. For example:</p>
+<blockquote>
+<p>Act as a brand copywriter. Using only the approved product facts, create a short-video script for first-time users. Focus on one selling point, include a realistic situation and a natural call to action, avoid exaggerated claims, and do not invent data not included in the source material.</p>
+</blockquote>
+<h3>5. Request Different Directions Before Expanding Them</h3>
+<p>Instead of asking for 20 versions at once, request five distinct angles first, such as a problem hook, product demonstration, customer proof, comparison, or objection handling. Ask the model to vary the opening, evidence, and CTA rather than merely replace synonyms.</p>
+<h3>6. Add a De-duplication Review</h3>
+<p>Before publishing, check whether titles, opening lines, selling-point order, and CTAs duplicate assets used in the past 30 days. When managing multiple accounts, also inspect collisions across pages, audiences, and similar landing pages. Text-similarity tools can flag matches, but a media buyer should make the final decision.</p>
+<h2>Pre-Publish Review: AI Should Draft, Not Publish</h2>
+<h3>7. Complete Four Human Checks</h3>
+<ul>
+<li><strong>Accuracy:</strong> Verify features, prices, promotion deadlines, and performance statements;</li>
+<li><strong>Compliance:</strong> Remove unsupported claims such as “best,” “guaranteed results,” or “fastest”;</li>
+<li><strong>Platform compliance:</strong> Check industry restrictions, misleading behavior rules, and landing-page requirements;</li>
+<li><strong>Brand consistency:</strong> Confirm the tone is on-brand, the copy sounds natural, and obvious AI phrasing has been edited.</li>
+</ul>
+<p>Never let a model invent customer counts, conversion rates, time-saved percentages, or competitor data. If a statistic is required, use a verified internal record and specify its reporting period.</p>
+<h3>8. Adapt the Message to Each Channel</h3>
+<p>The same core information can be reused across channels, but the execution should not be copied verbatim. Meta ads may use a scenario-led hook and concise benefit. TikTok may need a conversational opening and clear spoken rhythm. Google display ads should remain concise and align with the landing page. Channel adaptation is about matching the format to user behavior, not simply shortening the copy.</p>
+<h2>Testing and Iteration: Change One Major Variable at a Time</h2>
+<h3>9. Isolate the Test</h3>
+<p>Keep the audience, budget, and landing page stable while testing a new copy angle, or hold the copy constant while changing the visual. Changing the copy, creative, CTA, and audience simultaneously makes the result difficult to interpret.</p>
+<p>Record the asset ID, AI version, prompt version, channel, and revision date. This creates a reusable learning record and prevents the team from repeatedly guessing what worked.</p>
+<h3>10. Write Failure Reasons Back Into the Process</h3>
+<p>Tag underperforming ads as “repeated selling point,” “vague scenario,” “weak CTA,” or “platform review risk.” Feed recurring issues back into prompts and the creative library. If several ads were rejected because a promotion lacked conditions, add the valid dates and eligibility requirements to the fact sheet.</p>
+<h3>11. Add an Account-Level Release Check</h3>
+<p>Before launching across multiple accounts, have both the media buyer and account owner confirm that creatives are differentiated, page identities are consistent, and usage rights cover every placement. For top-ups, budget changes, and bulk publishing, retain approval and action records. This reduces unnecessary review and account risk caused by duplicated assets or concentrated account activity.</p>
+<h2>A Weekly 30-Minute De-duplication Review</h2>
+<p>Select one group of active ads and one group of weak ads. Check for repeated openings, similar evidence, duplicate CTAs, and assets published simultaneously across different accounts. Record three outcomes: angles to preserve, assets to rewrite, and factual materials to add.</p>
+<p>The goal is not to make AI copy sound more elaborate. It is to put real information, clear scenarios, and verifiable evidence into a controlled workflow. The model expands expression, operators judge differentiation, the creative library preserves facts, and test records explain performance.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
