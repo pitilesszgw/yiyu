@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">代理开户服务为什么需要系统化看板？</span>
+                    <span x-show="lang === 'en'" x-cloak>Why Agency Account-Opening Services Need a Systemized Dashboard</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-11-17</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="648" data-base-views="100">100</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu3794/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>一、代理开户服务，为什么不能只靠表格和群聊？</h2>
+<p>很多代理开户团队早期使用 Excel、聊天记录和邮件跟进客户。单个客户看起来没有问题，但客户数量增加后，负责人很快会遇到这些情况：资料已提交，平台还在审核；客户已付款，但账户没有及时充值；不同客户卡在不同国家、主体和广告账户阶段；销售认为服务完成，交付人员却发现后台仍有限制。</p>
+<p>问题通常不在于团队不努力，而在于没有一个统一视图。代理开户需要管理的对象，至少包括客户需求、主体资料、平台申请进度、账户额度、充值记录、异常原因和交付结果。系统化看板的价值，就是把这些分散信息变成可执行的状态。</p>
+<h2>二、客户最常问的几个问题</h2>
+<h3>1. “资料提交后，为什么还不能直接告诉你开户结果？”</h3>
+<p>因为提交资料只是流程开始，不代表平台已经完成审核。看板应明确区分“待提交、审核中、需补充、已通过、已驳回、待充值、已交付”等状态，并记录每一步的负责人和更新时间。</p>
+<p>如果状态停留在“审核中”超过平台给出的预计时间，负责人应主动查询原因，而不是让客户反复催促。对客户而言，清晰的进度比一句“正在处理”更有价值。</p>
+<h3>2. “开户成功后，能不能马上开始投放？”</h3>
+<p>不一定。账户可登录、账户可投放、账户额度充足、投放权限完整，是四个不同概念。代理服务不能只看后台是否显示开户成功，还应核对账户类型、投放权限、余额、支付方式、账单设置以及是否存在风控限制。</p>
+<p>对于需要立即投放的客户，建议在交付前完成一次简单的后台检查，并把广告账户、付款方式和充值记录一并确认。这样做可以减少客户上线后发现账户无法扣款或投放到错误主体的情况。</p>
+<h3>3. “为什么不同客户的开户速度差别很大？”</h3>
+<p>差异通常来自客户资料质量、主体所在地区、平台审核队列、账户用途以及历史风险记录。系统化看板不应只记录“成功或失败”，还应记录失败类型，例如资料不完整、身份无法验证、支付方式不匹配、业务信息不一致或触发额外审核。</p>
+<p>只有把原因分类，团队才能判断是继续补资料、调整申请方式，还是提前告知客户时间风险。把所有问题都写成“审核失败”，会让复盘失去意义。</p>
+<h3>4. “充值和开户进度能不能放在同一个地方管理？”</h3>
+<p>可以，而且应该放在一起，但两者要分开标记。开户进度回答“账户什么时候可用”，充值余额回答“账户什么时候能投放”。看板上应同时显示充值金额、充值状态、到账时间和当前可用余额，并对低余额设置提醒。</p>
+<p>对于多账户客户，还要区分平台总余额与单个广告账户余额，避免出现总账户有钱、目标账户却没有可用额度的情况。财务对账则应保留订单号、付款主体、充值主体和对应账户，形成完整链路。</p>
+<h3>5. “代理团队如何证明交付已经完成？”</h3>
+<p>交付不应只靠口头确认，而应形成标准化清单。至少包括：客户主体信息已核对、开户状态已确认、权限已检查、充值已到账、测试投放已完成、投放账户已分配、风险提示已发送，以及后续服务负责人已明确。</p>
+<p>负责人可以在看板上点击“完成交付”，但前提是相关字段已经补齐。这样既能减少漏项，也方便客户投诉或内部复盘时快速定位责任环节。</p>
+<h2>三、一个实用的代理开户看板应该看什么？</h2>
+<p>看板首页不需要堆满复杂图表，建议优先突出以下内容：</p>
+<ul>
+<li><strong>客户与账户状态</strong>：按待资料、审核中、待补充、已通过、待充值、已交付分类。</li>
+<li><strong>关键时间节点</strong>：记录提交、首次反馈、补充提交、审核结果和交付时间。</li>
+<li><strong>充值与余额</strong>：展示待处理充值、到账状态、账户余额及低余额提醒。</li>
+<li><strong>异常任务</strong>：明确资料缺失、审核超时、支付失败、权限异常等问题的负责人和截止时间。</li>
+<li><strong>交付检查表</strong>：用可勾选项目代替“已完成”这种模糊状态。</li>
+</ul>
+<h2>四、看板不是替代人，而是让责任更清楚</h2>
+<p>n<br />
+系统化看板最适合解决三类问题：第一，让客户随时知道下一步；第二，让内部负责人知道该处理什么；第三，让财务和运营能够追溯充值、账户与交付关系。它并不需要一开始就功能复杂，先统一字段、状态和提醒规则，就能明显减少重复沟通。</p>
+<p>判断一个代理开户服务是否专业，不要只看开户数量，更要看异常能否被及时发现、充值能否准确对应、交付是否可核验。对代理团队而言，看板不是后台管理工具，而是连接客户信任与实际投放的运营基础设施。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>Why Can’t Agency Account Opening Rely Only on Spreadsheets and Chat Groups?</h2>
+<p>Many agency teams initially manage client onboarding through spreadsheets, chat messages, and email. This works reasonably well for a small number of clients, but the process becomes difficult as volume grows. Sales may consider an account “completed” while the delivery team discovers that the platform still has restrictions. Meanwhile, clients may have paid for funding without the balance appearing in the advertising account.</p>
+<p>The core issue is not necessarily a lack of effort. It is the absence of a unified operational view. Agency account opening involves client requirements, business information, platform reviews, account limits, funding, exception handling, and final delivery. A systemized dashboard turns fragmented updates into clear, actionable statuses.</p>
+<h2>Five Questions Clients Often Ask</h2>
+<h3>1. “Why can’t you confirm the result immediately after we submit the documents?”</h3>
+<p>Submission is only the beginning of the workflow; it does not mean the platform has finished reviewing the application. A dashboard should distinguish between pending submission, under review, additional information required, approved, rejected, pending funding, and delivered. It should also record the owner and latest update time for each stage.</p>
+<p>If a case remains under review beyond the expected processing time, the responsible team should investigate proactively rather than asking the client to chase an update. Clear progress is more useful than a generic “we’re handling it.”</p>
+<h3>2. “Can we start advertising as soon as the account is approved?”</h3>
+<p>Not necessarily. Being able to log in, being eligible to advertise, having sufficient balance, and having complete permissions are four different conditions. Before delivery, the agency should verify the account type, advertising permissions, balance, payment method, billing settings, and any risk-related restrictions.</p>
+<p>For clients that need to launch immediately, a basic backend check and a test campaign should be included in the delivery process. This reduces avoidable issues such as failed payments or campaigns being assigned to the wrong business entity.</p>
+<h3>3. “Why do different clients experience different processing times?”</h3>
+<p>Differences may come from document quality, jurisdiction, platform review queues, intended account use, or previous risk history. The dashboard should record more than success or failure. It should classify the reason, such as incomplete documents, identity verification failure, incompatible payment method, inconsistent business information, or additional review.</p>
+<p>Without structured exception categories, it is impossible to determine whether the next step is to request documents, change the application approach, or warn the client about a potential delay. “Review failed” is not an adequate root-cause label.</p>
+<h3>4. “Can account-opening progress and funding be managed in the same place?”</h3>
+<p>Yes, but they should be tracked separately. Opening progress answers when the account will become available, while funding balance answers when it can run campaigns. The dashboard should show the funding amount, processing status, arrival time, and available balance, with alerts for low balances.</p>
+<p>For clients managing multiple advertising accounts, teams should distinguish the platform-level balance from the balance of each individual account. Finance and operations should also be able to trace the order number, paying entity, funded entity, and receiving advertising account.</p>
+<h3>5. “How can the agency prove that delivery is complete?”</h3>
+<p>Delivery should be based on a standard checklist rather than verbal confirmation. It should cover business information verification, account status, permissions, funding arrival, test campaign, account assignment, risk notifications, and the assigned service owner.</p>
+<p>A team may mark a case as delivered only after these fields are complete. This reduces omissions and makes it easier to investigate complaints or internal quality reviews.</p>
+<h2>What Should an Agency Account-Opening Dashboard Show?</h2>
+<p>The dashboard does not need complex charts. It should prioritize operational information:</p>
+<ul>
+<li><strong>Client and account status:</strong> Pending documents, under review, action required, approved, pending funding, and delivered.</li>
+<li><strong>Key milestones:</strong> Submission, first feedback, document resubmission, review result, and delivery time.</li>
+<li><strong>Funding and balances:</strong> Pending deposits, credited amounts, account balances, and low-balance alerts.</li>
+<li><strong>Exception tasks:</strong> Missing documents, overdue reviews, failed payments, permission issues, owners, and deadlines.</li>
+<li><strong>Delivery checklist:</strong> Track verified actions instead of using a vague “completed” status.</li>
+</ul>
+<h2>A Dashboard Does Not Replace People; It Clarifies Accountability</h2>
+<p>A systemized dashboard addresses three practical needs: clients can see the next step, internal owners can see what requires action, and finance and operations can trace the relationship between payments, accounts, and delivery. The system does not need to be complex from day one. Standardized fields, statuses, and reminders already reduce repetitive communication and missed follow-ups.</p>
+<p>The professionalism of an agency account-opening service should not be judged only by the number of accounts opened. It should also be judged by whether exceptions are detected early, funding is matched correctly, and delivery can be verified. For agencies, the dashboard is not merely an administrative tool; it is the operational infrastructure connecting client trust with actual advertising performance.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
