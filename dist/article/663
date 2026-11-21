@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">代理开户服务为什么需要系统化看板：从开户、充值到风控的一线管理</span>
+                    <span x-show="lang === 'en'" x-cloak>Why Agency Account-Opening Services Need a Systematic Dashboard</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-11-22</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="663" data-base-views="18">18</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu8716/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>一、代理开户服务为什么需要系统化看板？</h2>
+<p>代理开户的难点通常不在“提交一次资料”，而在后续大量并行工作：客户需求确认、主体资料整理、平台审核跟进、充值到账、广告账户绑定、投放权限分配以及余额和账单核对。</p>
+<p>如果这些工作只依靠表格、聊天记录和个人记忆，团队很快会遇到三个问题：客户不知道进度，内部重复询问，异常发生后无人负责。看板不是装饰性的数据大屏，而是把开户流程、账户状态和待办风险放在同一张工作清单里。</p>
+<h3>1. 客户问“账户什么时候能开好”，看板应该怎么回答？</h3>
+<p>不要只回复“正在审核”，而要拆成可验证的状态：资料待补充、平台初审、补充材料、二次审核、已开户、待充值、已交付。每个状态对应负责人、计划完成时间和客户需要执行的动作。</p>
+<p>例如，某工具类 App 客户的支付资料被退回，团队应在看板中标记“待客户补充”，同时上传缺失项、截止日期和提交记录。这样客服可以直接告诉客户缺什么，而不是让客户在聊天窗口反复确认。</p>
+<h3>2. 多客户、多平台账户多了，怎样避免漏掉续费和充值？</h3>
+<p>代理服务通常需要同时管理多个客户和多个广告平台，账户名称又可能相似，仅靠人工记忆很容易出错。看板至少应绑定客户名称、平台、账户 ID、开户状态、余额、到期时间、账户负责人和最近一次操作记录。</p>
+<p>余额预警不能只设置一个统一阈值。低余额账户、即将到期账户和首次充值账户应采用不同提醒规则，并支持按客户、平台或负责人筛选。某跨境电商团队在月底集中核对余额时，发现一个广告账户因币种不同一直被忽略；把充值计划纳入看板后，这类遗漏明显减少。</p>
+<h3>3. 代理内部如何分工，才能既透明又不泄露客户信息？</h3>
+<p>看板要体现“谁看到了什么、谁可以做什么”。建议至少区分销售、客户经理、充值与财务、投放运营和风控角色。销售可以查看开户进度和基础资料，财务负责充值、发票与对账，运营只能看到已交付账户的投放数据。</p>
+<p>权限设置的关键不是限制越多越好，而是让每个角色只接触完成工作所需的信息。所有状态变更、操作备注和充值记录应保留日志，便于处理客户争议，也避免内部责任无法追溯。</p>
+<h2>二、哪些数据真正值得放进看板？</h2>
+<h3>4. 充值和账单对账，应该做到什么颗粒度？</h3>
+<p>至少需要建立“客户—平台—账户—充值单—账单”五层对应关系。看板应显示充值金额、到账状态、平台余额、消费金额、差异金额和差异原因。充值申请提交后，要区分已付款、待到账、已到账和需核查，不能把“提交成功”当成“余额到账”。</p>
+<p>对账时先看账户币种和时区，再核对平台账单与内部记录。出现差异时，自动进入核查清单，并指定处理人。代理开户服务涉及真金白银，任何“可能是系统延迟”的模糊状态都不应长期存在。</p>
+<h3>5. 什么情况必须触发风险预警？</h3>
+<p>看板需要设置可执行的预警，而不只是一条通知。常见触发条件包括：开户资料频繁修改、同一主体短期内多次提交、充值后余额快速下降、多个账户共用异常付款信息、投放地域或素材突然变化，以及客户频繁切换代理与登录环境。</p>
+<p>预警后要有分级和处置动作。低风险事项由客户经理补充说明，中风险事项暂停新增充值或权限调整，高风险事项进入人工复核。是否继续投放，应结合客户业务、平台规则和实际证据判断，不能仅凭单一指标直接下结论。</p>
+<h2>三、怎样搭建一张真正能落地的代理开户看板？</h2>
+<p>可以按照四步推进：</p>
+<ol>
+<li><strong>统一字段</strong>：先确定客户、平台、账户 ID、资料状态、余额、到期日、负责人等基础字段。</li>
+<li><strong>设置节点</strong>：为每个流程定义进入条件、退出条件和责任人。</li>
+<li><strong>建立提醒</strong>：围绕待补资料、低余额、到期、对账差异和风险事件配置规则。</li>
+<li><strong>定期复盘</strong>：每周清理逾期事项，每月检查字段和权限是否仍然有效。</li>
+</ol>
+<p>判断一张看板是否有效，可以看三个结果：客户是否能自助了解进度，运营是否能快速找到待处理账户，财务是否能解释每一笔余额差异。如果看板只是汇总漂亮图表，却不能推动下一步动作，它就不是代理开户服务所需的管理系统。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>1. Why Do Agency Account-Opening Services Need a Systematic Dashboard?</h2>
+<p>The main challenge in agency account opening is not submitting documents once. It is managing a large number of parallel tasks: confirming client requirements, collecting corporate documents, following up on platform reviews, crediting funds, linking ad accounts, assigning permissions, and reconciling balances and invoices.</p>
+<p>When these tasks rely only on spreadsheets, chat messages, and individual memory, three problems quickly emerge. Clients do not know the progress, teams repeatedly ask the same questions, and no one is accountable when an exception occurs. A dashboard is not a decorative analytics screen. It is a shared operational checklist that brings account-opening workflows, account conditions, and risk-related tasks into one place.</p>
+<h3>1. How should we answer a client asking when their account will be ready?\n</h3>
+<p>Do not simply reply that the application is under review. Break the process into verifiable stages: documents required, initial review, additional information requested, secondary review, account approved, awaiting payment, and delivered. Each stage should have an owner, a target completion date, and the action required from the client.</p>
+<p>For example, if a tool-based app client has missing payment information, the dashboard should show “client action required,” identify the missing document, set a deadline, and record the submission history. The account manager can then tell the client exactly what is needed instead of asking them to confirm it repeatedly through chat.</p>
+<h3>2. How can teams avoid missed renewals and top-ups when managing multiple clients and platforms?\n</h3>
+<p>Agency teams often manage several clients and advertising platforms, sometimes with similar account names. Manual tracking creates a high risk of errors. A dashboard should link the client name, platform, account ID, opening status, balance, expiration date, owner, and latest activity.</p>
+<p>Balance alerts should not use one universal threshold. Low-balance accounts, accounts approaching expiration, and accounts awaiting their first top-up should trigger different rules. Filters should allow teams to view information by client, platform, or owner.</p>
+<p>A cross-border e-commerce team once found that one ad account had been overlooked during a monthly balance review because it used a different currency. After adding top-up plans and currency fields to the dashboard, this type of omission became easier to prevent.</p>
+<h3>3. How should agencies divide responsibilities without exposing unnecessary client information?</h3>
+<p>The dashboard should show who can see what and who can perform each action. At a minimum, teams should distinguish sales, account managers, finance and payment staff, campaign operators, and risk personnel. Sales may view opening progress and basic information. Finance should manage top-ups, invoices, and reconciliation. Operators should only see campaign data for accounts already delivered to them.</p>
+<p>The goal is not excessive restriction, but least-privilege access that enables each role to complete its work. Status changes, operational notes, and payment records should also be logged so disputes can be investigated and internal responsibility remains traceable.</p>
+<h2>2. Which Data Really Belongs on the Dashboard?</h2>
+<h3>4. How granular should top-up and invoice reconciliation be?\n</h3>
+<p>At minimum, create a five-level relationship connecting the client, platform, account, top-up request, and invoice. The dashboard should display the requested amount, payment status, credited amount, current platform balance, spending, variance, and the reason for any variance.</p>
+<p>After a top-up request is submitted, it must be clearly separated into paid, awaiting credit, credited, and under review. A successful request should never be treated as a credited balance. During reconciliation, check the account currency and billing time zone before comparing platform invoices with internal records.</p>
+<p>Any discrepancy should automatically enter a review queue with a designated owner. Since agency account-opening services involve real funds, ambiguous states such as “possibly a system delay” should not remain unresolved indefinitely.</p>
+<h3>5. Which conditions should trigger risk alerts?</h3>
+<p>A dashboard should generate actionable alerts rather than passive notifications. Common triggers include frequent changes to account documents, repeated submissions for the same entity, rapid balance depletion after a top-up, abnormal payment information shared across accounts, sudden changes in campaign geography or creative, and frequent changes to agency assignments or login environments.</p>
+<p>Each alert should have a severity level and a defined response. Low-risk issues may require clarification from the account manager. Medium-risk issues may pause additional top-ups or permission changes. High-risk issues should move to manual review. Decisions to continue campaigns should consider the client’s business, platform policies, and supporting evidence. No conclusion should be based on a single metric alone.</p>
+<h2>3. How to Build a Dashboard That Teams Actually Use</h2>
+<p>A practical implementation can follow four steps:</p>
+<ol>
+<li><strong>Standardize fields:</strong> Define core fields for clients, platforms, account IDs, document status, balances, expiration dates, and ownership.</li>
+<li><strong>Set workflow milestones:</strong> Define entry criteria, exit criteria, and accountable owners for every stage.</li>
+<li><strong>Configure alerts:</strong> Build rules around missing documents, low balances, expiration, reconciliation variances, and risk events.</li>
+<li><strong>Review regularly:</strong> Clear overdue tasks every week and audit fields, permissions, and alert rules every month.</li>
+</ol>
+<p>A useful dashboard should deliver three outcomes. Clients should be able to understand the progress themselves. Operations should be able to identify pending accounts quickly. Finance should be able to explain every balance difference. If a dashboard only presents attractive charts without driving the next action, it is not an effective operating system for agency account-opening services.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
