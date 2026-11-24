@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">AI 广告文案怎么写才不像“AI写的”？一套去同质化 SOP</span>
+                    <span x-show="lang === 'en'" x-cloak>How to Make AI Ad Copy Sound Less Generic: A Practical SOP</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-11-24</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="668" data-base-views="50">50</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu9813/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <h2>先判断：同质化到底出在哪里</h2>
+<p>AI 文案的问题通常不是错别字，而是每条素材都在重复同一套结构：先制造焦虑，再讲功能，最后给出行动指令。投放初期可能有效，但素材增多后，用户会迅速忽略广告组之间的差异。</p>
+<p>运营接手后，先抽查近 30 条广告，按四个维度归类：<strong>卖点是否相同、开头句式是否相同、情绪是否相同、行动指令是否相同</strong>。若四项中有三项高度重复，就应暂停直接批量生成，先改写生产流程。</p>
+<h2>Step 1：建立“原始信息卡”，不要让 AI 凭空创作</h2>
+<p>每条广告开始写之前，先准备一张信息卡，包含：目标用户、使用场景、核心痛点、可验证卖点、用户常见异议、优惠条件以及禁用表述。</p>
+<p>例如，某工具类 App 的信息卡可以写明：用户是第一次进行海外收款的小团队；场景是收到海外订单后无法及时结汇；卖点是缩短结算流程；异议是担心操作复杂和到账不稳定。信息越具体，AI 越不容易用“高效、便捷、领先”这类空泛表达。</p>
+<h2>Step 2：一次生成多个“角度”，而不是同一句话的改写</h2>
+<p>不要只要求 AI“写五条不同文案”，而要明确分配不同任务：</p>
+<ol>
+<li><strong>场景切入</strong>：从一次具体操作或问题开始；</li>
+<li><strong>痛点对话</strong>：直接回应用户犹豫的地方；</li>
+<li><strong>结果展示</strong>：描述使用前后的变化，但不虚构数据；</li>
+<li><strong>异议化解</strong>：解释费用、步骤、适用条件或风险；</li>
+<li><strong>客户视角</strong>：采用第一人称，让文案像真实用户表达。</li>
+</ol>
+<p>可使用下面的提示词：</p>
+<p><code>基于信息卡，分别为场景、痛点、结果、异议和客户视角各写一版文案。每版使用不同开头、不同句式和不同行动指令；只使用已确认的信息，不添加未经证实的功能、评价或效果数据。</code></p>
+<h2>Step 3：用“去重编辑”做第二轮加工</h2>
+<p>初稿生成后，不要直接交给广告平台。将同一广告组的文案横向比较，逐条执行三项检查：</p>
+<ul>
+<li>删除重复的“轻松、高效、无需担心”等泛化词；</li>
+<li>把连续三个相同长度的句子改成短句、提问或对话；</li>
+<li>每条只保留一个清晰行动，避免同时堆叠下载、咨询、购买等指令。</li>
+</ul>
+<p>如果仍无法区分，可让 AI 标记重复句式，但最终改写必须由运营完成。直接采用模型输出的“更生动”“更有吸引力”等指令，往往只会增加空话。</p>
+<h2>Step 4：按平台场景重写，而不是一稿通投</h2>
+<p>Meta 信息流更重视首句能否截停滑动，适合使用场景冲突或问题式开头；TikTok 视频广告应围绕前三秒画面设计台词，句子短、口语化，并给演员或配音留下明确停顿。</p>
+<p>同一产品可以保留核心卖点，但不要简单复制正文。例如，Meta 版本可以是三行文字，TikTok 版本则改成一条口语脚本。Google 搜索广告则应优先匹配用户搜索意图，不能为了创意强行加入与关键词无关的情绪。</p>
+<h2>Step 5：执行合规与真实性复核</h2>
+<p>上线前逐条确认：是否存在绝对化承诺、无法证明的效果、虚构用户评价或与落地页不一致的信息。AI 可能把“提升效率”改写成“保证效率”，也可能擅自补充不存在的优惠条件。</p>
+<p>建议建立三栏审核表：<strong>事实依据、证据来源、最终文案</strong>。没有来源的效果描述应删除或改成更克制的表达。同时检查产品名称、按钮文案、价格、地区限制和活动截止时间，避免生成内容与实际页面脱节。</p>
+<h2>Step 6：小批量测试，再把有效角度扩展</h2>
+<p>每次不要一次替换全部素材。先选一个广告组，将不同文案角度分别作为独立变量上线，保持出价、受众和预算设置尽量一致，再观察点击率、落地页访问率及转化行为。</p>
+<p>某跨境电商团队曾将同一条 AI 初稿扩展成六个版本，结果只有场景切入版获得明显关注。团队随后保留其表达逻辑，又为不同国家分别替换当地用户关心的问题，而不是只替换地名，逐步形成更有效的素材矩阵。</p>
+<blockquote>
+<p>去同质化的关键不是让 AI 写得更有花样，而是让每条广告回答不同的用户问题。稳定流程应是：<strong>真实信息输入 → 多角度生成 → 横向去重 → 平台改写 → 合规审核 → 小批量验证 → 保留有效结构</strong>。</p>
+</blockquote>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <h2>First, Identify Where Repetition Comes From</h2>
+<p>The main issue with AI-generated ad copy is rarely grammar. It is repetitive structure: create anxiety, explain a feature, then issue the same call to action. This may work for an initial campaign, but as more ads enter rotation, users begin to ignore them.</p>
+<p>Before producing more assets, review around 30 recent ads and classify them by four factors: selling point, opening sentence, emotional tone, and call to action. If three or more are highly similar across ads, pause bulk generation and revise the workflow.</p>
+<h2>Step 1: Build a Source Brief</h2>
+<p>Do not ask AI to invent the entire ad. Prepare a brief containing the target audience, usage scenario, key pain point, verified benefits, common objections, offer details, and prohibited claims.</p>
+<p>For example, a brief for a tool-based App might state that the user is a small team receiving its first international order, has difficulty settling funds promptly, and is concerned about setup complexity and payment reliability. Specific inputs reduce generic phrases such as <code>fast</code>, <code>effortless</code>, and <code>industry-leading</code>.</p>
+<h2>Step 2: Generate Different Angles, Not Just Different Word Choices</h2>
+<p>Assign each draft a distinct job:</p>
+<ol>
+<li><strong>Scenario-led:</strong> Begin with a concrete moment or problem.</li>
+<li><strong>Pain-point dialogue:</strong> Address hesitation directly.</li>
+<li><strong>Outcome-focused:</strong> Describe the before-and-after experience without inventing metrics.</li>
+<li><strong>Objection handling:</strong> Explain fees, setup, eligibility, or limitations.</li>
+<li><strong>Customer voice:</strong> Use first-person language that feels conversational.</li>
+</ol>
+<p>A practical prompt is:</p>
+<p><code>Use the source brief to write one ad from each angle: scenario, pain point, outcome, objection, and customer voice. Give every version a different opening, sentence pattern, and call to action. Use only confirmed information, and do not add unverified features, testimonials, or performance data.</code></p>
+<h2>Step 3: Run a Cross-Ad Editing Pass</h2>
+<p>Do not publish the first draft. Compare ads within the same ad set and check for repeated claims, identical sentence lengths, repeated openings, and interchangeable calls to action.</p>
+<p>Remove generic words, vary rhythm with short sentences, questions, or conversational lines, and give each ad one clear action. AI may help flag repetition, but the final rewrite should remain with the media buyer or copywriter.</p>
+<h2>Step 4: Adapt the Copy to the Placement</h2>
+<p>Meta feed ads usually need a strong first line capable of stopping the scroll. TikTok ads should be written around the first three seconds, using short, spoken language that gives the actor or voice-over room to pause. Google Search ads should prioritize the intent behind the keyword rather than forcing in unrelated emotional hooks.</p>
+<p>The same offer can remain consistent, but the execution should not be copied unchanged across platforms.</p>
+<h2>Step 5: Complete a Fact and Compliance Review</h2>
+<p>Before launch, check for absolute claims, unsupported outcomes, fabricated reviews, and discrepancies with the landing page. AI may change <code>improves efficiency</code> into <code>guarantees efficiency</code>, or introduce an offer that was never approved.</p>
+<p>Use a simple review sheet with three columns: <strong>fact, evidence, final copy</strong>. Remove unsupported performance language, then verify product names, pricing, button labels, regional restrictions, and promotion deadlines against the actual page.</p>
+<h2>Step 6: Test in Small Batches</h2>
+<p>Avoid replacing every asset at once. Test separate angles within one ad set while keeping budget, targeting, and bidding settings as consistent as practical. Review click-through rate, landing-page visits, and downstream conversion behavior rather than judging only by clicks.</p>
+<p>One cross-border e-commerce team expanded a single AI draft into six versions, but only the scenario-led version attracted meaningful attention. The team then preserved that underlying angle while adapting the copy around local customer concerns instead of merely changing country names.</p>
+<blockquote>
+<p>The goal is not to make AI sound more colorful. It is to make every ad answer a different user question. The reliable workflow is: <strong>verified input, multi-angle generation, cross-ad deduplication, platform adaptation, compliance review, controlled testing, and reuse of proven structures</strong>.</p>
+</blockquote>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
