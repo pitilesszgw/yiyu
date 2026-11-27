@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN" x-data="appData()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title x-text="t[lang].title">文章详情 - 以渔数媒</title>
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="以渔官网">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="/static/manifest.webmanifest">
+    <link rel="icon" href="/static/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
+    <link rel="apple-touch-icon" href="/static/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        .prose img {
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .prose h2 {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .prose p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 1.125rem;
+        }
+        .prose blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            color: #334155;
+            font-style: italic;
+            background: #eff6ff;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 2rem 0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6 0%, #9333EA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex-shrink-0 flex items-center gap-3 group">
+                    <img src="/static/images/logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover shadow-sm group-hover:shadow-md transition-shadow duration-300" onerror="this.src='https://ui-avatars.com/api/?name=YY&background=0D8ABC&color=fff'">
+                    <span class="font-extrabold text-2xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-violet-600 drop-shadow-sm">以渔数媒</span>
+                </a>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.home">首页</a>
+                    <a href="/product-intro" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.product">产品介绍</a>
+                    <a href="/articles" class="text-sm font-medium text-blue-600 transition-colors" x-text="t[lang].nav.articles">行业动态</a>
+                                        <a href="/tools" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.tools">实用工具</a>
+<a href="/pricing" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors" x-text="t[lang].nav.pricing">产品定价</a>
+                    
+                    <button @click="toggleLang()" class="flex items-center space-x-1 px-3 py-1.5 rounded-md border border-slate-200 hover:border-blue-400 hover:bg-slate-50 transition-all">
+                        <i class="fas fa-globe text-slate-500 text-xs"></i>
+                        <span class="text-xs font-bold text-slate-600" x-text="lang === 'zh' ? 'EN' : '中'"></span>
+                    </button>
+                    
+                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                        <a href="/contact" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20" x-text="t[lang].nav.contact">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="pt-32 pb-24">
+        <!-- Back Button & Breadcrumb -->
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+            <a href="/articles" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors group">
+                <div class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-500 group-hover:bg-blue-50 transition-all">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </div>
+                <span x-text="t[lang].back">返回动态列表</span>
+            </a>
+        </div>
+
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article Header -->
+            <header class="mb-10 text-center">
+                <div class="mb-6">
+                    <span class="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg uppercase tracking-wider">
+                        <span x-show="lang === 'zh'">
+                            投放指南
+                            
+                        </span>
+                        <span x-show="lang === 'en'" x-cloak>
+                            Ad Guide
+                            
+                        </span>
+                    </span>
+                </div>
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight mb-8">
+                    <span x-show="lang === 'zh'">跨境电商独立站投放预算怎么分？5个运营问题一次说清</span>
+                    <span x-show="lang === 'en'" x-cloak>How to Allocate Your Cross-Border Ecommerce Independent Site Ad Budget</span>
+                </h1>
+                
+                <!-- Author Meta -->
+                <div class="flex items-center justify-center gap-6 text-sm text-slate-500 border-t border-b border-slate-100 py-4">
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-calendar-alt"></i>
+                        <span>2026-11-28</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2">
+                        <i class="far fa-eye"></i>
+                        <span><span id="article-view-count" data-article-id="681" data-base-views="65">65</span> <span x-text="t[lang].reads">阅读</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Featured Image -->
+            <div class="rounded-2xl overflow-hidden mb-12 shadow-2xl shadow-slate-200/50">
+                <img src="https://picsum.photos/seed/yiyu5286/800/500" alt="Featured Image" class="w-full h-[400px] object-cover">
+            </div>
+
+            <!-- Rich Text Body -->
+            <div class="prose max-w-none" x-show="lang === 'zh'">
+                <p>跨境电商独立站的投放预算，最常见的问题不是“给哪个平台”，而是“按什么顺序给、什么情况下调整”。新品期、利润承压、旺季促销和账户异常阶段，预算逻辑并不相同。以下五个问题来自日常投放与账户运营场景，答案可以直接用于建立预算规则。</p>
+<h2>一、预算应该按平台平均分吗？</h2>
+<p><strong>不应该。</strong></p>
+<p>更合理的做法是先分成四个资金池：</p>
+<ul>
+<li><strong>70%—80%：已验证渠道</strong>，用于承接主要订单目标；</li>
+<li><strong>10%—20%：新渠道或新素材测试</strong>；</li>
+<li><strong>5%—10%：再营销与弃单挽回</strong>；</li>
+<li><strong>10%左右：机动预算</strong>，应对促销节点、素材衰减或账户异常。</li>
+</ul>
+<p>比例不是固定模板。客单价高、复购周期长的商品，可以提高再营销预算；新品缺少转化数据时，则应把更多资金留给受众、素材和落地页测试。</p>
+<p>渠道内部也不要平均分配。Google Search 承接高意图搜索，Meta 和 TikTok 负责扩量及素材验证，Microsoft Ads 是否加入，应看实际搜索量、关键词成本和利润贡献，而不是只看平台知名度。</p>
+<h2>二、新独立站没有数据，第一笔预算怎么给？</h2>
+<p><strong>先买验证信息，不要急着追求规模。</strong></p>
+<p>可以把首轮测试拆成三层：</p>
+<ol>
+<li>用搜索广告验证核心关键词是否有有效转化；</li>
+<li>用 Meta 小预算测试不同卖点、视觉和人群组合；</li>
+<li>用 TikTok 测试短视频钩子，但先确认商品是否适合内容种草。</li>
+</ol>
+<p>某工具类 App 在独立站冷启动时，没有将全部预算押入单一渠道，而是用两周时间比较搜索意图与短视频素材的点击质量。最终预算集中到能带来稳定有效访问的组合，而不是仅由最低CPC决定。</p>
+<p>首轮测试应设置止损线，例如单条广告消耗达到目标获客成本的1—1.5倍仍无有效转化，就暂停并修改素材、页面或定向。测试预算过大，会把“需要优化”变成“无法判断”。</p>
+<h2>三、ROAS多少才值得继续加预算？</h2>
+<p><strong>看贡献利润，不要只盯账户里的ROAS。</strong></p>
+<p>广告带来的收入，需要扣除货品成本、履约运费、支付费用、退款及平台服务费，再判断是否覆盖销售和运营成本。如果目标ROAS是3，但扣除上述成本后仍无法贡献利润，那么3也没有实际意义。</p>
+<p>预算调整可采用阶梯法：</p>
+<ul>
+<li>达到目标ROAS并保持稳定，可每次增加10%—20%；</li>
+<li>接近目标但转化量不足，先补充高质量素材，不要立即大幅加钱；</li>
+<li>连续消耗超过目标获客成本且效果下降，应暂停；</li>
+<li>某广告表现稳定后，不必频繁修改预算，每次大幅调整都可能触发重新学习。</li>
+</ul>
+<p>同时要区分自然订单与广告订单。品牌词、重复访问和再营销流量占比过高时，平台归因可能放大ROAS，预算应更多用于拉新渠道。</p>
+<h2>四、素材测试预算应该单独列吗？</h2>
+<p><strong>应该，而且要按“概念”测试，不要把预算全压在单条素材上。</strong></p>
+<p>每个广告组准备3—5个素材方向，例如功能演示、痛点对比、使用场景、用户评价和促销利益点。同一条素材可以测试不同开头、字幕、时长和CTA，但每次最好只改变一个关键变量。</p>
+<p>素材预算可采用“20%探索、80%放大”的思路。探索阶段关注点击率、落地页停留和加购质量；跑出有效组合后，再把成熟素材复制到新受众。</p>
+<p>不要仅凭低CPC判断素材价值。低点击可能来自标题党，但用户进入页面后没有加购，预算效率反而更差。</p>
+<h2>五、账户余额不足，会怎样影响投放？</h2>
+<p><strong>广告不会因为预算不高而停止，但余额不足可能导致投放中断或层级降级。</strong></p>
+<p>多账户运营时，建议建立三层预警：</p>
+<ul>
+<li>余额低于未来3天计划消耗时，通知投手；</li>
+<li>预计只能支撑半天消耗时，通知财务和管理负责人；</li>
+<li>余额接近零时，优先处理，避免影响正在学习的核心广告组。</li>
+</ul>
+<p>充值后还要核对币种、账户主体、付款状态和到账记录。某跨境电商团队曾出现“平台充值成功、部分账户未到账”的情况，通过订单号与后台记录逐笔核对后及时补充，避免主力广告组中断。</p>
+<h2>六、投放和财务如何避免对不上账？</h2>
+<p><strong>以广告平台的消耗记录为准，按日核对，而不是月底凭感觉对账。</strong></p>
+<p>每天记录平台消耗、充值金额、退款与返点；每周按渠道、Campaign和广告组汇总；每月再处理税费、汇率、代理返佣及无效消耗差异。</p>
+<p>对账至少做到三点：</p>
+<ol>
+<li>账户余额与平台后台一致；</li>
+<li>充值流水与付款流水能够对应；</li>
+<li>广告消耗与销售归因数据分别保存，不能混为一谈。</li>
+</ol>
+<p>最终应形成一张利润表：广告花费、实收订单金额、退款、货品与履约成本、贡献利润。预算应该流向能稳定带来贡献利润的渠道，而不是流量最便宜或报表最漂亮的渠道。</p>
+            </div>
+            <div class="prose max-w-none" x-show="lang === 'en'" x-cloak>
+                <p>The biggest problem in independent site advertising is not which platform to choose, but how to prioritize funding and when to adjust it. Budget allocation changes across product launches, margin pressure, seasonal promotions, and account disruptions. The five questions below reflect common operational challenges and provide rules that cross-border ecommerce teams can apply directly.</p>
+<h2>1. Should the budget be distributed evenly across platforms?</h2>
+<p><strong>No.</strong></p>
+<p>A more effective structure divides the budget into four pools:</p>
+<ul>
+<li><strong>70%–80% for proven channels</strong> that reliably support the main conversion goal;</li>
+<li><strong>10%–20% for new channels or creative testing</strong>;</li>
+<li><strong>5%–10% for remarketing and abandoned-cart recovery</strong>;</li>
+<li><strong>Around 10% as a flexible reserve</strong> for promotions, creative fatigue, or account issues.</li>
+</ul>
+<p>These percentages are not universal rules. Businesses with high order values or long repurchase cycles may need more remarketing budget. During a new product launch, when conversion data is limited, more funds should go toward testing audiences, creative concepts, and landing pages.</p>
+<p>Allocation should also differ within each channel. Google Search can capture high-intent demand, while Meta and TikTok can support prospecting and creative testing. Microsoft Ads should only be included when search volume, keyword costs, and profit contribution justify it—not simply because the platform is well known.</p>
+<h2>2. How should the first budget be allocated without historical data?</h2>
+<p><strong>Buy information first rather than chasing scale immediately.</strong></p>
+<p>A practical launch plan has three layers:</p>
+<ol>
+<li>Use search ads to verify whether core keywords generate valid conversions;</li>
+<li>Test different value propositions, visuals, and audience combinations on Meta with controlled budgets;</li>
+<li>Test short-form video hooks on TikTok, but only after confirming that the product fits a content-led buying journey.</li>
+</ol>
+<p>When one tools-based App launched its independent site, it did not commit the full budget to one channel. Instead, it compared search intent with short-form video traffic quality over two weeks and consolidated spending around combinations that generated consistently qualified visits.</p>
+<p>Set clear stop-loss rules. If an ad spends 1–1.5 times the target customer acquisition cost without a valid conversion, pause it and revise the creative, landing page, or targeting. Excessive testing budgets make performance problems impossible to diagnose.</p>
+<h2>3. What ROAS is high enough to justify increasing the budget?</h2>
+<p><strong>Judge contribution profit, not just the dashboard ROAS.</strong></p>
+<p>Revenue attributed to advertising must be reduced by product costs, fulfillment, payment fees, refunds, and platform service fees. If the business cannot cover selling and operating costs, even a reported ROAS of 3 may not be meaningful.</p>
+<p>Use a structured adjustment rule:</p>
+<ul>
+<li>If the campaign reaches the target ROAS and remains stable, increase the budget by 10%–20%;</li>
+<li>If it is close to the target but lacks conversion volume, add stronger creative before scaling spend;</li>
+<li>If it spends beyond the target acquisition cost without improving results, pause it;</li>
+<li>Once an ad is stable, avoid frequent budget changes, as large adjustments can restart the learning process.</li>
+</ul>
+<p>Separate paid and organic orders. If branded search, repeat visits, and remarketing account for too much revenue, platform attribution may inflate ROAS. More budget should then be directed toward prospecting channels.</p>
+<h2>4. Should creative testing have its own budget?</h2>
+<p><strong>Yes, and organize it around concepts rather than funding a single ad.</strong></p>
+<p>Prepare three to five creative directions for each ad set: product demonstrations, pain-point comparisons, use cases, customer reviews, and promotional benefits. The same core video can then be tested with different openings, captions, lengths, and calls to action, ideally changing only one major variable at a time.</p>
+<p>A practical model allocates about 20% of the budget to exploration and 80% to scaling. During exploration, assess click-through rate, landing-page engagement, and add-to-cart quality. Once a winning combination emerges, adapt it for new audiences.</p>
+<p>Do not select creative based on CPC alone. A low-cost click may be misleading if visitors show no purchase intent after reaching the site. Post-click quality matters more than traffic price.</p>
+<h2>5. What happens if an advertising account runs out of balance?</h2>
+<p><strong>Limited budgets do not stop delivery automatically, but insufficient account balances can interrupt campaigns or affect delivery performance.</strong></p>
+<p>For multi-account operations, establish three levels of alerts:</p>
+<ul>
+<li>Notify the buyer when the balance is below three days of planned spending;</li>
+<li>Alert finance and the account owner when the remaining balance covers less than half a day;</li>
+<li>Resolve the account immediately when the balance is close to zero, especially for campaigns that are still learning.</li>
+</ul>
+<p>After recharging, verify the currency, account entity, payment status, and credited amount. One cross-border ecommerce team found that a payment appeared successful while several accounts had not received the funds. By reconciling transaction references with platform records, it recharged the affected accounts before major campaigns were interrupted.</p>
+<h2>6. How should advertising and finance teams reconcile their records?</h2>
+<p><strong>Use platform spending records as the reference and reconcile daily rather than relying on a monthly approximation.</strong></p>
+<p>Track spending, recharges, refunds, and rebates by day. Summarize them weekly by channel, campaign, and ad set. At month-end, account for taxes, exchange rates, agency commissions, and invalid traffic adjustments.</p>
+<p>Reconciliation should meet three requirements:</p>
+<ol>
+<li>Account balances match platform records;</li>
+<li>Every recharge can be matched to a payment transaction;</li>
+<li>Advertising spend and sales attribution are stored separately and not treated as the same dataset.</li>
+</ol>
+<p>The final output should be a profit report showing ad spend, collected revenue, refunds, product and fulfillment costs, and contribution profit. Allocate budget toward the channels that consistently generate contribution profit—not necessarily the cheapest traffic or the strongest-looking dashboard.</p>
+            </div>
+
+            <!-- Social Share (Mock) -->
+            <div class="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div class="text-sm font-medium text-slate-500" x-text="t[lang].share">分享这篇文章：</div>
+                <div class="flex gap-3">
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0077B5] hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#00B489] hover:text-white transition-colors">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-950 text-white border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid gap-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
+            <div>
+                <p class="text-lg font-bold">BRAVOTREE TECHNOLOGY LIMITED</p>
+                <p class="mt-1 text-sm text-slate-400">奇樹科技有限公司</p>
+                <p class="mt-4 max-w-3xl text-sm leading-6 text-slate-400">
+                    以渔数媒（Yiyu Digital）由 BRAVOTREE TECHNOLOGY LIMITED 运营。香港公司编号：2972992。
+                    yiyufish.com 为本公司官方网站。
+                </p>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Yiyu Digital is operated by BRAVOTREE TECHNOLOGY LIMITED, a company incorporated in Hong Kong. Company No. 2972992.
+                </p>
+            </div>
+            <div class="lg:text-right">
+                <a href="mailto:admin@yiyufish.com" class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-blue-400 hover:text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-950">
+                    admin@yiyufish.com
+                </a>
+                <nav class="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm text-slate-400 lg:justify-end" aria-label="公司与法律信息">
+                    <a href="/about" class="hover:text-white">关于我们</a>
+                    <a href="/contact" class="hover:text-white">联系我们</a>
+                    <a href="/privacy" class="hover:text-white">隐私政策</a>
+                    <a href="/terms" class="hover:text-white">服务条款</a>
+                </nav>
+            </div>
+        </div>
+        <div class="mt-8 border-t border-slate-800 pt-6 text-xs text-slate-500">
+            &copy; 2026 BRAVOTREE TECHNOLOGY LIMITED. All rights reserved.
+        </div>
+    </div>
+</footer>
+</body>
+<script>
+    const translations = {
+        zh: {
+            title: "文章详情 - 以渔数媒",
+            nav: {
+                home: "首页",
+                product: "产品介绍",
+                tools: "实用工具",
+                    pricing: "产品定价",
+                articles: "行业动态",
+                contact: "联系我们"
+            },
+            back: "返回动态列表",
+            share: "分享这篇文章：",
+            reads: "阅读"
+        },
+        en: {
+            title: "Article Detail - Yiyu Digital",
+            nav: {
+                home: "Home",
+                product: "Product Intro",
+                tools: "Tools",
+                    pricing: "Pricing",
+                articles: "Insights",
+                contact: "Contact Us"
+            },
+            back: "Back to Insights",
+            share: "Share this article:",
+            reads: "Reads"
+        }
+    };
+
+    function appData() {
+        return {
+            lang: localStorage.getItem('yiyu_lang') || 'zh',
+            t: translations,
+            toggleLang() {
+                this.lang = this.lang === 'zh' ? 'en' : 'zh';
+                localStorage.setItem('yiyu_lang', this.lang);
+            }
+        }
+    }
+
+    async function incrementArticleView() {
+        const counter = document.getElementById('article-view-count');
+        if (!counter) return;
+
+        const articleId = counter.dataset.articleId;
+        const baseViews = Number.parseInt(counter.dataset.baseViews || counter.textContent, 10) || 0;
+        if (!articleId) return;
+
+        try {
+            const response = await fetch(`/api/article-view/${encodeURIComponent(articleId)}`, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ baseViews }),
+                cache: 'no-store'
+            });
+            if (!response.ok) return;
+            const payload = await response.json();
+            const views = Number.parseInt(payload.views, 10);
+            if (Number.isInteger(views) && views > baseViews) {
+                counter.textContent = views.toLocaleString();
+            }
+        } catch (error) {
+            console.debug('Article view increment skipped:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', incrementArticleView);
+</script>
+</html>
